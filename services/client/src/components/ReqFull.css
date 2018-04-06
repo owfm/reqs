@@ -1,0 +1,19 @@
+.reqFullContainer {
+  border: 5px solid black;
+}
+
+.pending {
+  border-color: black;
+}
+
+.done {
+  border-color: green;
+}
+
+.issue {
+  border-color: red;
+}
+
+.reqFullEquipment {
+  width: 100%;
+}
