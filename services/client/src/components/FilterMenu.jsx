@@ -43,6 +43,7 @@ export default class FilterMenu extends Component {
         const toggled = filters.sites[siteName];
         return(
           <ListItem
+            key={siteName}
             rightToggle={<Toggle toggled={toggled} name={siteName} onToggle={this.props.handleFilterToggle}/>}
             primaryText={site.name}
           />

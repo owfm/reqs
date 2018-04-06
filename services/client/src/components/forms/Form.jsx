@@ -81,7 +81,7 @@ class Form extends Component {
     .then((res) => {
       this.props.emitSnackbar(res.data.message);
       this.clearForm();
-      this.props.loginUser(res.data.auth_token);
+      this.props.loginUser(res.data.user, res.data.auth_token);
     })
     .catch((err) => {
       if (formType === 'login') {

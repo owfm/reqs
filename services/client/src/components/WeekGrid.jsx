@@ -10,7 +10,7 @@ const GetPeriodHeaders = (periods) => {
 
   return (
     periodsArray.map(period =>
-      <div className="periodhead">{period}</div>
+      <div key={`phd${period}`} className="periodhead">{period}</div>
     )
   );
 
@@ -27,13 +27,13 @@ const GetDayRows = (props) => {
       <div className='grid-row'>
         <div className='day-col'>{Days[day]}</div>
         {periodsArray.map(period => {
-          return <div className='period'>
+          return <div key={`p${Days[day]}${period}`} className='period'>
             {props.sessions
                 .filter(session => session.day === Days[day] && session.period === period)
                 .map(session => <ReqMini
                                     session={session}
                                     emitSnackbar={props.emitSnackbar}
-                                    key={session.id}
+                                    key={`${session.id}${session.type}`}
                                     handleSetModalObject={props.handleSetModalObject}
                                     handleModalOpen={props.handleModalOpen}
                                     handleSetModalType={props.handleSetModalType}

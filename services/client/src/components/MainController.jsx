@@ -34,7 +34,7 @@ class MainController extends React.Component {
     this.handleSetModalObject = this.handleSetModalObject.bind(this);
     this.handleWeekChange = this.handleWeekChange.bind(this);
     this.handleRemoveFilter = this.handleRemoveFilter.bind(this);
-
+    this.updateStateWithNewOrEditedReq = this.updateStateWithNewOrEditedReq.bind(this);
   }
 
   componentDidMount(){
@@ -52,7 +52,6 @@ class MainController extends React.Component {
       })
     })
     .catch((err) => console.error(err))
-
 
     getReqs().then((res) => {
       this.setState({
@@ -93,9 +92,6 @@ class MainController extends React.Component {
     const value = e.target.checked;
     const name = e.target.name;
     var filters = {...this.state.filters};
-    console.log(filters);
-    console.log(value);
-    console.log(name);
     (name in filters.sites) ? filters.sites[name] = value : filters[name] = value;
 
     this.setState({
@@ -125,7 +121,10 @@ class MainController extends React.Component {
 
   checkReqAgainstFilters (session) {
 
-    if (session.type == 'requisition') {
+    // TODO: INCLUDE FILTER FOR LESSONS THAT HAVE A REQ ASSIGNED
+
+    if (session.type === 'requisition') {
+
       const pending = (!session.isDone) && (!session.hasIssue);
       const checkDone = session.isDone === this.state.filters.isDone;
       const checkIssue = session.hasIssue === this.state.filters.hasIssue;
@@ -136,21 +135,24 @@ class MainController extends React.Component {
 
       const reqDate = parseReqTime(session.time, 'date');
 
-      if (!reqDate.isValid()) return false;
+      const currentWbDate = moment(this.state.currentWbDate, 'DD-MM-YY');
 
-      // const dateCheck = reqDate.isSameOrAfter(this.state.currentWbDate) &&
-      //     reqDate.isSameOrBefore(this.state.currentWbDate.add(5, 'days'))
+      const dateCheck = reqDate.isSameOrAfter(currentWbDate) &&
+          reqDate.isSameOrBefore(currentWbDate.add(5, 'days'))
 
-      const dateCheck = true;
-
+      if (session.id === 339) {
+        console.log('Reqdate: ' + reqDate.format());
+        console.log('currentWbDate: ' + currentWbDate.format());
+      }
 
       return (dateCheck && siteCheck && (pending || checkDone || checkIssue));
-    } else if (session.type == 'lesson'){
+
+    } else if (session.type === 'lesson'){
 
       const siteName = session.room.site.name;
       const sitesFilter = {...this.state.filters.sites};
       const siteCheck = sitesFilter[siteName];
-      const weekCheck = session.week == this.state.weekNumber;
+      const weekCheck = session.week === this.state.weekNumber;
 
       return (weekCheck && siteCheck);
     }
@@ -198,12 +200,29 @@ class MainController extends React.Component {
     })
   }
 
+  updateStateWithNewOrEditedReq = (req) => {
+
+    const sessions = {...this.state.sessions};
+
+
+    const new_sessions = this.state.sessions.filter(session =>
+    !(session.id === req.id && session.type === req.type))
+
+    console.log(new_sessions);
+
+    new_sessions.push(req);
+    this.setState({sessions: new_sessions});
+  }
+
 
   render() {
 
     if (!(this.props.user && this.state.sessions && this.state.school)) {
       return (
+        <div>
+            <p>loading in main controller</p>
         <Loading />
+      </div>
       )
     }
 
@@ -217,15 +236,13 @@ class MainController extends React.Component {
           user={this.props.user}
         />
 
-        <Snackbar
-          open={this.state.snackbarOpen}
-          message={this.state.snackbarMsg}
-        />
         <Modal
           style={shadowHoverStyle}
           isOpen={this.state.modalOpen}
           >
             <ReqFull
+              updateStateWithNewOrEditedReq={this.updateStateWithNewOrEditedReq}
+              currentWbDate={this.state.currentWbDate}
               emitSnackbar={this.props.emitSnackbar}
               roleCode={this.props.user.role_code}
               req={this.state.modalSessionObj}
@@ -267,7 +284,7 @@ class MainController extends React.Component {
 
     const weekdayNo = date.isoWeekday();
 
-    if (weekdayNo == 6 || weekdayNo == 7) {
+    if (weekdayNo === 6 || weekdayNo === 7) {
       const shift = 8 - weekdayNo;
       return date.add(shift, 'days');
 

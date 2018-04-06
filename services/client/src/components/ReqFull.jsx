@@ -1,6 +1,6 @@
 import React from 'react';
 import Loading from './Loading';
-import { postReqEdit } from '../utils/Helpers';
+import { postReqEdit, postNewReq } from '../utils/Helpers';
 import ReqFullForm from './ReqFullForm';
 import ReqIssueInfo from './ReqIssueInfo';
 import { ReqHeader } from './ReqHeader';
@@ -15,18 +15,29 @@ class ReqFull extends React.Component {
       isEditing: false,
     }
     this.handleInputChange = this.handleInputChange.bind(this);
+    this.handlePostNewReq = this.handlePostNewReq.bind(this);
     this.handleEditClick = this.handleEditClick.bind(this);
     this.handleEditReq = this.handleEditReq.bind(this);
     this.handlePostNewReq = this.handlePostNewReq.bind(this);
   }
 
   handlePostNewReq (e) {
+    e.preventDefault();
+    const data = {
+      'lesson_id': this.props.req.id,
+      'title': this.state.req.title,
+      'equipment': this.state.req.equipment,
+      'notes': this.state.req.notes,
+      'currentWbDate': this.props.currentWbDate
+    }
 
-    // TODO: write a helper function to map the updated lesson state object
-    // into a req object to be sumbitted. This needs to take account of the
-    // dates and times of the current page and ensure it is correctly
-    // mapped to the correct week.
-
+    postNewReq(data)
+    .then((res) => {
+      this.props.emitSnackbar(res.data.message);
+      this.props.updateStateWithNewOrEditedReq(res.data.data);
+      this.props.handleModalClose();
+    })
+    .catch((err) => this.props.emitSnackbar(err))
   }
 
   handleEditClick (e) {
@@ -59,11 +70,10 @@ class ReqFull extends React.Component {
       });
       this.props.handleModalClose();
       this.props.emitSnackbar(res.data.message)
+      this.props.updateStateWithNewOrEditedReq(res.data.data);
     })
     .catch((err) => console.error(err))
   }
-
-
 
   handleInputChange(e) {
     const target = e.target;
@@ -91,6 +101,7 @@ class ReqFull extends React.Component {
         <ReqHeader req={this.props.req}/>
 
         <ReqFullForm
+          handlePostNewReq={this.handlePostNewReq}
           handleModalClose={this.props.handleModalClose}
           handlePostNewReq={this.handlePostNewReq}
           handleEditReq={this.handleEditReq}

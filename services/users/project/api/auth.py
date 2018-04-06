@@ -81,6 +81,7 @@ def login_user():
                 response_object['status'] = 'success'
                 response_object['message'] = 'Successfully logged in.'
                 response_object['auth_token'] = auth_token.decode()
+                response_object['user'] = user.asdict()
                 return jsonify(response_object), 200
         else:
             response_object['message'] = 'User does not exist.'

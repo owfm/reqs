@@ -1,7 +1,9 @@
 import React from 'react';
 import { Input } from 'react-materialize';
 import { UserCode } from '../utils/Constants';
-import { TeacherReqOptionButtons } from './TeacherReqOptionButtons';
+import TeacherReqOptionButtons from './TeacherReqOptionButtons';
+import TechnicianReqOptionButtons from './TechnicianReqOptionButtons';
+
 import styled from 'styled-components';
 
 const ReqInput = styled.textarea`
@@ -59,6 +61,7 @@ const ReactFullForm = (props) => {
 
         {UserCode[roleCode] === 'Teacher' &&
         <TeacherReqOptionButtons
+          handlePostNewReq={props.handlePostNewReq}
           req={props.req}
           handleEditReq={props.handleEditReq}
           handlePostNewReq={props.handlePostNewReq}
@@ -68,6 +71,12 @@ const ReactFullForm = (props) => {
         />
         }
 
+        {UserCode[roleCode] === 'Technician' &&
+        <TechnicianReqOptionButtons
+          req={props.req}
+          handleModalClose={props.handleModalClose}
+        />
+        }
 
       </form>
   )

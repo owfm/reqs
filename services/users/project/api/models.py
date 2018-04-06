@@ -169,7 +169,7 @@ class Lesson(db.Model):
 
     start_time = db.Column(db.Time, nullable=False)
     end_time = db.Column(db.Time, nullable=False)
-    day_code = db.Column(db.Integer, nullable=False)  # ISODAY FORMAY: MON 1
+    day_code = db.Column(db.Integer, nullable=False)  # ISODAY FORMAT: MON 1
     week_number = db.Column(db.Integer, default=1)
 
 

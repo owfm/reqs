@@ -1,6 +1,6 @@
 import React from 'react';
 import Chip from 'material-ui/Chip'
-
+import './FilterChips.css';
 
 const FilterChips = (props) => {
 
@@ -16,22 +16,28 @@ const FilterChips = (props) => {
   for (let site in props.filters.sites) {
     if (props.filters.sites[site] === true) {
       siteChips.push(
-        <Chip
-          onRequestDelete={() => props.handleRemoveFilter(site)}>
-          {site}
-        </Chip>)
+        <div className='chip'>
+          <Chip
+            onClick={() => props.handleRemoveFilter('ALL')}
+            onRequestDelete={() => props.handleRemoveFilter(site)}>
+            {site}
+          </Chip>
+      </div>
+    )
       }
   }
 
 
   return (
-    <div style={{display:'flex', flexWrap:'wrap', justifyContent:'space-between '}}>
-      <div style={{display:'flex'}}>
-      {props.filters.isDone && <Chip onRequestDelete={() => props.handleRemoveFilter('isDone')}>Done</Chip>}
-      {props.filters.hasIssue && <Chip onRequestDelete={() => props.handleRemoveFilter('hasIssue')}>Issues</Chip>}
+    <div className="filter-chip-wrapper">
+      <div className="filter-chips">
+      {props.filters.isDone && <div className='chip'><Chip onClick={() => props.handleRemoveFilter('isDone')} onRequestDelete={() => props.handleRemoveFilter('isDone')}>Done</Chip></div>}
+      {props.filters.hasIssue && <div className='chip'><Chip onClick={() => props.handleRemoveFilter('hasIssue')} onRequestDelete={() => props.handleRemoveFilter('hasIssue')}>Issues</Chip></div>}
       {siteChips}
       </div>
-      <div onClick={() => props.handleRemoveFilter('ALL')}>X Remove All Filters</div>
+      <div className='chip'>
+        <Chip onRequestDelete={() => props.handleRemoveFilter('ALL')}>Remove All Filters</Chip>
+      </div>
     </div>
   )
 

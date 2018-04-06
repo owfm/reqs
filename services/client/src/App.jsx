@@ -72,16 +72,20 @@ class App extends React.Component {
     this.setState({});
   };
 
-  loginUser(token) {
+  loginUser(user, token) {
     window.localStorage.setItem('authToken', token);
-    this.setState({ isAuthenticated: true });
-    this.emitSnackbar('Welcome!', 'success');
+    this.setState({
+      isAuthenticated: true,
+      user
+     });
+    this.emitSnackbar(`Wecome ${user.name}`);
   };
 
 
   render() {
 
     const isAuthenticated = this.state.isAuthenticated;
+    const user = this.state.user;
 
     if (!this.state.user) {
       getUser().then((res) => {
@@ -105,7 +109,7 @@ class App extends React.Component {
 
       <Switch>
         <Route exact path="/" render={() => (
-          isAuthenticated ?
+          isAuthenticated && user ?
             <MainController
               user={this.state.user}
               emitSnackbar={this.emitSnackbar}
