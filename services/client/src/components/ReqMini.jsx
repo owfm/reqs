@@ -1,6 +1,4 @@
 import React from 'react';
-import { Card, CardHeader, CardText } from 'material-ui';
-import { IssueChip, DoneChip, UserChip, GeneralChip } from './Chips';
 import './ReqMini.css';
 
 
@@ -25,9 +23,6 @@ export class ReqMini extends React.Component {
 
     const reqDone = this.props.session.isDone;
     const hasIssue = this.props.session.hasIssue;
-    const type = this.props.session.type;
-    const title = `${this.props.session.week || ''}${this.props.session.day}${this.props.session.period} ${this.props.session.room.name}${this.props.session.classgroup.name}`
-
 
     return (
       <div onClick={this.handleCardClick} className='req-small'>

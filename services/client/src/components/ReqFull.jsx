@@ -52,7 +52,7 @@ class ReqFull extends React.Component {
               equipment: this.props.req.equipment,
               notes: this.props.req.notes}
             })
-        isEditing: false;
+        isEditing: false
     }
     this.setState({
       isEditing: !isEditing

@@ -1,11 +1,6 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import Snackbar from 'material-ui/Snackbar';
-import { Row, Col } from 'react-materialize';
-import Navigation from './components/Navigation';
-import Loading from './components/Loading';
-import Welcome from './components/Welcome';
-import NavBar from './components/NavBar';
 import Form from './components/forms/Form';
 import Logout from './components/Logout';
 import MainController from './components/MainController';

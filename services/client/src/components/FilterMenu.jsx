@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import IconMenu from 'material-ui/IconMenu';
-import MenuItem from 'material-ui/MenuItem';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentFilterList from 'material-ui/svg-icons/content/filter-list';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';

@@ -5,9 +5,7 @@ import ReqFull from './ReqFull';
 import Loading from './Loading';
 import Modal from 'react-modal';
 import { shadowHoverStyle } from './Styles';
-import Snackbar from 'material-ui/Snackbar';
 import moment from 'moment';
-import Moment from 'react-moment';
 import Navigation from './Navigation';
 
 
@@ -201,9 +199,6 @@ class MainController extends React.Component {
   }
 
   updateStateWithNewOrEditedReq = (req) => {
-
-    const sessions = {...this.state.sessions};
-
 
     const new_sessions = this.state.sessions.filter(session =>
     !(session.id === req.id && session.type === req.type))
