@@ -4,13 +4,10 @@ import RaisedButton from 'material-ui/RaisedButton';
 
 
 
-export const TeacherReqOptionButtons = (props) => {
+const TeacherReqOptionButtons = (props) => {
 
   const isDone = props.req.isDone;
   const type = props.req.type;
-
-
-  console.log(props);
 
   if (type === 'lesson') {
     return (
@@ -21,7 +18,7 @@ export const TeacherReqOptionButtons = (props) => {
         type='submit'
         onClick={props.handlePostNewReq}
         value='Save'>
-        SAVE
+        POST
       </RaisedButton>
       <FlatButton
         style={{marginLeft: '10px'}}
@@ -71,3 +68,5 @@ export const TeacherReqOptionButtons = (props) => {
 
 
 };
+
+export default TeacherReqOptionButtons;

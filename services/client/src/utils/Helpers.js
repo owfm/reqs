@@ -1,5 +1,4 @@
 import axios from 'axios';
-import moment from 'moment';
 export const getUser = () => {
   return axios.get(`${process.env.REACT_APP_USERS_SERVICE_URL}/users/me`,
     {headers:
@@ -15,6 +14,16 @@ export const getSchool = () => {
     }
   )
 };
+
+export const postNewReq = (data) => {
+  let url = `${process.env.REACT_APP_USERS_SERVICE_URL}/reqs`;
+
+  const res = axios.post(url, data, {headers:
+    {"Authorization": "Bearer " + window.localStorage.getItem('authToken')}
+  })
+
+  return res;
+}
 
 export const getWeekNumber = (date) => {
 

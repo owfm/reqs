@@ -1,10 +1,12 @@
 import React from 'react';
-import { Input } from 'react-materialize';
 import { UserCode } from '../utils/Constants';
-import { TeacherReqOptionButtons } from './TeacherReqOptionButtons';
+import TeacherReqOptionButtons from './TeacherReqOptionButtons';
+import TechnicianReqOptionButtons from './TechnicianReqOptionButtons';
+
 import styled from 'styled-components';
 
 const ReqInput = styled.textarea`
+  outline: none;
   flex: 1 1;
   padding: 5px;
   margin: 10px 0;
@@ -15,8 +17,8 @@ const ReqInput = styled.textarea`
   `
 const ReqInputLabel = styled.h4`
   color: palevioletred;
-  font-size: 14px;
-  font-weight: 400;
+  font-size: 18px;
+  font-weight: 600;
 `
 
 const ReactFullForm = (props) => {
@@ -68,6 +70,12 @@ const ReactFullForm = (props) => {
         />
         }
 
+        {UserCode[roleCode] === 'Technician' &&
+        <TechnicianReqOptionButtons
+          req={props.req}
+          handleModalClose={props.handleModalClose}
+        />
+        }
 
       </form>
   )

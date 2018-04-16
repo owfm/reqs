@@ -1,58 +1,65 @@
 import React from 'react';
-import Toggle from 'material-ui/Toggle';
+import FlatButton from 'material-ui/FlatButton';
+import RaisedButton from 'material-ui/RaisedButton';
 
 
 
-export const TechnicianReqOptionButtons = (props) => (
+const TechnicianReqOptionButtons = (props) => {
 
-  const styles = {
-    block: {
-      maxWidth: 250,
-    },
-    toggle: {
-      marginBottom: 16,
-    },
-    thumbOff: {
-      backgroundColor: '#ffcccc',
-    },
-    trackOff: {
-      backgroundColor: '#ff9d9d',
-    },
-    thumbSwitched: {
-      backgroundColor: 'red',
-    },
-    trackSwitched: {
-      backgroundColor: '#ff9d9d',
-    },
-    labelStyle: {
-      color: 'red',
-    },
-  };
+  const isDone = props.req.isDone;
+  const type = props.req.type;
 
 
-<div style={{display: 'flex', flexDirection: 'row', bottom:'0', justifyContent: 'flex-end', alignItems: 'flex-end'}}>
+  console.log(props);
+
+  if (type === 'lesson') {
+    return (
+      <div style={{display: 'flex', flexDirection: 'row', bottom:'0', justifyContent: 'flex-end', alignItems: 'flex-end'}}>
+      <RaisedButton
+        style={{marginLeft: '10px'}}
+        primary={true}
+        type='submit'
+        onClick={props.handlePostNewReq}
+        value='Save'>
+        SAVE
+      </RaisedButton>
+      <FlatButton
+        style={{marginLeft: '10px'}}
+        disabled={props.isEditing}
+        primary={true}
+        onClick={props.handleModalClose}>
+        CLOSE
+      </FlatButton>
+      </div>
+    )
+  } else {
+    return(
+      <div style={{display: 'flex', flexDirection: 'row', bottom:'0', justifyContent: 'flex-end', alignItems: 'flex-end'}}>
+        {!props.req.isDone &&
+        <RaisedButton
+          style={{marginLeft: '10px'}}
+          primary={true}
+          disabled={isDone}
+          name='isEditing'
+          onClick={props.handleEditClick}>
+          {props.isEditing ? 'DISCARD' : 'EDIT'}
+        </RaisedButton>
+      }
+
+          <FlatButton
+            style={{marginLeft: '10px'}}
+            disabled={props.isEditing}
+            primary={true}
+            onClick={props.handleModalClose}>
+            CLOSE
+          </FlatButton>
+        </div>
+
+      )
+
+  }
 
 
-  <Toggle
-    defaultToggled={props.req.isDone}
-    disabled={props.req.hasIssue}
-    label="Mark as Done"
-    style={styles.toggle}
-  />
+};
 
-  <Toggle
-    defaultToggled={props.req.hasIssue}
-    disabled={props.req.isDone}
-    label="Mark with Issue"
-    style={styles.toggle}
-  />
-
-  <FlatButton
-    disabled={props.isEditing}
-    primary={true}
-    onClick={props.handleModalClose}>
-    CLOSE
-  </FlatButton>
-</div>
-
-)
+export default TechnicianReqOptionButtons;

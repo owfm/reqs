@@ -7,9 +7,9 @@ from project.api.models import Req, User, School, Lesson
 from project import db
 from project.api.utils import authenticate, get_role, \
     get_dates_for_get_reqs_request
-from project.api.constants import TEACHER, TECHNICIAN, \
+from project.api.constants import TEACHER, TECHNICIAN,\
             TECHNICIAN_PATCH_AUTH, TEACHER_PATCH_AUTH,\
-            DATETIME_FORMAT
+            DATE_FORMAT
 from project.tests.utils import req_to_JSON, lesson_to_JSON
 from jsonpatch import JsonPatch, InvalidJsonPatch
 from jsondiff import diff
@@ -44,36 +44,51 @@ def add_req(resp):
     title = post_data.get('title')
     equipment = post_data.get('equipment')
     notes = post_data.get('notes')
-    time = datetime.strptime(post_data.get('time'), DATETIME_FORMAT)
+    week_beginning_date = post_data.get('currentWbDate')
     lesson_id = post_data.get('lesson_id')
 
-    if time < datetime.now() + timedelta(
-        days=school.preferences['days_notice']
-    ):
-        response_object = {
-            'status': 'fail',
-            'message': 'You cannot submit this req as it is less '
-            'than {} days before it is due.'.format(
-                school.preferences["days_notice"])
-        }
-        return jsonify(response_object), 401
+    time = calculate_req_time(lesson_id, week_beginning_date)
+    # time = datetime.strptime(post_data.get('time'), DATETIME_FORMAT)
+
+    # if time < datetime.now() + timedelta(
+    #     days=school.preferences['days_notice']
+    # ):
+    #     response_object = {
+    #         'status': 'fail',
+    #         'message': 'You cannot submit this req as it is less '
+    #         'than {} days before it is due.'.format(
+    #             school.preferences["days_notice"])
+    #     }
+    #     return jsonify(response_object), 401
 
     try:
-        db.session.add(Req(
+        new_req = Req(
             title=title,
             equipment=equipment,
             notes=notes,
             time=time,
             user_id=resp,
             lesson_id=lesson_id,
-            school_id=user.school_id))
+            school_id=user.school_id)
+        db.session.add(new_req)
         db.session.commit()
         response_object['status'] = 'success'
         response_object['message'] = f'{title} was added!'
+        response_object['data'] = req_to_JSON(new_req)
+
         return jsonify(response_object), 201
     except (exc.IntegrityError, ValueError) as e:
         db.session.rollback()
         return jsonify(response_object), 400
+
+
+def calculate_req_time(lesson_id, week_beginning_date):
+
+    lesson = Lesson.query.get(lesson_id)
+    date = datetime.strptime(week_beginning_date, DATE_FORMAT) +\
+        timedelta(days=lesson.day_code-1)
+
+    return datetime.combine(date, lesson.start_time)
 
 
 @reqs_blueprint.route('/reqs', methods=['GET'])

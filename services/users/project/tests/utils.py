@@ -13,12 +13,12 @@ import calendar
 import random
 
 
-nouns = ("puppy", "car", "rabbit", "psycho", "monkey")
+nouns = ("test-tube", "leaves", "microscopes", "trolley", "phosphorus")
 verbs = ("runs", "hits", "jumps", "drives", "barfs")
-adv = ("crazily", "dutifully", "foolishly", "merrily", "fully")
-adj = ("adorable", "revolting", "dirty", "odd", "stupid")
+adv = ("gentle", "dutifully", "foolishly", "merrily", "fully")
+adj = ("hot", "cold", "reactive", "several", "many")
 
-words_type_list = [nouns, verbs, adv, adj]
+words_type_list = [nouns, verbs, adj]
 
 
 def gs(sentences):

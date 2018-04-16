@@ -1,5 +1,4 @@
 import React from 'react';
-import { Card, CardHeader, CardText } from 'material-ui/Card';
 import Toggle from 'material-ui/Toggle';
 
 
@@ -41,7 +40,6 @@ render() {
     try {
       const filters = {...this.props.filters};
       const toggled = filters.sites[siteName];
-
       return(
         <Toggle
           toggled={toggled}

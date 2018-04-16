@@ -1,10 +1,7 @@
 import React from 'react';
 import moment from 'moment';
-import DatePicker from 'material-ui/DatePicker';
 import Card from 'material-ui/Card';
 import RaisedButton from 'material-ui/RaisedButton';
-import FontIcon from 'material-ui/FontIcon';
-import Avatar from 'material-ui/Avatar';
 import AvSkipNext from 'material-ui/svg-icons/av/skip-next';
 import AvSkipPrevious from 'material-ui/svg-icons/av/skip-previous';
 
