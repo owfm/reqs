@@ -134,7 +134,7 @@ def lesson_to_JSON(lesson):
 
 def req_to_JSON(req):
 
-    reqJSON = req.asdict(exclude=['lesson_id'])
+    reqJSON = req.asdict()
     reqJSON['type'] = 'requisition'
     reqJSON['room'] = req.lesson.room.asdict(
         exclude_pk=True, exclude=["school_id"], follow=['site'])
@@ -263,6 +263,21 @@ def populate_school_db(
 
             room = Room(name=lesson['room'], school_id=school_id)
 
+            if lesson['room'][0] is 'L':
+                print("Room {} assigned Walthamstow".format(lesson['room']))
+                room.site = Site.query.filter_by(
+                    name='Walthamstow').first()
+            elif int(lesson['room'][1] + lesson['room'][2]) < 18:
+                print("Room {} assigned Wiseman Downstairs".format(lesson['room']))
+
+                room.site = Site.query.filter_by(
+                    name='Wiseman Downstairs').first()
+            else:
+                print("Room {} assigned Wiseman Upstairs".format(lesson['room']))
+
+                room.site = Site.query.filter_by(
+                    name='Wiseman Upstairs').first()
+
             room.site_id = random.randrange(1, 4)
 
             db.session.add(room)
@@ -292,6 +307,9 @@ def populate_school_db(
 
     """should now have all teachers, lessons, and rooms in DB """
     db.session.commit()
+
+    for room in Room.query.all():
+        pp.pprint(room.asdict())
 
 
 def add_user(name, email, password, role_code, staff_code, school_id):
