@@ -1,11 +1,10 @@
 # services/users/project/api/users.py
 
-
 from sqlalchemy import exc
 from flask import Blueprint, jsonify, request
-from project.api.models import Req, User, School, Lesson
+from project.api.models import Req, User, Lesson
 from project import db
-from project.api.utils import authenticate, get_role, \
+from project.api.utils import authenticate, \
     get_dates_for_get_reqs_request
 from project.api.constants import TEACHER, TECHNICIAN,\
             TECHNICIAN_PATCH_AUTH, TEACHER_PATCH_AUTH,\
@@ -31,16 +30,52 @@ def add_req(resp):
         'message': 'Invalid payload.'
     }
 
-    if get_role(resp) is TECHNICIAN:
-        response_object['message'] = 'You do not have permission to do that.'
-        return jsonify(response_object), 401
-
     if not post_data:
         return jsonify(response_object), 400
 
     user = User.query.get(int(resp))
-    school = School.query.filter_by(id=user.school_id).first()
 
+    try:
+        validate_new_req(post_data, user)
+    except ValueError as e:
+        response_object['message'] = str(e)
+        return jsonify(response_object), 400
+
+    try:
+        new_req = create_new_req(post_data, user)
+    except ValueError as e:
+        response_object['message'] = str(e)
+        return jsonify(response_object), 400
+
+    try:
+        db.session.add(new_req)
+        db.session.commit()
+        response_object['status'] = 'success'
+        response_object['message'] = f'{new_req.title} was added!'
+        response_object['data'] = req_to_JSON(new_req)
+        return jsonify(response_object), 201
+    except (exc.IntegrityError):
+        db.session.rollback()
+        return jsonify(response_object), 400
+
+
+def validate_new_req(post_data, user):
+
+    if not post_data.get('title'):
+        raise ValueError('You must provide a title for your requisition.')
+
+    if user.role_code is TECHNICIAN:
+        raise ValueError('As a technician you cannot submit requisitions.')
+
+    if not post_data.get('lesson_id'):
+        raise ValueError('No lesson ID was provided.')
+    try:
+        datetime.strptime(post_data.get('currentWbDate'), DATE_FORMAT)
+    except ValueError:
+        raise ValueError('Submitted date improperly formatted.')
+
+
+def create_new_req(post_data, user):
     title = post_data.get('title')
     equipment = post_data.get('equipment')
     notes = post_data.get('notes')
@@ -48,18 +83,6 @@ def add_req(resp):
     lesson_id = post_data.get('lesson_id')
 
     time = calculate_req_time(lesson_id, week_beginning_date)
-    # time = datetime.strptime(post_data.get('time'), DATETIME_FORMAT)
-
-    # if time < datetime.now() + timedelta(
-    #     days=school.preferences['days_notice']
-    # ):
-    #     response_object = {
-    #         'status': 'fail',
-    #         'message': 'You cannot submit this req as it is less '
-    #         'than {} days before it is due.'.format(
-    #             school.preferences["days_notice"])
-    #     }
-    #     return jsonify(response_object), 401
 
     try:
         new_req = Req(
@@ -67,19 +90,12 @@ def add_req(resp):
             equipment=equipment,
             notes=notes,
             time=time,
-            user_id=resp,
+            user_id=user.id,
             lesson_id=lesson_id,
             school_id=user.school_id)
-        db.session.add(new_req)
-        db.session.commit()
-        response_object['status'] = 'success'
-        response_object['message'] = f'{title} was added!'
-        response_object['data'] = req_to_JSON(new_req)
-
-        return jsonify(response_object), 201
-    except (exc.IntegrityError, ValueError) as e:
-        db.session.rollback()
-        return jsonify(response_object), 400
+    except ValueError as e:
+        raise ValueError(e)
+    return new_req
 
 
 def calculate_req_time(lesson_id, week_beginning_date):
@@ -120,7 +136,7 @@ def get_all_reqs(resp):
 
     start_date, end_date = get_dates_for_get_reqs_request(older)
 
-    sessions = get_sessions_helper(user)
+    sessions = get_sessions_helper(start_date, end_date, user)
 
     response_object = {
         'status': 'success',
@@ -134,7 +150,7 @@ def get_all_reqs(resp):
     return jsonify(response_object), 200
 
 
-def get_sessions_helper(user):
+def get_sessions_helper(start_date, end_date, user):
     if user.role_code is TEACHER:
 
         sessions = [
