@@ -31,7 +31,7 @@ const FilterChips = (props) => {
   return (
     <div className="filter-chip-wrapper">
       <div className="filter-chips">
-      {props.filters.isDone && <div className='chip'><Chip onClick={() => props.handleRemoveFilter('isDone')} onRequestDelete={() => props.handleRemoveFilter('isDone')}>Done</Chip></div>}
+      {props.filters.isDone && <div className='chip'><Chip onClick={() => props.handleRemoveFilter('isDone')} onRequestDelete={() => props.handleRemoveFilter('isDone')}>Completed</Chip></div>}
       {props.filters.hasIssue && <div className='chip'><Chip onClick={() => props.handleRemoveFilter('hasIssue')} onRequestDelete={() => props.handleRemoveFilter('hasIssue')}>Issues</Chip></div>}
       {siteChips}
       </div>

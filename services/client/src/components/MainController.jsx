@@ -26,7 +26,6 @@ class MainController extends React.Component {
     }
 
     this.handleFilterToggle = this.handleFilterToggle.bind(this);
-    this.checkReqAgainstFilters = this.checkReqAgainstFilters.bind(this);
     this.handleModalOpen = this.handleModalOpen.bind(this);
     this.handleModalClose = this.handleModalClose.bind(this);
     this.handleSetModalObject = this.handleSetModalObject.bind(this);
@@ -113,48 +112,71 @@ class MainController extends React.Component {
       filters
     })
 
-    saveFilterStateToLocalStorage(this.state.filters);
+    saveFilterStateToLocalStorage(filters);
 
   }
 
-  checkReqAgainstFilters (session) {
 
-    // TODO: INCLUDE FILTER FOR LESSONS THAT HAVE A REQ ASSIGNED
+  dateFilter (sessions) {
+    return sessions
+    .filter(session => {
+      if (session.type === 'requisition') {
+        const reqDate = parseReqTime(session.time, 'date');
+        const currentWbDate = moment(this.state.currentWbDate, 'DD-MM-YY');
+        return reqDate.isSameOrAfter(currentWbDate) &&
+            reqDate.isSameOrBefore(currentWbDate.add(5, 'days'))
 
-    if (session.type === 'requisition') {
-
-      const pending = (!session.isDone) && (!session.hasIssue);
-      const checkDone = session.isDone === this.state.filters.isDone;
-      const checkIssue = session.hasIssue === this.state.filters.hasIssue;
-
-      const siteName = session.room.site.name;
-      const sitesFilter = {...this.state.filters.sites};
-      const siteCheck = sitesFilter[siteName];
-
-      const reqDate = parseReqTime(session.time, 'date');
-
-      const currentWbDate = moment(this.state.currentWbDate, 'DD-MM-YY');
-
-      const dateCheck = reqDate.isSameOrAfter(currentWbDate) &&
-          reqDate.isSameOrBefore(currentWbDate.add(5, 'days'))
-
-      if (session.id === 339) {
-        console.log('Reqdate: ' + reqDate.format());
-        console.log('currentWbDate: ' + currentWbDate.format());
+      } else if (session.type === 'lesson') {
+        return session.week === this.state.weekNumber;
       }
+    })
+  }
 
-      return (dateCheck && siteCheck && (pending || checkDone || checkIssue));
+  statusFilter (sessions) {
+    return sessions
+    .filter((session) => {
+      if (session.type === 'requisition') {
 
-    } else if (session.type === 'lesson'){
+        if (this.state.filters.isDone && session.isDone){
+          return true;
+        } else if (this.state.filters.hasIssue && session.hasIssue) {
+          return true;
+        } else if (!session.hasIssue && !session.isDone ){
+          return true;
+        }
+        return false;
+      }     else {
+        return true;
+      }
+    })
+  };
 
+  siteFilter (sessions) {
+    return sessions.filter(session => {
       const siteName = session.room.site.name;
       const sitesFilter = {...this.state.filters.sites};
-      const siteCheck = sitesFilter[siteName];
-      const weekCheck = session.week === this.state.weekNumber;
+      return sitesFilter[siteName];}
+    )}
 
-      return (weekCheck && siteCheck);
-    }
+  assignmentFilter (sessions) {
+    const reqLessonIds = sessions
+    .filter(session => session.type === 'requisition')
+    .map(session => session.lesson_id);
 
+    const sessionsWithoutAssignedLessons = sessions.
+    filter(session => {
+      const check = session.type === 'lesson' && reqLessonIds.includes(session.id);
+      return !check;
+    })
+    return sessionsWithoutAssignedLessons;
+  };
+
+  filterController (sessions) {
+    const DateFiltered = this.dateFilter(sessions);
+    const SiteFiltered = this.siteFilter(DateFiltered);
+    const StatusFiltered = this.statusFilter(SiteFiltered);
+    const AssignmentFiltered = this.assignmentFilter(StatusFiltered);
+    return AssignmentFiltered;
   }
 
   handleModalOpen = () => {
@@ -167,7 +189,7 @@ class MainController extends React.Component {
     this.setState({
       modalOpen: false
     })
-  }
+  };
 
   handleSetModalObject = (modalSessionId, modalSessionType) => {
 
@@ -221,9 +243,7 @@ class MainController extends React.Component {
       )
     }
 
-    const filteredSessions = this.state.sessions.filter(
-      req => this.checkReqAgainstFilters(req)
-    );
+    const viewFilteredSessions = this.filterController(this.state.sessions);
 
     return (
       <div>
@@ -249,7 +269,7 @@ class MainController extends React.Component {
           filters={this.state.filters}
           weekNumber={this.state.weekNumber}
           school={this.state.school}
-          sessions={filteredSessions}
+          sessions={viewFilteredSessions}
           user={this.props.user}
           handleRemoveFilter={this.handleRemoveFilter}
           handleFilterToggle={this.handleFilterToggle}
