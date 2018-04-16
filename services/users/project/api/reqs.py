@@ -120,9 +120,24 @@ def get_all_reqs(resp):
 
     start_date, end_date = get_dates_for_get_reqs_request(older)
 
+    sessions = get_sessions_helper(user)
+
+    response_object = {
+        'status': 'success',
+        'data': {
+            'sessions': sessions,
+            'start_date': start_date,
+            'end_date': end_date
+        }
+    }
+
+    return jsonify(response_object), 200
+
+
+def get_sessions_helper(user):
     if user.role_code is TEACHER:
 
-        reqs = [
+        sessions = [
             req_to_JSON(req) for req in db.session.query(Req).
             filter(Req.user_id == user.id).
             filter(Req.time >= start_date).
@@ -134,14 +149,14 @@ def get_all_reqs(resp):
             lesson_to_JSON(lesson) for lesson in db.session.query(Lesson).
             filter(Lesson.teacher_id == user.id)]
 
-        reqs += lessons
+        sessions += lessons
 
         # reqs.append([
         #     lesson_to_JSON(lesson) for lesson in db.session.query(Lesson).
         #     filter(Lesson.teacher_id == user.id)])
 
     else:
-        reqs = [
+        sessions = [
             req_to_JSON(req) for req in db.session.query(Req).
             filter(Req.school_id == user.school_id).
             filter(Req.time >= start_date).
@@ -149,16 +164,7 @@ def get_all_reqs(resp):
             all()
         ]
 
-    response_object = {
-        'status': 'success',
-        'data': {
-            'reqs': reqs,
-            'start_date': start_date,
-            'end_date': end_date
-        }
-    }
-
-    return jsonify(response_object), 200
+    return sessions
 
 
 @reqs_blueprint.route('/reqs/<req_id>', methods=['GET'])

@@ -53,7 +53,7 @@ class MainController extends React.Component {
 
     getReqs().then((res) => {
       this.setState({
-        sessions: res.data.data.reqs
+        sessions: res.data.data.sessions
       });
     })
     .catch((err) => { console.error(err)});
