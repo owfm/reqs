@@ -1,5 +1,6 @@
 import React from 'react';
 import WeekGrid from './WeekGrid';
+
 import DateSelect from './DateSelect';
 import { SchoolInfo } from './SchoolInfo';
 import FilterMenu from './FilterMenu';

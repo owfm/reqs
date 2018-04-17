@@ -26,20 +26,27 @@ export class ReqMini extends React.Component {
 
     return (
       <div onClick={this.handleCardClick} className='req-small'>
-        <div className='req-small-header'>
-          <div className='req-small-time-info'>
-            <p>{this.props.session.week}{this.props.session.day}{this.props.session.period} {this.props.session.time}</p>
-          </div>
-        <h1>{this.props.session.title}</h1>
-        <h1>{this.props.session.room.name}</h1>
-        {reqDone && <h1 style={{fontWeight:'600', color:'#34b21e'}}>DONE</h1>}
-        {hasIssue && <h1 stlye={{fontWeight: '600', color: '#b2251d'}}>ISSUE</h1>}
-
-        </div>
-        <div className='req-small-info'>
-          <p>{this.props.session.teacher.staff_code} {this.props.session.classgroup.name}</p>
-        </div>
+        <h1>{this.props.session.classgroup.name}</h1>
+        <h3>({this.props.session.room.name})</h3>
+        <div></div>
+        <div className='req-mini-info-box'>{this.props.session.title}</div>
       </div>
+
+      // <div onClick={this.handleCardClick} className='req-small'>
+      //   <div className='req-small-header'>
+      //     <div className='req-small-time-info'>
+      //       <p>{this.props.session.week}{this.props.session.day}{this.props.session.period} {this.props.session.time}</p>
+      //     </div>
+      //   <h1>{this.props.session.title}</h1>
+      //   <h1>{this.props.session.room.name}</h1>
+      //   {reqDone && <h1 style={{fontWeight:'600', color:'#34b21e'}}>DONE</h1>}
+      //   {hasIssue && <h1 stlye={{fontWeight: '600', color: '#b2251d'}}>ISSUE</h1>}
+      //
+      //   </div>
+      //   <div className='req-small-info'>
+      //     <p>{this.props.session.teacher.staff_code} {this.props.session.classgroup.name}</p>
+      //   </div>
+      // </div>
     )
 
   }

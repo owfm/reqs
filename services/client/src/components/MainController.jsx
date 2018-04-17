@@ -225,8 +225,6 @@ class MainController extends React.Component {
     const new_sessions = this.state.sessions.filter(session =>
     !(session.id === req.id && session.type === req.type))
 
-    console.log(new_sessions);
-
     new_sessions.push(req);
     this.setState({sessions: new_sessions});
   }

@@ -22,8 +22,6 @@ class Form extends Component {
       registerFormRules: registerFormRules,
       loginFormRules: loginFormRules,
       valid: false,
-      checkingEmail: false,
-      emailAvailable: false
     };
     this.handleUserFormSubmit = this.handleUserFormSubmit.bind(this);
     this.handleFormChange = this.handleFormChange.bind(this);
@@ -71,12 +69,8 @@ class Form extends Component {
         school_name: this.state.formData.school_name
       };
     };
-
-
-
-
     const url = `${process.env.REACT_APP_USERS_SERVICE_URL}/auth/${formType}`;
-    console.log("URL: " + url);
+
     axios.post(url, data)
     .then((res) => {
       this.props.emitSnackbar(res.data.message);
@@ -180,15 +174,16 @@ class Form extends Component {
             formRules={formRules}
           />
           <form onSubmit={(e) => this.handleUserFormSubmit(e)}>
-            {this.props.formType === 'register' &&
-              <TextField
-                name="name"
-              hintText="Please enter your name"
-              floatingLabelText="Name"
-              floatingLabelFixed={true}
-              value={this.state.formData.name}
-              onChange={this.handleFormChange}
-            />
+
+          {this.props.formType === 'register' &&
+            <TextField
+            name="name"
+            hintText="Please enter your name"
+            floatingLabelText="Name"
+            floatingLabelFixed={true}
+            value={this.state.formData.name}
+            onChange={this.handleFormChange}
+          />
 
           }
 
@@ -201,15 +196,17 @@ class Form extends Component {
               onChange={this.handleFormChange}
             />
 
-            <TextField
-              name="password"
-              type="password"
-              floatingLabelText="Password"
-              required
-              value={this.state.formData.password}
-              onChange={this.handleFormChange}
-            />
+            <br/>
 
+            <TextField
+                  name="password"
+                  hintText="Password Field"
+                  floatingLabelText="Password"
+                  type="password"
+                  value={this.state.formData.password}
+                  onChange={this.handleFormChange}
+                />
+              <br />
           {this.props.formType === 'register' &&
           <div className="form-group">
             <TextField
