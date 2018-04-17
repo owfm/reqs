@@ -5,6 +5,7 @@
 }
 
 .period {
+  display: grid;
   overflow: scroll;
 }
 

@@ -82,7 +82,7 @@ class App extends React.Component {
     const isAuthenticated = this.state.isAuthenticated;
     const user = this.state.user;
 
-    if (!this.state.user) {
+    if (this.state.user === null) {
       getUser().then((res) => {
           this.setState({
             user: res.data.data

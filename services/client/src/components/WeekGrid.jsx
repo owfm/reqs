@@ -1,70 +1,76 @@
 import React from 'react';
-import './WeekGrid.css';
+// import './WeekGridUsingGridUsingGrid.css';
 import ReqMini from './ReqMini';
-
+import styled from 'styled-components';
 const Days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
 
-const GetPeriodHeaders = (periods) => {
 
-  const periodsArray = Array(periods).fill().map((x,i)=>i+1);
+const MainGrid = styled.div`
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 1fr repeat(5, 5fr);
+  grid-template-rows: 1fr repeat(${props=>props.periods}, 5fr);
+  grid-gap: 10px;
+`
+
+const SessionGrid = styled.div`
+  display: grid;
+`
+
+
+const GetDayHeaders = () => {
+
+  // const periodsArray = Array(periods).fill().map((x,i)=>i+1);
 
   return (
-    periodsArray.map(period =>
-      <div key={`phd${period}`} className="periodhead">{period}</div>
+    Days.map(day =>
+      <div style={{'justifySelf': 'center', 'fontWeight': 'bold'}} key={`d${day}`}>{day}</div>
     )
   );
-
 }
 
-const GetDayRows = (props) => {
+const GetSessionGridContents = (props) => {
 
-  const periodsArray = Array(props.periods).fill().map((x,i)=>i+1);
+  const elements = [];
 
-  const DayRows = [];
+  for (let period = 1; period <= props.periods; period++) {
 
-  for (let day in Days) {
-    DayRows.push(
-      <div className='grid-row'>
-        <div className='day-col'>{Days[day]}</div>
-        {periodsArray.map(period => {
-          return <div key={`p${Days[day]}${period}`} className='period'>
-            {props.sessions
-                .filter(session => session.day === Days[day] && session.period === period)
-                .map(session => <ReqMini
-                                    session={session}
-                                    emitSnackbar={props.emitSnackbar}
-                                    key={`${session.id}${session.type}`}
-                                    handleSetModalObject={props.handleSetModalObject}
-                                    handleModalOpen={props.handleModalOpen}
-                                    handleSetModalType={props.handleSetModalType}
-                                    role_code={props.role_code}
-                                  />)}
-          </div>
-        })}
-      </div>
-    )
+    elements.push(<div style={{'alignSelf': 'center', 'justifySelf': 'center', 'fontWeight': 'bold'}}>{period}</div>);
+
+    Days.forEach(day => {
+
+      elements.push(<SessionGrid>
+        {props.sessions
+          .filter(session=>session.period===period && session.day===day)
+          .map(session=><ReqMini
+                  session={session}
+                  emitSnackbar={props.emitSnackbar}
+                  key={`${session.id}${session.type}`}
+                  handleSetModalObject={props.handleSetModalObject}
+                  handleModalOpen={props.handleModalOpen}
+                  handleSetModalType={props.handleSetModalType}
+                  role_code={props.role_code}
+          />)
+        }
+      </SessionGrid>)
+    })
   }
 
-  return DayRows;
-
+  return elements;
 }
 
 const WeekGrid = (props) => {
 
-
-  const periodHeaders = GetPeriodHeaders(props.periods);
-  const dayRows = GetDayRows(props);
+  const dayHeaders = GetDayHeaders();
+  const sessionGridContents = GetSessionGridContents(props);
 
   return (
-    <div className='week-grid-wrapper'>
+    <MainGrid periods={8}>
+      <div></div>
+      {dayHeaders}
+      {sessionGridContents}
+    </MainGrid>
 
-      <div className='period-row'>
-        <div className='day-col'></div>
-          {periodHeaders}
-      </div>
-      {dayRows}
-
-    </div>
   )
 }
 
