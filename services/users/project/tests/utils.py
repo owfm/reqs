@@ -4,7 +4,7 @@ from project import db
 from project.api.models import User, Req, School, Room, Classgroup, Lesson,\
     Site
 from project.api.excel import extract_users, extract_lessons
-from project.api.constants import TEACHER, TECHNICIAN, ADMIN, DATETIME_FORMAT,\
+from project.api.constants import TEACHER, TECHNICIAN, DATETIME_FORMAT,\
     TIME_FORMAT, HalfTerm
 from project.api.school_utils import process_preferences
 import pprint
