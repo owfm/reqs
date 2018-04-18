@@ -16,11 +16,11 @@ function MainDisplay(props) {
             filters={props.filters}/>
 
             <div style={{zIndex: '0'}}>
-            <SchoolInfo
+            {/* <SchoolInfo
               school={props.school}
-              weekNumber={props.weekNumber}
-            />
+            /> */}
             <DateSelect
+              weekNumber={props.weekNumber}
               currentWbDate={props.currentWbDate}
               handleWeekChange={props.handleWeekChange}
               />
@@ -37,7 +37,7 @@ function MainDisplay(props) {
             sessions={props.sessions}
             school={props.school}
             periods={6}
-            />
+          />
 
             <FilterMenu
               school={props.school}

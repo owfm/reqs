@@ -2,6 +2,7 @@ import React from 'react';
 // import './WeekGridUsingGridUsingGrid.css';
 import ReqMini from './ReqMini';
 import styled from 'styled-components';
+import moment from 'moment';
 const Days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
 
 
@@ -21,6 +22,7 @@ const SessionGrid = styled.div`
 const GetDayHeaders = () => {
 
   // const periodsArray = Array(periods).fill().map((x,i)=>i+1);
+  const today = moment();
 
   return (
     Days.map(day =>

@@ -1,7 +1,7 @@
 .req-small {
   border: 1px solid black;
   display:grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr 10px;
   grid-template-rows: auto 1fr;
   justify-items: start;
   align-items: end;
@@ -13,18 +13,16 @@
   transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
-
-
 .done {
-  border-right: 10px solid #dff0d8 !important;
+  background: #dff0d8 !important;
 }
 
 .issue {
-  border-right: 10px solid #f2dede !important;
+  background: #f2dede !important;
 }
 
 .pending {
-  border-right: 10px solid #d9edf7 !important;
+  background: #d9edf7 !important;
 }
 
 .lesson {
@@ -71,6 +69,6 @@
 
 .req-mini-info-box {
   grid-column-start: 1;
-  grid-column-end: -1;
+  grid-column-end: -2;
   place-self: start;
 }

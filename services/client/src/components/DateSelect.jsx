@@ -15,6 +15,8 @@ const DateSelect = (props) => {
 
     const date = moment(props.currentWbDate, 'DD-MM-YY').format('ddd DD/MM')
 
+    const inTerm = Number.isInteger(props.weekNumber);
+
     return(
         <Card>
           <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
@@ -28,9 +30,10 @@ const DateSelect = (props) => {
                 icon={<AvSkipPrevious />}
                 style={styles.button}
               />
-                <strong>
-                  {date}
-                </strong>
+              <div>
+
+                <strong>{date}</strong> ({inTerm && 'Week'} {props.weekNumber})
+              </div>
               <RaisedButton
                 secondary={true}
                 onClick={() => props.handleWeekChange(+7)}
