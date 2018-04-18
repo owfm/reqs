@@ -205,7 +205,7 @@ def populate_school_db(
 
     q = User.query.filter_by(
         email="o.mansell@holyfamily.watham.sch.uk").first()
-    q.role_code = ADMIN
+    q.role_code = TEACHER
     db.session.commit()
 
     school.preferences = {
@@ -311,10 +311,6 @@ def populate_school_db(
 
     """should now have all teachers, lessons, and rooms in DB """
     db.session.commit()
-
-    for room in Room.query.all():
-        pp.pprint(room.asdict())
-
 
 def add_user(name, email, password, role_code, staff_code, school_id):
     user = User(name=name,

@@ -8,8 +8,8 @@ const Days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
 const MainGrid = styled.div`
   padding: 20px;
   display: grid;
-  grid-template-columns: 1fr repeat(5, 5fr);
-  grid-template-rows: 1fr repeat(${props=>props.periods}, 5fr);
+  grid-template-columns: auto repeat(5, 1fr);
+  grid-template-rows: auto repeat(${props=>props.periods}, auto);
   grid-gap: 10px;
 `
 
@@ -65,7 +65,7 @@ const WeekGrid = (props) => {
   const sessionGridContents = GetSessionGridContents(props);
 
   return (
-    <MainGrid periods={8}>
+    <MainGrid periods={props.periods}>
       <div></div>
       {dayHeaders}
       {sessionGridContents}

@@ -7,7 +7,7 @@ import coverage
 
 from flask_script import Manager
 from flask_migrate import MigrateCommand
-from project.api.models import School
+from project.api.models import School, Req, User
 # from flask_graphql import GraphQLView
 
 
@@ -74,6 +74,15 @@ def recreate_db():
     db.create_all()
     db.session.commit()
 
+
+@manager.command
+def remove_reqs_MAO():
+    """Deletes extant reqs"""
+    user = User.query.filter_by(name='Oliver Mansell').first()
+    reqs = Req.query.filter_by(user_id=user.id).all()
+    for req in reqs:
+        db.session.delete(req)
+    db.session.commit()
 
 @manager.command
 def seed_db():
