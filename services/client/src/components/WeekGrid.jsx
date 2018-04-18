@@ -16,6 +16,7 @@ const MainGrid = styled.div`
 
 const SessionGrid = styled.div`
   display: grid;
+  grid-gap: 5px;
 `
 
 

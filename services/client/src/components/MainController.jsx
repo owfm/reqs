@@ -247,6 +247,7 @@ class MainController extends React.Component {
       <div>
         <Navigation
           user={this.props.user}
+          logoutUser={this.props.logoutUser}
         />
 
         <Modal

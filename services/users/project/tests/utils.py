@@ -312,6 +312,7 @@ def populate_school_db(
     """should now have all teachers, lessons, and rooms in DB """
     db.session.commit()
 
+
 def add_user(name, email, password, role_code, staff_code, school_id):
     user = User(name=name,
                 email=email,

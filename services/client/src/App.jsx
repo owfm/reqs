@@ -26,17 +26,18 @@ class App extends React.Component {
   componentWillMount() {
     if (window.localStorage.getItem('authToken')) {
       this.setState({ isAuthenticated: true });
+      getUser().then((res) => {
+        this.setState({
+          user: res.data.data
+        });
+      })
+      .catch((err) => { console.error(err) });
     };
+
   };
 
 
   componentDidMount() {
-    getUser().then((res) => {
-      this.setState({
-        user: res.data.data
-      });
-    })
-    .catch((err) => { console.error(err) });
   };
 
 
@@ -64,7 +65,10 @@ class App extends React.Component {
 
   logoutUser() {
     window.localStorage.clear();
-    this.setState({});
+    this.setState({
+      isAuthenticated: false,
+      user: null
+    });
   };
 
   loginUser(user, token) {
@@ -106,6 +110,7 @@ class App extends React.Component {
         <Route exact path="/" render={() => (
           isAuthenticated && user ?
             <MainController
+              logoutUser={this.logoutUser}
               user={this.state.user}
               emitSnackbar={this.emitSnackbar}
             />
@@ -133,15 +138,6 @@ class App extends React.Component {
             isAuthenticated={this.state.isAuthenticated}
             loginUser={this.loginUser}
             emitSnackbar={this.emitSnackbar}
-          />
-        )} />
-
-        <Route exact path='/logout' render={() => (
-          <Logout
-            logoutUser={this.logoutUser}
-            isAuthenticated={this.state.isAuthenticated}
-            emitSnackbar={this.emitSnackbar}
-
           />
         )} />
 

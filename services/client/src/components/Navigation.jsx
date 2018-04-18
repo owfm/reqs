@@ -2,7 +2,8 @@ import React from 'react';
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import AppBar from 'material-ui/AppBar';
-import { UserCode } from '../utils/Constants'
+import { UserCode } from '../utils/Constants';
+import Logout from './Logout'
 
 
 
@@ -39,6 +40,8 @@ export default class Navigation extends React.Component {
         >
           <MenuItem onClick={this.handleClose}>{this.props.user.name}</MenuItem>
           <MenuItem onClick={this.handleClose}>Menu Item 2</MenuItem>
+          <MenuItem onClick={this.props.logoutUser}>Logout</MenuItem>
+
         </Drawer>
       </div>
     );

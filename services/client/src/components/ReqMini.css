@@ -1,4 +1,5 @@
 .req-small {
+  padding: 5px;
   border: 1px solid black;
   display:grid;
   grid-template-columns: auto 1fr 10px;
@@ -14,15 +15,15 @@
 }
 
 .done {
-  background: #dff0d8 !important;
+  background: #dff0d8;
 }
 
 .issue {
-  background: #f2dede !important;
+  background: #f2dede;
 }
 
 .pending {
-  background: #d9edf7 !important;
+  background: #d9edf7;
 }
 
 .lesson {
@@ -49,7 +50,7 @@
 }
 
 .req-small h1 {
-  padding: 5px;
+  padding-right: 5px;
   margin:0;
   font-size: 16px;
   font-weight: 600;
