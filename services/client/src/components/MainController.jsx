@@ -251,7 +251,7 @@ class MainController extends React.Component {
         />
 
         <Modal
-          style={shadowHoverStyle}
+          style={{'top':'0','bottom':'0','left':'0','right':'0'}}
           isOpen={this.state.modalOpen}
           >
             <ReqFull

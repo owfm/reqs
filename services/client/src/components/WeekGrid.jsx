@@ -3,16 +3,20 @@ import React from 'react';
 import ReqMini from './ReqMini';
 import styled from 'styled-components';
 import moment from 'moment';
+import { media } from './media.js';
 const Days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
 
 
 const MainGrid = styled.div`
-  padding: 20px;
-  display: grid;
-  grid-template-columns: auto repeat(5, 1fr);
-  grid-template-rows: auto repeat(${props=>props.periods}, auto);
-  grid-gap: 10px;
+padding: 20px;
+display: grid;
+grid-template-rows: auto repeat(${props=>props.periods}, auto);
+grid-gap: 10px;
+grid-template-columns: auto repeat(5, 1fr);
 `
+// ${media.giant`grid-template-columns: auto repeat(5, 1fr);`}
+// ${media.desktop`grid-template-columns: auto repeat(5, 1fr);`}
+// ${media.phone`grid-template-columns: 1fr;`}
 
 const SessionGrid = styled.div`
   display: grid;

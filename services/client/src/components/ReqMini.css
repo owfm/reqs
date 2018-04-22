@@ -1,4 +1,5 @@
 .req-small {
+  cursor: pointer;
   padding: 5px;
   border: 1px solid black;
   display:grid;

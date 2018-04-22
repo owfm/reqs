@@ -59,8 +59,6 @@ class ReqFull extends React.Component {
     })
   }
 
-  // TODO: ON SAVE EDITED REQ, UPDATE STATE OBJECT WITH NEW VERSION
-
   handleEditReq(e) {
     e.preventDefault();
     postReqEdit(this.props.req, this.state.req)
