@@ -66,6 +66,7 @@ const ReactFullForm = (props) => {
           handlePostNewReq={props.handlePostNewReq}
           handleEditClick={props.handleEditClick}
           isEditing={props.isEditing}
+          valid={props.valid}
           handleModalClose={props.handleModalClose}
         />
         }

@@ -24,6 +24,9 @@ class App extends React.Component {
   }
 
   componentWillMount() {
+    this.setState({
+      isAuthenticated: false      
+    })
     if (window.localStorage.getItem('authToken')) {
       this.setState({ isAuthenticated: true });
       getUser().then((res) => {

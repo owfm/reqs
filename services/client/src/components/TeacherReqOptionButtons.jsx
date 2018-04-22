@@ -8,6 +8,7 @@ const TeacherReqOptionButtons = (props) => {
 
   const isDone = props.req.isDone;
   const type = props.req.type;
+  const valid = props.valid;
 
   if (type === 'lesson') {
     return (
@@ -16,6 +17,7 @@ const TeacherReqOptionButtons = (props) => {
         style={{marginLeft: '10px'}}
         primary={true}
         type='submit'
+        disabled={!props.req.title}
         onClick={props.handlePostNewReq}
         value='Save'>
         POST
@@ -43,7 +45,7 @@ const TeacherReqOptionButtons = (props) => {
         </RaisedButton>
       }
 
-        {props.isEditing &&
+        {props.isEditing && props.valid &&
           <RaisedButton
             style={{marginLeft: '10px'}}
             primary={true}

@@ -11,7 +11,7 @@ class ReqFull extends React.Component {
     super(props);
     this.state = {
       req: {...this.props.req},
-
+      valid: false,
       isEditing: false,
     }
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -83,7 +83,10 @@ class ReqFull extends React.Component {
     this.setState({
       req
     })
+    this.validateReq();
+
   }
+
 
   render() {
 
@@ -91,6 +94,7 @@ class ReqFull extends React.Component {
 
       const isEditing = this.state.isEditing;
       const hasIssue = this.props.req.hasIssue;
+      const valid = this.state.valid;
 
       return(
 
@@ -104,6 +108,7 @@ class ReqFull extends React.Component {
           handlePostNewReq={this.handlePostNewReq}
           handleEditReq={this.handleEditReq}
           isEditing={isEditing}
+          valid={valid}
           handleInputChange={this.handleInputChange}
           req={this.state.req}
           handleEditClick={this.handleEditClick}
