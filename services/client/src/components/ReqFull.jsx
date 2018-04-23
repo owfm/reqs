@@ -83,7 +83,6 @@ class ReqFull extends React.Component {
     this.setState({
       req
     })
-    this.validateReq();
 
   }
 
