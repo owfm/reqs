@@ -4,7 +4,7 @@
 from flask import Blueprint, jsonify, request
 from sqlalchemy import exc
 
-from project.api.models import User
+from project.api.models import User, School
 from project import db, bcrypt
 from project.api.constants import ADMIN
 
@@ -32,7 +32,6 @@ def register_user():
     school_id = post_data.get('school_id')
 
     try:
-        # check for existing user
         user = User.query.filter(User.email == email).first()
         if not user:
             # add new user to db
@@ -71,7 +70,6 @@ def login_user():
         'message': 'Invalid payload.'
     }
     if not post_data:
-        response_object['logging'] = 'no post data'
         return jsonify(response_object), 400
     email = post_data.get('email')
     password = post_data.get('password')
@@ -86,6 +84,9 @@ def login_user():
                 response_object['auth_token'] = auth_token.decode()
                 response_object['user'] = user.asdict()
                 response_object['user']['token'] = auth_token.decode()
+                school = School.query.get(user.school_id)
+                if school:
+                    response_object['school'] = school.asdict()
                 return jsonify(response_object), 200
         else:
             response_object['message'] = 'User does not exist.'

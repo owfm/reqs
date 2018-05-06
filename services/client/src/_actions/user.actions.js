@@ -23,9 +23,8 @@ function login(email, password) {
                     history.push('/');
                 },
                 error => {
-                    console.log('error');
-                    dispatch(failure(error));
-                    dispatch(alertActions.error(error));
+                    dispatch(failure(error.response.data.message));
+                    dispatch(alertActions.error(error.response.data.message));
                 }
             );
     };
