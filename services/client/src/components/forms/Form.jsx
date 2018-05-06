@@ -75,6 +75,10 @@ class Form extends Component {
     .then((res) => {
       this.props.emitSnackbar(res.data.message);
       this.clearForm();
+      console.log('________________________\n')
+      console.log(JSON.stringify(res));
+      console.log('________________________\n')
+
       this.props.loginUser(res.data.user, res.data.auth_token);
     })
     .catch((err) => {

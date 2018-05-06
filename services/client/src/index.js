@@ -1,17 +1,19 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { render } from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
+import { Provider } from 'react-redux';
 
-import App from './App.jsx';
+import { App } from './App/App';
 import AdminPreferences from './components/AdminPreferences';
 
-ReactDOM.render((
+render((
+  <Provider store={store}>
   <Router>
-
   <MuiThemeProvider>
       <App/>
   </MuiThemeProvider>
 </Router>
+</Provider>
 ), document.getElementById('root'))
