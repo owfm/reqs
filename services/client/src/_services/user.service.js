@@ -6,28 +6,33 @@ export const userService = {
     logout,
     register,
     getAll,
-    getById,
     update,
     delete: _delete
 };
 
-function login(username, password) {
-    const url = `${process.env.REACT_APP_USERS_SERVICE_URL}/auth/login`
-    const data = JSON.stringify({ username, password })
-    return axios.post(url, data)
-    .then (response => {
-      if (response.status !== 200) {
-        return Promise.reject(response.statusText)
-      }
-      return response.json();
-    })
-    .then (user => {
-      if (user && user.token) {
-        localStorage.setItem('user', JSON.stringify(user));
-      }
-      return user;
-    });
+function login(email, password) {
 
+    const url = `${process.env.REACT_APP_USERS_SERVICE_URL}/auth/login`
+
+    return axios.post(url, {email, password})
+        // .then(response => {
+        //     console.log('----------------\n')
+        //     console.log(response);
+        //     console.log('----------------\n')
+        //     if (response.status !== 200) {
+        //         return Promise.reject("User not found.");
+        //     }
+        //     return response.data.user;
+        // })
+        .then((response) => {
+            // login successful if there's a jwt token in the response
+            if (response.data.user && response.data.user.token) {
+                // store user details and jwt token in local storage to keep user logged in between page refreshes
+                localStorage.setItem('user', JSON.stringify(response.data.user));
+            }
+
+            return response.data.user;
+        });
 }
 
 function logout() {
@@ -42,15 +47,6 @@ function getAll() {
     };
 
     return fetch('/users', requestOptions).then(handleResponse);
-}
-
-function getById(id) {
-    const requestOptions = {
-        method: 'GET',
-        headers: authHeader()
-    };
-
-    return fetch('/users/' + _id, requestOptions).then(handleResponse);
 }
 
 function register(user) {

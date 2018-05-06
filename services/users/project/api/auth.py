@@ -22,6 +22,7 @@ def register_user():
     }
 
     if not post_data:
+        response_object['logging'] = 'no post data'
         return jsonify(response_object), 400
     name = post_data.get('name')
     email = post_data.get('email')
@@ -57,6 +58,7 @@ def register_user():
     # handler errors
     except (exc.IntegrityError, ValueError) as e:
         db.session.rollback()
+        response_object['logging'] = 'integrity error'
         return jsonify(response_object), 400
 
 
@@ -69,6 +71,7 @@ def login_user():
         'message': 'Invalid payload.'
     }
     if not post_data:
+        response_object['logging'] = 'no post data'
         return jsonify(response_object), 400
     email = post_data.get('email')
     password = post_data.get('password')
