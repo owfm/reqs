@@ -1,12 +1,57 @@
-import authHeader from '../_helpers';
+import { authHeader } from '../_helpers';
 import axios from 'axios';
 
-export const reqService {
-  get,
-  add,
-  edit,
-  delete: _delete,
+export const reqService = {
+  getReq,
+  getReqs
+}
+
+function getReq(id) {
+
+  const url = `${process.env.REACT_APP_USERS_SERVICE_URL}/reqs/${id}`;
+
+  return axios.get(url).then(handleResponse);
 
 }
 
-function get(date)
+
+function getReqs(from, to) {
+
+  const url = `${process.env.REACT_APP_USERS_SERVICE_URL}/reqs`;
+
+  const params = { from, to };
+
+  let user = JSON.parse(localStorage.getItem('user'));
+
+  return axios.get(
+    url,
+    {
+      headers: {'Authorization': `Bearer ${user.token}`},
+      params
+    },
+  )
+  .then(handleResponse);
+};
+
+// function getLesson(id)
+//
+//
+// function getLessons(userId)
+//
+//
+// function postReq(req)
+// title
+// equipment
+// notes
+// lesson id
+// filenames
+// week beginning date
+
+
+function handleResponse(response) {
+    if (response.status !== 200) {
+        return Promise.reject(response.statusText);
+    }
+
+    return response;
+}

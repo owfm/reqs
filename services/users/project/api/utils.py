@@ -10,20 +10,13 @@ from project.api.constants import ADMIN
 from datetime import datetime, timedelta
 
 
-def get_dates_for_get_reqs_request(older=0):
+def get_dates_for_get_reqs_request(weeks=0):
     '''
 
-    If older argument is supplied, returns dates going back in multiples
-    of 4 weeks.
+    Weeks will be positive or negative integer.
 
-    eg: older = 0: from monday 4 weeks ago until 10 weeks in the future (
-    essentially ensuring all recent requisitions will be returned
-    )
-    older = 1: from monday 8 weeks ago for 4 full weeks i.e. until the Friday
-    25 days later.
-
-    Counting back starts from today if called on a Monday, otherwise most
-    recent Monday.
+    If weeks = 1, return start and end date for NEXT week, if weeks = 2
+    in 2 weeks etc. Weeks can be negative to get previous weeks.
 
     WEEKDAY INDEXES USE ISOWEEKDAY: MONDAY == 1
 
@@ -33,7 +26,7 @@ def get_dates_for_get_reqs_request(older=0):
 
     most_recent_sunday = today - timedelta(days=today.isoweekday())
 
-    if older == 0:
+    if weeks == 0:
         start_date = most_recent_sunday - timedelta(weeks=4)
         end_date = today + timedelta(weeks=10)
     else:

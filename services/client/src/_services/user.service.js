@@ -21,9 +21,7 @@ function login(email, password) {
                 localStorage.setItem('user', JSON.stringify(response.data.user));
                 localStorage.setItem('school', JSON.stringify(response.data.school));
                 return response.data.user;
-
             }
-
         });
 }
 

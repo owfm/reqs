@@ -112,6 +112,7 @@ def calculate_req_time(lesson_id, week_beginning_date):
 def get_all_reqs(resp):
 
     '''
+
     if no query string, return reqs going back 4 weeks.
 
     If url contains 'older' query string with integer argument, return
@@ -126,24 +127,22 @@ def get_all_reqs(resp):
 
     user = User.query.get(resp)
 
-    if request.args.get('older'):
+    if request.args.get('from') and request.args.get('to'):
         try:
-            older = int(request.args.get('older'))
-        except ValueError:
-            older = 0
-    else:
-        older = 0
-
-    start_date, end_date = get_dates_for_get_reqs_request(older)
+            start_date = datetime.strptime(request.args.get('from'), DATE_FORMAT)
+            end_date = datetime.strptime(request.args.get('to'), DATE_FORMAT)
+        except Exception as e:
+            response_object['status'] = 'fail'
+            response_object['message'] = 'Date queries not provided or malformed.'
+            response_object['error'] = str(e)
+            return jsonify(response_object), 400
 
     sessions = get_sessions_helper(start_date, end_date, user)
 
     response_object = {
         'status': 'success',
         'data': {
-            'sessions': sessions,
-            'start_date': start_date,
-            'end_date': end_date
+            'sessions': sessions
         }
     }
 
@@ -184,6 +183,7 @@ def get_sessions_helper(start_date, end_date, user):
 
 
 @reqs_blueprint.route('/reqs/<req_id>', methods=['GET'])
+@authenticate
 def get_single_req(req_id):
     """Get single req details"""
     response_object = {
@@ -191,15 +191,29 @@ def get_single_req(req_id):
         'message': 'Req does not exist'
     }
     try:
-        req = Req.query.filter_by(id=int(req_id)).first()
+        req = Req.query.get(req_id)
         if not req:
             return jsonify(response_object), 404
-        else:
+
+        if (user.role_code is TEACHER) and (req.user_id is user.id):
             response_object = {
                 'status': 'success',
                 'data': req.to_json()
             }
             return jsonify(response_object), 200
+
+        if ((user.role_code is not TEACHER) and
+                (req.school_id is user.school_id)):
+                response_object = {
+                    'status': 'success',
+                    'data': req.to_json()
+                }
+                return jsonify(response_object), 200
+
+        response_object['status'] = 'fail'
+        response_object['message'] = 'That req is not yours to see.'
+        return jsonify(response_object), 401
+
     except ValueError:
         return jsonify(response_object), 404
 

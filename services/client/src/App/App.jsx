@@ -3,7 +3,7 @@ import { Router, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import { history } from '../_helpers';
-import { alertActions } from '../_actions';
+import { alertActions, reqActions } from '../_actions';
 import { PrivateRoute } from '../_components';
 import { HomePage } from '../HomePage';
 import { LoginPage } from '../LoginPage';
@@ -18,6 +18,10 @@ class App extends React.Component {
             // clear alert on location change
             dispatch(alertActions.clear());
         });
+    }
+
+    componentDidMount() {
+        this.props.dispatch(reqActions.getReqs('01-09-17', '07-04-18'));
     }
 
     render() {
@@ -44,9 +48,10 @@ class App extends React.Component {
 }
 
 function mapStateToProps(state) {
-    const { alert } = state;
+    const { alert, reqs } = state;
     return {
-        alert
+        alert,
+        reqs
     };
 }
 
