@@ -21,12 +21,10 @@ function getReqs(from, to) {
 
   const params = { from, to };
 
-  let user = JSON.parse(localStorage.getItem('user'));
-
   return axios.get(
     url,
     {
-      headers: {'Authorization': `Bearer ${user.token}`},
+      headers: authHeader(),
       params
     },
   )

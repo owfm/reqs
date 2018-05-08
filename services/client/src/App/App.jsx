@@ -21,6 +21,7 @@ class App extends React.Component {
     }
 
     componentDidMount() {
+        console.log('---------LOGGING---------')
         this.props.dispatch(reqActions.getReqs('01-09-17', '07-04-18'));
     }
 

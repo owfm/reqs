@@ -1,6 +1,6 @@
 import { reqConstants } from '../_constants';
 
-export function reqs(state = {}, action = {}) {
+export function reqs(state = {}, action) {
   switch (action.type) {
     case reqConstants.REQ_GET_REQUEST:
       return {
@@ -37,7 +37,7 @@ export function reqs(state = {}, action = {}) {
           loading: false,
           error: action.error
         }
-        
+
       default:
         return state;
 

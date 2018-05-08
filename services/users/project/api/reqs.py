@@ -129,20 +129,24 @@ def get_all_reqs(resp):
 
     if request.args.get('from') and request.args.get('to'):
         try:
-            start_date = datetime.strptime(request.args.get('from'), DATE_FORMAT)
-            end_date = datetime.strptime(request.args.get('to'), DATE_FORMAT)
+            start_date = datetime.strptime(
+                request.args.get('from'),
+                DATE_FORMAT)
+            end_date = datetime.strptime(
+                request.args.get('to'),
+                DATE_FORMAT)
         except Exception as e:
             response_object['status'] = 'fail'
             response_object['message'] = 'Date queries not provided or malformed.'
             response_object['error'] = str(e)
             return jsonify(response_object), 400
 
-    sessions = get_sessions_helper(start_date, end_date, user)
+    reqs = get_sessions_helper(start_date, end_date, user)
 
     response_object = {
         'status': 'success',
         'data': {
-            'sessions': sessions
+            'reqs': reqs
         }
     }
 
@@ -152,7 +156,7 @@ def get_all_reqs(resp):
 def get_sessions_helper(start_date, end_date, user):
     if user.role_code is TEACHER:
 
-        sessions = [
+        reqs = [
             req_to_JSON(req) for req in db.session.query(Req).
             filter(Req.user_id == user.id).
             filter(Req.time >= start_date).
@@ -160,18 +164,18 @@ def get_sessions_helper(start_date, end_date, user):
             all()
         ]
 
-        lessons = [
-            lesson_to_JSON(lesson) for lesson in db.session.query(Lesson).
-            filter(Lesson.teacher_id == user.id)]
-
-        sessions += lessons
+        # lessons = [
+        #     lesson_to_JSON(lesson) for lesson in db.session.query(Lesson).
+        #     filter(Lesson.teacher_id == user.id)]
+        #
+        # sessions += lessons
 
         # reqs.append([
         #     lesson_to_JSON(lesson) for lesson in db.session.query(Lesson).
         #     filter(Lesson.teacher_id == user.id)])
 
     else:
-        sessions = [
+        reqs = [
             req_to_JSON(req) for req in db.session.query(Req).
             filter(Req.school_id == user.school_id).
             filter(Req.time >= start_date).
@@ -179,7 +183,7 @@ def get_sessions_helper(start_date, end_date, user):
             all()
         ]
 
-    return sessions
+    return reqs
 
 
 @reqs_blueprint.route('/reqs/<req_id>', methods=['GET'])

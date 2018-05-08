@@ -10,11 +10,12 @@ export const reqActions = {
 
 function getReqs(from, to) {
   return dispatch => {
+
     dispatch(request())
 
     reqService.getReqs(from, to)
       .then(
-        reqs => {dispatch(success(reqs))},
+        response => {dispatch(success(response.data.data.reqs))},
         error => {dispatch(failure(error))}
       );
 
