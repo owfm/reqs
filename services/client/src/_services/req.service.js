@@ -10,12 +10,18 @@ function getReq(id) {
 
   const url = `${process.env.REACT_APP_USERS_SERVICE_URL}/reqs/${id}`;
 
-  return axios.get(url).then(handleResponse);
+  return axios.get(
+    url,
+    {headers: authHeader()},
+
+  ).then(handleResponse);
 
 }
 
 
 function getReqs(from, to) {
+
+  console.log('getReqs service \n');
 
   const url = `${process.env.REACT_APP_USERS_SERVICE_URL}/reqs`;
 

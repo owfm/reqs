@@ -36,7 +36,7 @@ class TestSchoolSetup(BaseTestCase):
                 }),
                 content_type='application/json'
             )
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.post(
                 '/schools',
@@ -76,7 +76,7 @@ class TestSchoolSetup(BaseTestCase):
                 }),
                 content_type='application/json'
             )
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.post(
                 '/schools',
@@ -118,7 +118,7 @@ class TestSchoolSetup(BaseTestCase):
                 }),
                 content_type='application/json'
             )
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.post(
                 '/schools',
@@ -158,7 +158,7 @@ class TestSchoolSetup(BaseTestCase):
                 }),
                 content_type='application/json'
             )
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.post(
                 '/schools',
@@ -196,7 +196,7 @@ class TestSchoolSetup(BaseTestCase):
                 }),
                 content_type='application/json'
             )
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.patch(
                 '/schools/preferences',
@@ -283,7 +283,7 @@ class TestSchoolSetup(BaseTestCase):
                 }),
                 content_type='application/json'
             )
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.patch(
                 '/schools/preferences',
@@ -355,7 +355,7 @@ class TestSchoolSetup(BaseTestCase):
                 }),
                 content_type='application/json'
             )
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.patch(
                 '/schools/preferences',
@@ -425,7 +425,7 @@ class TestSchoolSetup(BaseTestCase):
                 }),
                 content_type='application/json'
             )
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.patch(
                 '/schools/preferences',
@@ -465,7 +465,7 @@ class TestSchoolSetup(BaseTestCase):
                 }),
                 content_type='application/json'
             )
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.patch(
                 '/schools/preferences',
@@ -536,7 +536,7 @@ class TestSchoolSetup(BaseTestCase):
                 }),
                 content_type='application/json'
             )
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.patch(
                 '/schools/preferences',
@@ -608,7 +608,7 @@ class TestSchoolSetup(BaseTestCase):
                 }),
                 content_type='application/json'
             )
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.patch(
                 '/schools/preferences',
@@ -688,7 +688,7 @@ class TestSchoolSetup(BaseTestCase):
                 }),
                 content_type='application/json'
             )
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.patch(
                 '/schools/preferences',
@@ -757,7 +757,7 @@ class TestSchoolSetup(BaseTestCase):
                     }),
                     content_type='application/json'
                 )
-                token = json.loads(resp_login.data.decode())['auth_token']
+                token = json.loads(resp_login.data.decode())['user']['token']
 
                 response = self.client.post(
                     '/schools/' + str(school.id) + '/staff',
@@ -810,7 +810,7 @@ class TestSchoolSetup(BaseTestCase):
                     }),
                     content_type='application/json'
                 )
-                token = json.loads(resp_login.data.decode())['auth_token']
+                token = json.loads(resp_login.data.decode())['user']['token']
 
                 response = self.client.post(
                     '/schools/' + str(school.id) + '/staff',
@@ -851,7 +851,7 @@ class TestSchoolSetup(BaseTestCase):
                     }),
                     content_type='application/json'
                 )
-                token = json.loads(resp_login.data.decode())['auth_token']
+                token = json.loads(resp_login.data.decode())['user']['token']
 
                 response = self.client.post(
                     '/schools/' + str(school.id) + '/staff',
@@ -895,7 +895,7 @@ class TestSchoolSetup(BaseTestCase):
                     }),
                     content_type='application/json'
                 )
-                token = json.loads(resp_login.data.decode())['auth_token']
+                token = json.loads(resp_login.data.decode())['user']['token']
 
                 response = self.client.post(
                     '/schools/' + str(school.id) + '/staff',
@@ -941,7 +941,7 @@ class TestSchoolSetup(BaseTestCase):
                     }),
                     content_type='application/json'
                 )
-                token = json.loads(resp_login.data.decode())['auth_token']
+                token = json.loads(resp_login.data.decode())['user']['token']
 
                 response = self.client.post(
                     '/schools/' + str(school.id) + '/staff',
@@ -988,7 +988,7 @@ class TestSchoolSetup(BaseTestCase):
                     }),
                     content_type='application/json'
                 )
-                token = json.loads(resp_login.data.decode())['auth_token']
+                token = json.loads(resp_login.data.decode())['user']['token']
 
                 response = self.client.post(
                     '/schools/' + str(school.id) + '/staff',
@@ -1044,7 +1044,7 @@ class TestSchoolSetup(BaseTestCase):
                     }),
                     content_type='application/json'
                 )
-                token = json.loads(resp_login.data.decode())['auth_token']
+                token = json.loads(resp_login.data.decode())['user']['token']
 
                 response = self.client.post(
                     '/schools/' + str(school.id) + '/staff',

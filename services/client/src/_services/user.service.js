@@ -1,5 +1,6 @@
 import { authHeader } from '../_helpers';
 import axios from 'axios';
+import userConstants from '../_constants';
 
 export const userService = {
     login,
@@ -20,6 +21,12 @@ function login(email, password) {
                 // store user details and jwt token in local storage to keep user logged in between page refreshes
                 localStorage.setItem('user', JSON.stringify(response.data.user));
                 localStorage.setItem('school', JSON.stringify(response.data.school));
+                try {
+                  localStorage.setItem('lessons', JSON.stringify(response.data.lessons));
+                } catch (err) {
+                  console.error(err);
+                }
+
                 return response.data.user;
             }
         });

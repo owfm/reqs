@@ -23,7 +23,7 @@ function login(email, password) {
                 },
                 error => {
                     dispatch(failure());
-                    dispatch(alertActions.error(error.response.data.message));
+                    dispatch(alertActions.error(error.toString()));
                 }
             );
     };

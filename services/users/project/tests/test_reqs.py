@@ -58,10 +58,53 @@ class TestReqService(BaseTestCase):
                 }),
                 content_type='application/json'
             )
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.post(
                 '/reqs',
+                data=json.dumps({
+                    'title': 'reqtitletest',
+                    'equipment': 'equipmenttest',
+                    'notes': 'notestest',
+                    'lesson_id': 1,
+                    'currentWbDate': '16-04-18'
+                    }),
+                content_type='application/json',
+                headers={'Authorization': f'Bearer {token}'}
+            )
+
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 201)
+            self.assertIn('reqtitletest was added!', data['message'])
+            self.assertIn('success', data['status'])
+
+    def test_add_req_query_params_func(self):
+
+        school = add_school('testschool')
+
+        add_user(
+            'ollie mansell',
+            'test@test.com',
+            'olliepass',
+            TEACHER,
+            'MAO',
+            school.id)
+
+        db.session.commit()
+
+        with self.client:
+            resp_login = self.client.post(
+                '/auth/login',
+                data=json.dumps({
+                    'email': 'test@test.com',
+                    'password': 'olliepass'
+                }),
+                content_type='application/json'
+            )
+            token = json.loads(resp_login.data.decode())['user']['token']
+
+            response = self.client.post(
+                '/reqs?test=test&brabble=lala',
                 data=json.dumps({
                     'title': 'reqtitletest',
                     'equipment': 'equipmenttest',
@@ -101,7 +144,7 @@ class TestReqService(BaseTestCase):
                 }),
                 content_type='application/json'
             )
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.post(
                 '/reqs',
@@ -142,7 +185,7 @@ class TestReqService(BaseTestCase):
                 }),
                 content_type='application/json'
             )
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
             resp = User.decode_auth_token(token)
 
             response = self.client.post(
@@ -190,7 +233,7 @@ class TestReqService(BaseTestCase):
                 }),
                 content_type='application/json'
             )
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.post(
                 '/reqs',
@@ -273,7 +316,7 @@ class TestReqService(BaseTestCase):
                 }),
                 content_type='application/json'
             )
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.post(
                 '/reqs',
@@ -332,7 +375,7 @@ class TestReqService(BaseTestCase):
                 }),
                 content_type='application/json'
             )
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.patch(
                 '/reqs/' + str(req.id),
@@ -392,7 +435,7 @@ class TestReqService(BaseTestCase):
                 }),
                 content_type='application/json'
             )
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.patch(
                 '/reqs/' + str(req.id),
@@ -445,7 +488,7 @@ class TestReqService(BaseTestCase):
                 }),
                 content_type='application/json'
             )
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.patch(
                 '/reqs/' + str(req.id),
@@ -498,7 +541,7 @@ class TestReqService(BaseTestCase):
                 }),
                 content_type='application/json'
             )
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
 
             User.decode_auth_token(token)
 
@@ -555,7 +598,7 @@ class TestReqService(BaseTestCase):
                 }),
                 content_type='application/json'
             )
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.patch(
                 '/reqs/' + str(req.id),
@@ -609,7 +652,7 @@ class TestReqService(BaseTestCase):
                 }),
                 content_type='application/json'
             )
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.patch(
                 '/reqs/' + str(req.id),
@@ -674,7 +717,7 @@ class TestReqService(BaseTestCase):
                 }),
                 content_type='application/json'
             )
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.patch(
                 '/reqs/' + str(req.id),
@@ -725,7 +768,7 @@ class TestReqService(BaseTestCase):
                 }),
                 content_type='application/json'
             )
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.patch(
                 '/reqs/' + str(req.id),
@@ -787,7 +830,7 @@ class TestReqService(BaseTestCase):
                 }),
                 content_type='application/json'
             )
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.patch(
                 '/reqs/' + str(req.id),
@@ -872,6 +915,8 @@ class TestReqService(BaseTestCase):
             school.id
         )
 
+
+
         with self.client:
             resp_login = self.client.post(
                 '/auth/login',
@@ -881,7 +926,7 @@ class TestReqService(BaseTestCase):
                 }),
                 content_type='application/json'
             )
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.get(
                 '/reqs',
@@ -891,9 +936,9 @@ class TestReqService(BaseTestCase):
             data = json.loads(response.data.decode())
 
             self.assertEqual(response.status_code, 200)
-            self.assertEqual(len(data['data']['sessions']), 2)
+            self.assertEqual(len(data['data']['reqs']), 2)
 
-            for req in data['data']['sessions']:
+            for req in data['data']['reqs']:
                 self.assertEqual(req['user_id'], teacher.id)
 
             self.assertIn('success', data['status'])
@@ -1002,7 +1047,7 @@ class TestReqService(BaseTestCase):
                 }),
                 content_type='application/json'
             )
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.get(
                 '/reqs',
@@ -1013,7 +1058,7 @@ class TestReqService(BaseTestCase):
 
             self.assertEqual(response.status_code, 200)
 
-            for req in data['data']['sessions']:
+            for req in data['data']['reqs']:
                 self.assertEqual(req['school_id'], tech.school_id)
 
             self.assertIn('success', data['status'])
@@ -1065,7 +1110,7 @@ class TestReqService(BaseTestCase):
                 }),
                 content_type='application/json'
             )
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.get(
                 '/reqs?older=1',
@@ -1076,8 +1121,8 @@ class TestReqService(BaseTestCase):
 
             self.assertEqual(response.status_code, 200)
             self.assertIn('success', data['status'])
-            self.assertEqual(len(data['data']['sessions']), 1)
-            self.assertIn('title2', data['data']['sessions'][0]['title'])
+            self.assertEqual(len(data['data']['reqs']), 1)
+            self.assertIn('title2', data['data']['reqs'][0]['title'])
 
     def test_get_without_date_query_doesnt_return_old_reqs(self):
 
@@ -1109,7 +1154,7 @@ class TestReqService(BaseTestCase):
                 }),
                 content_type='application/json'
             )
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.get(
                 '/reqs',
@@ -1121,9 +1166,9 @@ class TestReqService(BaseTestCase):
             self.assertEqual(response.status_code, 200)
             self.assertIn('success', data['status'])
             print("Length of reqs data object: {}".format(
-                len(data['data']['sessions'])))
-            self.assertEqual(len(data['data']['sessions']), 1)
-            self.assertIn('title1', data['data']['sessions'][0]['title'])
+                len(data['data']['reqs'])))
+            self.assertEqual(len(data['data']['reqs']), 1)
+            self.assertIn('title1', data['data']['reqs'][0]['title'])
 
     def test_get_schools_reqs_as_technician_discount_old_reqs(self):
         """ensure get /reqs as technician returns
@@ -1223,7 +1268,7 @@ class TestReqService(BaseTestCase):
                 }),
                 content_type='application/json'
             )
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.get(
                 '/reqs',
@@ -1234,7 +1279,7 @@ class TestReqService(BaseTestCase):
 
             self.assertEqual(response.status_code, 200)
 
-            for req in data['data']['sessions']:
+            for req in data['data']['reqs']:
                 self.assertEqual(req['title'], "SHOULD RETURN")
 
             self.assertIn('success', data['status'])
@@ -1305,7 +1350,7 @@ class TestReqService(BaseTestCase):
                 }),
                 content_type='application/json'
             )
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.delete(
                 '/reqs/' + str(req.id),
@@ -1364,7 +1409,7 @@ class TestReqService(BaseTestCase):
                 }),
                 content_type='application/json'
             )
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.delete(
                 '/reqs/' + str(req.id),
@@ -1418,7 +1463,7 @@ class TestReqService(BaseTestCase):
                 }),
                 content_type='application/json'
             )
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.delete(
                 '/reqs/' + str(req.id),
@@ -1453,7 +1498,7 @@ class TestReqService(BaseTestCase):
                 }),
                 content_type='application/json'
             )
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.delete(
                 '/reqs/100',
@@ -1495,7 +1540,7 @@ class TestReqService(BaseTestCase):
                 }),
                 content_type='application/json'
             )
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.delete(
                 '/reqs/' + str(req.id),

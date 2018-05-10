@@ -4,9 +4,11 @@
 from flask import Blueprint, jsonify, request
 from sqlalchemy import exc
 
-from project.api.models import User, School
+from project.api.models import User, School, Lesson
 from project import db, bcrypt
 from project.api.constants import ADMIN
+
+from project.tests.utils import lesson_to_JSON
 
 
 auth_blueprint = Blueprint('auth', __name__)
@@ -49,7 +51,8 @@ def register_user():
             auth_token = new_user.encode_auth_token(new_user.id)
             response_object['status'] = 'success'
             response_object['message'] = 'Successfully registered.'
-            response_object['auth_token'] = auth_token.decode()
+            response_object['user'] = new_user.asdict(exclude=['password'])
+            response_object['user']['token'] = auth_token
             return jsonify(response_object), 201
         else:
             response_object['message'] = 'Sorry. That user already exists.'
@@ -57,7 +60,6 @@ def register_user():
     # handler errors
     except (exc.IntegrityError, ValueError) as e:
         db.session.rollback()
-        response_object['logging'] = 'integrity error'
         return jsonify(response_object), 400
 
 
@@ -81,10 +83,14 @@ def login_user():
             if auth_token:
                 response_object['status'] = 'success'
                 response_object['message'] = 'Successfully logged in.'
-                response_object['auth_token'] = auth_token.decode()
+                # response_object['auth_token'] = auth_token.decode()
                 response_object['user'] = user.asdict()
                 response_object['user']['token'] = auth_token.decode()
                 school = School.query.get(user.school_id)
+                try:
+                    response_object['lessons'] = get_lessons(user)
+                except ValueError as e:
+                    pass
                 if school:
                     response_object['school'] = school.asdict()
                 return jsonify(response_object), 200
@@ -92,9 +98,16 @@ def login_user():
             response_object['message'] = 'User does not exist.'
             return jsonify(response_object), 404
     except Exception as e:
+        print(str(e))
         response_object['message'] = 'Try again.'
         return jsonify(response_object), 500
 
+def get_lessons(user):
+    lessons = [lesson_to_JSON(lesson) for lesson in Lesson.query.filter(
+        Lesson.teacher_id==user.id).all()]
+    if lessons:
+        return lessons
+    raise ValueError('No lessons')
 
 @auth_blueprint.route('/auth/logout', methods=['GET'])
 def logout_user():

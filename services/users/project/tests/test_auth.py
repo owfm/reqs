@@ -4,10 +4,19 @@ import json
 
 from flask import current_app
 
+from project import db
+
+
 from project.tests.base import BaseTestCase
 from project.tests.utils import add_user, add_school
 from project.api.constants import TEACHER
+from project.tests.utils import populate_school_db, populate_school_with_reqs
 
+from project.api.models import School
+
+import pprint
+
+pp = pprint.PrettyPrinter(indent=4)
 
 class TestAuthBlueprint(BaseTestCase):
 
@@ -32,7 +41,7 @@ class TestAuthBlueprint(BaseTestCase):
             data = json.loads(response.data.decode())
             self.assertTrue(data['status'] == 'success')
             self.assertTrue(data['message'] == 'Successfully registered.')
-            self.assertTrue(data['auth_token'])
+            self.assertTrue(data['user'])
             self.assertTrue(response.content_type == 'application/json')
             self.assertEqual(response.status_code, 201)
 
@@ -145,11 +154,42 @@ class TestAuthBlueprint(BaseTestCase):
                 content_type='application/json'
             )
             data = json.loads(response.data.decode())
+            pp.pprint(data)
             self.assertTrue(data['status'] == 'success')
             self.assertTrue(data['message'] == 'Successfully logged in.')
-            self.assertTrue(data['auth_token'])
+            self.assertTrue(data['user']['token'])
             self.assertTrue(response.content_type == 'application/json')
             self.assertEqual(response.status_code, 200)
+
+
+    def test_registered_user_login_with_db(self):
+
+        school = School(name='Holy Family Catholic School')
+        db.session.add(school)
+        db.session.commit()
+
+        populate_school_db(school.id)
+
+        populate_school_with_reqs(school.id)
+
+
+
+        with self.client:
+            response = self.client.post(
+                '/auth/login',
+                data=json.dumps({
+                    'email': 'o.keers@holyfamily.watham.sch.uk',
+                    'password': 'password'
+                }),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            self.assertTrue(data['status'] == 'success')
+            self.assertTrue(data['message'] == 'Successfully logged in.')
+            self.assertTrue(data['user']['token'])
+            self.assertTrue(response.content_type == 'application/json')
+            self.assertEqual(response.status_code, 200)
+
 
     def test_not_registered_user_login(self):
         with self.client:
@@ -182,7 +222,7 @@ class TestAuthBlueprint(BaseTestCase):
                 content_type='application/json'
             )
             # valid token logout
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
             response = self.client.get(
                 '/auth/logout',
                 headers={'Authorization': f'Bearer {token}'}
@@ -207,7 +247,7 @@ class TestAuthBlueprint(BaseTestCase):
                 content_type='application/json'
             )
             # invalid token logout
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
             response = self.client.get(
                 '/auth/logout',
                 headers={'Authorization': f'Bearer {token}'}

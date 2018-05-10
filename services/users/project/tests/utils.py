@@ -264,20 +264,13 @@ def populate_school_db(
             room = Room(name=lesson['room'], school_id=school_id)
 
             if lesson['room'][0] is 'L':
-                print("Room {} assigned Walthamstow".format(lesson['room']))
                 room.site = Site.query.filter_by(
                     name='Walthamstow').first()
             elif int(lesson['room'][1] + lesson['room'][2]) < 18:
-                print(
-                    "Room {} assigned Wiseman "
-                    "Downstairs".format(lesson['room']))
 
                 room.site = Site.query.filter_by(
                     name='Wiseman Downstairs').first()
             else:
-                print(
-                    "Room {} assigned Wiseman "
-                    "Upstairs".format(lesson['room']))
 
                 room.site = Site.query.filter_by(
                     name='Wiseman Upstairs').first()

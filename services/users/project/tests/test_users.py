@@ -66,7 +66,7 @@ class TestUserService(BaseTestCase):
                 }),
                 content_type='application/json'
             )
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.get(
                 '/users',
@@ -128,7 +128,7 @@ class TestUserService(BaseTestCase):
                 }),
                 content_type='application/json'
             )
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.get(
                 '/users',
@@ -189,7 +189,7 @@ class TestUserService(BaseTestCase):
                 }),
                 content_type='application/json'
             )
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.get(
                 '/users',
@@ -250,7 +250,7 @@ class TestUserService(BaseTestCase):
                 }),
                 content_type='application/json'
             )
-            token = json.loads(resp_login.data.decode())['auth_token']
+            token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.get(
                 '/users/me',

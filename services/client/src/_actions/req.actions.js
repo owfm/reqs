@@ -21,7 +21,7 @@ function getReqs(from, to) {
 
   }
   function request() { return { type: reqConstants.REQS_REQUEST } }
-  function success(reqs) { return { type: reqConstants.REQS_SUCCESS, reqs } }
+  function success(items) { return { type: reqConstants.REQS_SUCCESS, items } }
   function failure(error) { return { type: reqConstants.REQS_FAILURE, error } }
 
 }

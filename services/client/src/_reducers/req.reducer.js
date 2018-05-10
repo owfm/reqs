@@ -2,41 +2,42 @@ import { reqConstants } from '../_constants';
 
 export function reqs(state = {}, action) {
   switch (action.type) {
-    case reqConstants.REQ_GET_REQUEST:
+    case reqConstants.REQS_REQUEST:
       return {
         loading: true
       };
 
-    case reqConstants.REQ_GET_SUCCESS:
+    case reqConstants.REQS_SUCCESS:
       return {
-        loading: false,
         ...state,
-        reqSessions: [...state.reqSessions, action.req]
+        loading: false,
+        items: [...state.items || [], ...action.items]
       }
 
-    case reqConstants.REQ_GET_FAILURE:
+    case reqConstants.REQS_FAILURE:
       return {
         loading: false,
         error: action.error
       }
 
-      case reqConstants.REQS_GET_REQUEST:
+      case reqConstants.REQ_REQUEST:
         return {
           loading: true
         };
 
-      case reqConstants.REQS_GET_SUCCESS:
-        return {
-          loading: false,
-          ...state,
-          reqSessions: [...state.reqSessions, ...action.reqs]
-        }
+      case reqConstants.REQ_SUCCESS:
+        return
+          // loading: false,
+          // ...state,
+          // reqSessions: [...state.reqSessions, ...action.reqs]
+          [...state, ...action.reqs]
 
-      case reqConstants.REQS_GET_FAILURE:
-        return {
-          loading: false,
-          error: action.error
-        }
+
+      // case reqConstants.REQ_FAILURE:
+      //   return {
+      //     loading: false,
+      //     error: action.error
+      //   }
 
       default:
         return state;
