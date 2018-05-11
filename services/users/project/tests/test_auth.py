@@ -154,13 +154,11 @@ class TestAuthBlueprint(BaseTestCase):
                 content_type='application/json'
             )
             data = json.loads(response.data.decode())
-            pp.pprint(data)
             self.assertTrue(data['status'] == 'success')
             self.assertTrue(data['message'] == 'Successfully logged in.')
             self.assertTrue(data['user']['token'])
             self.assertTrue(response.content_type == 'application/json')
             self.assertEqual(response.status_code, 200)
-
 
     def test_registered_user_login_with_db(self):
 

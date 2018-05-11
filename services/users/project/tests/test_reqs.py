@@ -6,9 +6,10 @@ from project import db
 from project.api.models import Req, User, School
 from project.tests.base import BaseTestCase
 from project.tests.utils import add_user, add_req, add_school
-from project.api.constants import TEACHER, TECHNICIAN
+from project.api.constants import TEACHER, TECHNICIAN, DATE_FORMAT
 from project.api.reqs import calculate_req_time
 from project.tests.utils import populate_school_db, populate_school_with_reqs
+
 
 
 import pprint
@@ -33,7 +34,6 @@ class TestReqService(BaseTestCase):
         db.session.commit()
 
         time = calculate_req_time(161, '16-04-18')
-        print(time)
 
     def test_add_req(self):
         """Ensure a new req can be added to the database."""
@@ -78,48 +78,6 @@ class TestReqService(BaseTestCase):
             self.assertIn('reqtitletest was added!', data['message'])
             self.assertIn('success', data['status'])
 
-    def test_add_req_query_params_func(self):
-
-        school = add_school('testschool')
-
-        add_user(
-            'ollie mansell',
-            'test@test.com',
-            'olliepass',
-            TEACHER,
-            'MAO',
-            school.id)
-
-        db.session.commit()
-
-        with self.client:
-            resp_login = self.client.post(
-                '/auth/login',
-                data=json.dumps({
-                    'email': 'test@test.com',
-                    'password': 'olliepass'
-                }),
-                content_type='application/json'
-            )
-            token = json.loads(resp_login.data.decode())['user']['token']
-
-            response = self.client.post(
-                '/reqs?test=test&brabble=lala',
-                data=json.dumps({
-                    'title': 'reqtitletest',
-                    'equipment': 'equipmenttest',
-                    'notes': 'notestest',
-                    'lesson_id': 1,
-                    'currentWbDate': '16-04-18'
-                    }),
-                content_type='application/json',
-                headers={'Authorization': f'Bearer {token}'}
-            )
-
-            data = json.loads(response.data.decode())
-            self.assertEqual(response.status_code, 201)
-            self.assertIn('reqtitletest was added!', data['message'])
-            self.assertIn('success', data['status'])
 
     def test_add_req_no_title(self):
 
@@ -881,6 +839,9 @@ class TestReqService(BaseTestCase):
 
         now = datetime.now() + timedelta(days=5)
 
+        from_str = datetime.now().strftime(DATE_FORMAT)
+        to_str = (datetime.now() + timedelta(days=10)).strftime(DATE_FORMAT)
+
         add_req(
             "title1",
             "equipment",
@@ -915,8 +876,6 @@ class TestReqService(BaseTestCase):
             school.id
         )
 
-
-
         with self.client:
             resp_login = self.client.post(
                 '/auth/login',
@@ -929,16 +888,16 @@ class TestReqService(BaseTestCase):
             token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.get(
-                '/reqs',
+                '/reqs?from=' + from_str + '&to=' + to_str,
                 headers={'Authorization': f'Bearer {token}'}
             )
 
             data = json.loads(response.data.decode())
 
             self.assertEqual(response.status_code, 200)
-            self.assertEqual(len(data['data']['reqs']), 2)
+            self.assertEqual(len(data['data']), 2)
 
-            for req in data['data']['reqs']:
+            for req in data['data']:
                 self.assertEqual(req['user_id'], teacher.id)
 
             self.assertIn('success', data['status'])
@@ -946,7 +905,8 @@ class TestReqService(BaseTestCase):
     def test_get_schools_reqs_as_technician(self):
         """ensure get /reqs as technician returns that schools reqs only"""
 
-        school1 = add_school(name='testschool')
+        school1 = add_school(name='testschool1')
+        """ensure get /reqs as teacher returns that teachers reqs only"""
         school2 = add_school(name='testschool2')
 
         teacher1 = add_user(
@@ -965,40 +925,34 @@ class TestReqService(BaseTestCase):
             'KEO',
             school2.id
         )
-        teacher3 = add_user(
-            'bobby',
-            'bob@bob.com',
-            'bobpass',
-            TEACHER,
-            'CUB',
-            school2.id
-        )
 
         tech = add_user(
-            'gary tyler',
+            'Gary',
             'gary@gary.com',
             'garypass',
             TECHNICIAN,
-            'TGA',
-            school2.id
+            'GAY',
+            school1.id
         )
 
-        # teacher 2 and teacher 3 both from technician's
-        # school, teacher 1 from other school
+        now = datetime.now() + timedelta(days=5)
+
+        from_str = datetime.now().strftime(DATE_FORMAT)
+        to_str = (datetime.now() + timedelta(days=10)).strftime(DATE_FORMAT)
 
         add_req(
             "title1",
             "equipment",
             "notes",
-            datetime.now(),
+            now,
             teacher1.id,
-            school1.id
-        )
+            school1.id)
+
         add_req(
             "title2",
             "equipment2",
             "notes2",
-            datetime.now(),
+            now,
             teacher1.id,
             school1.id
         )
@@ -1007,7 +961,7 @@ class TestReqService(BaseTestCase):
             "title3",
             "equipment3",
             "notes3",
-            datetime.now(),
+            now,
             teacher2.id,
             school2.id
         )
@@ -1015,29 +969,11 @@ class TestReqService(BaseTestCase):
             "title4",
             "equipment4",
             "notes4",
-            datetime.now(),
+            now,
             teacher2.id,
             school2.id
         )
 
-        add_req(
-            "title5",
-            "equipment5",
-            "notes5",
-            datetime.now(),
-            teacher3.id,
-            school2.id
-        )
-
-        add_req(
-            "title6",
-            "equipment6",
-            "notes6",
-            datetime.now(),
-            teacher3.id,
-            school2.id
-        )
-
         with self.client:
             resp_login = self.client.post(
                 '/auth/login',
@@ -1050,125 +986,19 @@ class TestReqService(BaseTestCase):
             token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.get(
-                '/reqs',
+                '/reqs?from=' + from_str + '&to=' + to_str,
                 headers={'Authorization': f'Bearer {token}'}
             )
 
             data = json.loads(response.data.decode())
 
             self.assertEqual(response.status_code, 200)
+            self.assertEqual(len(data['data']), 2)
 
-            for req in data['data']['reqs']:
+            for req in data['data']:
                 self.assertEqual(req['school_id'], tech.school_id)
 
             self.assertIn('success', data['status'])
-
-    def test_query_older_reqs_returns_correct_reqs(self):
-
-        """ensure get reqs with "older" query returns correct reqs"""
-
-        req1date = datetime.now()
-        req2date = req1date - timedelta(weeks=6)
-
-        school1 = add_school(name='testschool')
-
-        teacher1 = add_user(
-            'ollie mansell', 'test@test.com', 'olliepass',
-            TEACHER, 'MAO', school1.id)
-
-        add_user(
-            'gary tyler', 'gary@gary.com', 'garypass', TECHNICIAN,
-            'TGA', school1.id)
-
-        my_req = Req(
-            title="title1",
-            equipment="equipment1",
-            notes="notes1",
-            time=req1date,
-            user_id=teacher1.id,
-            school_id=school1.id,
-            lesson_id=1)
-
-        my_req2 = Req(
-            title="title2",
-            equipment="equipment2",
-            notes="notes2",
-            time=req2date,
-            user_id=teacher1.id,
-            school_id=school1.id,
-            lesson_id=1)
-        db.session.add(my_req)
-        db.session.add(my_req2)
-        db.session.commit()
-
-        with self.client:
-            resp_login = self.client.post(
-                '/auth/login',
-                data=json.dumps({
-                    'email': 'gary@gary.com',
-                    'password': 'garypass'
-                }),
-                content_type='application/json'
-            )
-            token = json.loads(resp_login.data.decode())['user']['token']
-
-            response = self.client.get(
-                '/reqs?older=1',
-                headers={'Authorization': f'Bearer {token}'}
-            )
-
-            data = json.loads(response.data.decode())
-
-            self.assertEqual(response.status_code, 200)
-            self.assertIn('success', data['status'])
-            self.assertEqual(len(data['data']['reqs']), 1)
-            self.assertIn('title2', data['data']['reqs'][0]['title'])
-
-    def test_get_without_date_query_doesnt_return_old_reqs(self):
-
-        """ensure no date query only gets reqs less than 2 weeks old"""
-
-        school1 = add_school(name='testschool')
-        teacher1 = add_user(
-            'ollie mansell', 'test@test.com', 'olliepass',
-            TEACHER, 'MAO', school1.id)
-
-        add_user(
-            'gary tyler', 'gary@gary.com', 'garypass',
-            TECHNICIAN, 'TGA', school1.id)
-
-        add_req(
-            "title1", "equipment1", "notes1", datetime.now(),
-            teacher1.id, school1.id)
-
-        add_req(
-            "title2", "equipment2", "notes2",
-            datetime.now() - timedelta(weeks=6), teacher1.id, school1.id)
-
-        with self.client:
-            resp_login = self.client.post(
-                '/auth/login',
-                data=json.dumps({
-                    'email': 'gary@gary.com',
-                    'password': 'garypass'
-                }),
-                content_type='application/json'
-            )
-            token = json.loads(resp_login.data.decode())['user']['token']
-
-            response = self.client.get(
-                '/reqs',
-                headers={'Authorization': f'Bearer {token}'}
-            )
-
-            data = json.loads(response.data.decode())
-
-            self.assertEqual(response.status_code, 200)
-            self.assertIn('success', data['status'])
-            print("Length of reqs data object: {}".format(
-                len(data['data']['reqs'])))
-            self.assertEqual(len(data['data']['reqs']), 1)
-            self.assertIn('title1', data['data']['reqs'][0]['title'])
 
     def test_get_schools_reqs_as_technician_discount_old_reqs(self):
         """ensure get /reqs as technician returns
@@ -1259,6 +1089,9 @@ class TestReqService(BaseTestCase):
             teacher3.id,
             school2.id)
 
+        from_str = (now - timedelta(weeks=5)).strftime(DATE_FORMAT)
+        to_str = (now + timedelta(weeks=2)).strftime(DATE_FORMAT)
+
         with self.client:
             resp_login = self.client.post(
                 '/auth/login',
@@ -1271,7 +1104,7 @@ class TestReqService(BaseTestCase):
             token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.get(
-                '/reqs',
+                '/reqs?from=' + from_str + '&to=' + to_str,
                 headers={'Authorization': f'Bearer {token}'}
             )
 
@@ -1279,7 +1112,7 @@ class TestReqService(BaseTestCase):
 
             self.assertEqual(response.status_code, 200)
 
-            for req in data['data']['reqs']:
+            for req in data['data']:
                 self.assertEqual(req['title'], "SHOULD RETURN")
 
             self.assertIn('success', data['status'])
