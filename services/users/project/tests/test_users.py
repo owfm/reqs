@@ -161,7 +161,7 @@ class TestUserService(BaseTestCase):
             if s['email'] == "o.mansell@holyfamily.watham.sch.uk":
                 continue
 
-            new_user = add_user(
+            add_user(
                 name=s['name'], email=s['email'], role_code=s['role_code'],
                 staff_code=s['staff_code'], school_id=school.id,
                 password='password')

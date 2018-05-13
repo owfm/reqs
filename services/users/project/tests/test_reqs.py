@@ -3,12 +3,10 @@ import json
 from datetime import datetime, timedelta
 
 from project import db
-from project.api.models import Req, User, School
+from project.api.models import Req, User
 from project.tests.base import BaseTestCase
 from project.tests.utils import add_user, add_req, add_school
 from project.api.constants import TEACHER, TECHNICIAN, DATE_FORMAT
-from project.api.reqs import calculate_req_time
-from project.tests.utils import populate_school_db, populate_school_with_reqs
 
 import pprint
 
