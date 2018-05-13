@@ -23,27 +23,25 @@ class TestAuthBlueprint(BaseTestCase):
 
     def test_user_registration(self):
 
-        school = add_school('testschool')
-
         with self.client:
+
             response = self.client.post(
                 '/auth/register',
                 data=json.dumps({
-                    'name': 'justatest',
                     'email': 'test@test.com',
+                    'name': 'justatest',
                     'password': '123456',
                     'role_code': TEACHER,
-                    'staff_code': "MAO",
-                    'school_id': school.id
-
+                    'staff_code': "MAO"
                 }),
                 content_type='application/json'
             )
+
             data = json.loads(response.data.decode())
+
             self.assertTrue(data['status'] == 'success')
             self.assertTrue(data['message'] == 'Successfully registered.')
-            self.assertTrue(data['user'])
-            self.assertTrue(data['user']['name'] == 'justatest')
+            self.assertTrue(data['user']['token'])
             self.assertTrue(response.content_type == 'application/json')
             self.assertEqual(response.status_code, 201)
 

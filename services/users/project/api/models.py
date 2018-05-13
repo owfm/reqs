@@ -81,7 +81,6 @@ class User(db.Model):
         except KeyError:
             self.admin = False
 
-
     def encode_auth_token(self, user_id):
         """Generates the auth token"""
         try:

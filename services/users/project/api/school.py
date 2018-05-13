@@ -306,7 +306,8 @@ def prepare_staff_accounts(resp, school_id):
             skipped_emails.append(s['email'])
             continue
 
-        new_user = add_user(name=s['name'], email=s['email'],
+        new_user = add_user(
+                        name=s['name'], email=s['email'],
                         password='password', role_code=s['role_code'],
                         staff_code=s['staff_code'], school_id=school.id)
 

@@ -10,8 +10,12 @@ from project.api.constants import TEACHER, TECHNICIAN
 
 from project.tests.utils import lesson_to_JSON
 
+import pprint
 
 auth_blueprint = Blueprint('auth', __name__)
+
+
+pp = pprint.PrettyPrinter(indent=4)
 
 
 @auth_blueprint.route('/auth/register', methods=['POST'])
@@ -42,11 +46,14 @@ def register_user():
         db.session.add(new_user)
         db.session.commit()
         # generate auth token
+
         auth_token = new_user.encode_auth_token(new_user.id)
+
         response_object['status'] = 'success'
         response_object['message'] = 'Successfully registered.'
         response_object['user'] = new_user.asdict(exclude=['password'])
-        response_object['user']['token'] = auth_token
+        response_object['user']['token'] = str(auth_token)
+
         return jsonify(response_object), 201
 
     # handler errors
@@ -86,11 +93,15 @@ def validate_new_user_details(post_data):
     if int(post_data.get('role_code')) not in [TEACHER, TECHNICIAN]:
         raise ValueError('Role code must be 1 or 2.')
 
+    user_info['role_code'] = post_data.get('role_code')
+
+    # teachers MUST have staff codes
     if post_data.get('role_code') is TEACHER:
         if not post_data.get('staff_code'):
             raise ValueError('Teachers must have a staff code')
-        else:
-            user_info['role_code'] = post_data.get('role_code')
+
+    if post_data.get('staff_code'):
+        user_info['staff_code'] = post_data.get('staff_code')
 
     if post_data.get('school_id'):
         try:

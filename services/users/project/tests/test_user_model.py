@@ -40,24 +40,18 @@ class TestUserModel(BaseTestCase):
             'MAO',
             school.id)
 
-        user_info = {
-            'name': 'test',
+        dupe_user = {
+            'name': 'justatest',
             'email': 'test@test.com',
-            'password': 'password',
+            'password': 'test',
             'role_code': TEACHER,
-            'staff_code': 'KEO',
-            'school_id': school.id,
-            'admin': True
+            'staff_code': 'MAO',
+            'school_id': school.id
         }
 
-        new_user = User(user_info=user_info)
-
-        db.session.add(new_user)
-
-        self.assertRaises(
-            IntegrityError,
-            db.session.commit()
-        )
+        duplicate_user = User(user_info=dupe_user)
+        db.session.add(duplicate_user)
+        self.assertRaises(IntegrityError, db.session.commit)
 
     def test_passwords_are_random(self):
         school = add_school('testschool')

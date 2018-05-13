@@ -3,7 +3,6 @@
 import json
 
 from project import db
-from project.api.models import User
 from project.tests.base import BaseTestCase
 from project.tests.utils import add_user, add_school, populate_school_db,\
     populate_school_with_reqs
@@ -171,7 +170,7 @@ class TestUserService(BaseTestCase):
             if s['email'] == "omansell@lgflmail.org":
                 continue
 
-            new_user = add_user(
+            add_user(
                 name=s['name'], email=s['email'], role_code=s['role_code'],
                 staff_code=s['staff_code'], school_id=school2.id,
                 password='password')

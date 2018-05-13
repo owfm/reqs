@@ -1,7 +1,7 @@
 import json
 
 from project import db
-from project.api.models import User, School
+from project.api.models import School
 
 from project.tests.base import BaseTestCase
 from project.tests.utils import add_school, add_user
@@ -510,7 +510,7 @@ class TestSchoolSetup(BaseTestCase):
 
         school = add_school('Holy Family Catholic School')
 
-        user = add_user(
+        add_user(
             name='ollie mansell',
             email='test@test.com',
             password='olliepass',
@@ -589,7 +589,7 @@ class TestSchoolSetup(BaseTestCase):
 
         school = add_school('Holy Family Catholic School')
 
-        user = add_user(
+        add_user(
             name='ollie mansell',
             email='test@test.com',
             password='olliepass',
@@ -652,63 +652,11 @@ class TestSchoolSetup(BaseTestCase):
 
             self.assertIn("fail", data['status'])
 
-    def test_staff_populate_from_SIMS(self):
-
-            school = add_school('Holy Family Catholic School')
-
-            user = add_user(
-                name='ollie mansell',
-                email='test@test.com',
-                password='olliepass',
-                role_code=TEACHER,
-                admin=True,
-                staff_code='MAO',
-                school_id=school.id
-            )
-
-            with self.client:
-                resp_login = self.client.post(
-                    '/auth/login',
-                    data=json.dumps({
-                        'email': 'o.mansell@holyfamily.watham.sch.uk',
-                        'password': 'olliepass'
-                    }),
-                    content_type='application/json'
-                )
-                token = json.loads(resp_login.data.decode())['user']['token']
-
-                response = self.client.post(
-                    '/schools/' + str(school.id) + '/staff',
-                    content_type='application/json',
-                    data=json.dumps(
-                        {"filename": "project/api/staffinfo.xlsx"}
-                        ),
-                    headers={'Authorization': f'Bearer {token}'})
-
-                data = json.loads(response.data.decode())
-
-                self.assertIn(
-                    "Please ensure these users are correct.",
-                    data['message'])
-                self.assertEqual(response.status_code, 200)
-                self.assertEqual(len(data['data']['staff']), 15)
-                # self.assertEqual(school.preferences['days_notice'], 7)
-                # self.assertEqual(school.preferences['weeks_timetable'], 1)
-                # self.assertEqual(
-                #     school.preferences['period_start_times'], 'null')
-                # self.assertEqual(
-                #     school.preferences['period_length'], 'null')
-                # self.assertEqual(
-                #     school.preferences['term_dates']['autm_h1_s'],
-                #     start_of_term.strftime(DATE_FORMAT))
-
-                self.assertIn("success", data['status'])
-
     def test_staff_lesson_room_populate_from_SIMS_wrong_filename(self):
 
             school = add_school('Holy Family Catholic School')
 
-            user = add_user(
+            add_user(
                 name='ollie mansell',
                 email='test@test.com',
                 password='olliepass',
@@ -748,7 +696,7 @@ class TestSchoolSetup(BaseTestCase):
 
             school = add_school('Holy Family Catholic School')
 
-            user = add_user(
+            add_user(
                 name='ollie mansell',
                 email='test@test.com',
                 password='olliepass',
@@ -790,7 +738,7 @@ class TestSchoolSetup(BaseTestCase):
 
             school = add_school('Holy Family Catholic School')
 
-            user = add_user(
+            add_user(
                 name='ollie mansell',
                 email='test@test.com',
                 password='olliepass',
@@ -834,7 +782,7 @@ class TestSchoolSetup(BaseTestCase):
 
             school = add_school('Holy Family Catholic School')
 
-            user = add_user(
+            add_user(
                 name='ollie mansell',
                 email='test@test.com',
                 password='olliepass',
@@ -879,7 +827,7 @@ class TestSchoolSetup(BaseTestCase):
 
             school = add_school('Holy Family Catholic School')
 
-            user = add_user(
+            add_user(
                 name='ollie mansell',
                 email='test@test.com',
                 password='olliepass',
@@ -923,7 +871,7 @@ class TestSchoolSetup(BaseTestCase):
 
             school = add_school('Holy Family Catholic School')
 
-            user = add_user(
+            add_user(
                 name='ollie mansell',
                 email='o.mansell@holyfamily.watham.sch.uk',
                 password='olliepass',
@@ -933,7 +881,7 @@ class TestSchoolSetup(BaseTestCase):
                 school_id=school.id
             )
 
-            user2 = add_user(
+            add_user(
                 name='denise baxter',
                 email='d.baxter@holyfamily.watham.sch.uk',
                 password='olliepass',
