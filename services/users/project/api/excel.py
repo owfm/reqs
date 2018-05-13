@@ -6,7 +6,6 @@ pp = pprint.PrettyPrinter(indent=4)
 # from project.api.constants import DAY_TO_ISO
 TEACHER = 1
 TECHNICIAN = 2
-ADMIN = 0
 
 DAY_TO_ISO = {"Mon": 1, "Tue": 2, "Wed": 3, "Thu": 4, "Fri": 5}
 

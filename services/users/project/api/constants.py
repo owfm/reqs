@@ -10,11 +10,9 @@ START = 0
 END = 1
 
 
-ADMIN = 0
 TEACHER = 1
 TECHNICIAN = 2
 USER_ROLE = {
-    ADMIN: 'admin',
     TEACHER: 'teacher',
     TECHNICIAN: 'technician',
 }

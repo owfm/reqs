@@ -19,6 +19,8 @@ class User(db.Model):
 
     role_code = db.Column(db.Integer, default=TEACHER, nullable=False)
 
+    admin = db.Column(db.Boolean, default=False, nullable=False)
+
     active = db.Column(db.Boolean, default=False)
 
     school_id = db.Column(
@@ -58,16 +60,27 @@ class User(db.Model):
         lazy='dynamic')
 
     def __init__(
-        self, name, email, password, role_code, staff_code, school_id=None
+        self, user_info
     ):
-        self.name = name
-        self.email = email
+        self.name = user_info['name']
+        self.email = user_info['email']
         self.password = bcrypt.generate_password_hash(
-            password, current_app.config.get('BCRYPT_LOG_ROUNDS')
+            user_info['password'], current_app.config.get('BCRYPT_LOG_ROUNDS')
         ).decode()
-        self.role_code = role_code,
-        self.staff_code = staff_code,
-        self.school_id = school_id
+        self.role_code = user_info['role_code']
+        try:
+            self.staff_code = user_info['staff_code']
+        except KeyError:
+            pass
+        try:
+            self.school_id = user_info['school_id']
+        except KeyError:
+            pass
+        try:
+            self.admin = user_info['admin']
+        except KeyError:
+            self.admin = False
+
 
     def encode_auth_token(self, user_id):
         """Generates the auth token"""

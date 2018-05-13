@@ -4,12 +4,11 @@ from sqlalchemy import exc
 from flask import Blueprint, jsonify, request
 from project.api.models import Req, User, Lesson
 from project import db
-from project.api.utils import authenticate, \
-    get_dates_for_get_reqs_request
+from project.api.utils import authenticate
 from project.api.constants import TEACHER, TECHNICIAN,\
             TECHNICIAN_PATCH_AUTH, TEACHER_PATCH_AUTH,\
             DATE_FORMAT
-from project.tests.utils import req_to_JSON, lesson_to_JSON
+from project.tests.utils import req_to_JSON
 from jsonpatch import JsonPatch, InvalidJsonPatch
 from jsondiff import diff
 import pprint
@@ -150,7 +149,7 @@ def get_reqs_from_query_arguments(request_args, user):
             .all()
             ]
 
-        # if teacher, filter reqs to only give own reqs unless 'all' query supplied
+    # if teacher, filter reqs to only give own reqs unless 'all' query supplied
 
     if user.role_code == TEACHER and not request.args.get('all'):
         return [req for req in reqs if req['user_id'] == user.id]
@@ -171,7 +170,10 @@ def get_sessions_helper(start_date, end_date, user):
 
 @reqs_blueprint.route('/reqs/<req_id>', methods=['GET'])
 @authenticate
-def get_single_req(req_id):
+def get_single_req(resp, req_id):
+
+    user = User.query.get(resp)
+
     """Get single req details"""
     response_object = {
         'status': 'fail',

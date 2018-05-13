@@ -4,8 +4,8 @@ from project import db
 from project.api.models import User, School
 
 from project.tests.base import BaseTestCase
-from project.tests.utils import add_school
-from project.api.constants import TEACHER, TECHNICIAN, ADMIN, HalfTerm
+from project.tests.utils import add_school, add_user
+from project.api.constants import TEACHER, TECHNICIAN, HalfTerm
 
 import pprint
 
@@ -16,16 +16,14 @@ class TestSchoolSetup(BaseTestCase):
 
     def test_create_school(self):
 
-        user = User(
+        user = add_user(
             name='ollie mansell',
             email='test@test.com',
             password='olliepass',
-            role_code=ADMIN,
-            staff_code='MAO'
+            role_code=TEACHER,
+            staff_code='MAO',
+            admin=True
         )
-        db.session.add(user)
-
-        db.session.commit()
 
         with self.client:
             resp_login = self.client.post(
@@ -55,97 +53,16 @@ class TestSchoolSetup(BaseTestCase):
             self.assertIn('success', data['status'])
             self.assertIn('testschool2', data['data']['name'])
 
-    def test_create_school_teacher(self):
-        user = User(
+    def test_create_school_invalid_JSON(self):
+        user = add_user(
             name='ollie mansell',
             email='test@test.com',
             password='olliepass',
             role_code=TEACHER,
-            staff_code='MAO'
+            staff_code='MAO',
+            admin=True
         )
-        db.session.add(user)
 
-        db.session.commit()
-
-        with self.client:
-            resp_login = self.client.post(
-                '/auth/login',
-                data=json.dumps({
-                    'email': 'test@test.com',
-                    'password': 'olliepass'
-                }),
-                content_type='application/json'
-            )
-            token = json.loads(resp_login.data.decode())['user']['token']
-
-            response = self.client.post(
-                '/schools',
-                data=json.dumps({
-                    'name': 'testschool2',
-                }),
-                content_type='application/json',
-                headers={'Authorization': f'Bearer {token}'}
-            )
-
-            s = School.query.filter_by(name='testschool2').first()
-
-            self.assertTrue(s is None)
-
-            self.assertEqual(response.status_code, 401)
-            # self.assertIn('testschool2 has been created.', data['message'])
-            # self.assertEqual(s.id, user.school_id)
-            # self.assertIn('success', data['status'])
-            # self.assertIn('testschool2', data['data']['name'])
-
-    def test_create_school_technician(self):
-        user = User(
-            name='ollie mansell',
-            email='test@test.com',
-            password='olliepass',
-            role_code=TECHNICIAN,
-            staff_code='MAO'
-        )
-        db.session.add(user)
-
-        db.session.commit()
-
-        with self.client:
-            resp_login = self.client.post(
-                '/auth/login',
-                data=json.dumps({
-                    'email': 'test@test.com',
-                    'password': 'olliepass'
-                }),
-                content_type='application/json'
-            )
-            token = json.loads(resp_login.data.decode())['user']['token']
-
-            response = self.client.post(
-                '/schools',
-                data=json.dumps({
-                    'name': 'testschool2',
-                }),
-                content_type='application/json',
-                headers={'Authorization': f'Bearer {token}'}
-            )
-            s = School.query.filter_by(name='testschool2').first()
-
-            self.assertTrue(s is None)
-
-            self.assertEqual(response.status_code, 401)
-            # self.assertIn('testschool2 has been created.', data['message'])
-            # self.assertEqual(s.id, user.school_id)
-            # self.assertIn('success', data['status'])
-            # self.assertIn('testschool2', data['data']['name'])
-
-    def test_create_school_invalid_JSON(self):
-        user = User(
-            name='ollie mansell',
-            email='test@test.com',
-            password='olliepass',
-            role_code=ADMIN,
-            staff_code='MAO'
-        )
         db.session.add(user)
         db.session.commit()
 
@@ -176,12 +93,13 @@ class TestSchoolSetup(BaseTestCase):
 
         school = add_school('Holy Family Catholic School')
 
-        user = User(
+        user = add_user(
             name='ollie mansell',
             email='test@test.com',
             password='olliepass',
-            role_code=ADMIN,
+            role_code=TEACHER,
             staff_code='MAO',
+            admin=True,
             school_id=school.id
         )
         db.session.add(user)
@@ -263,7 +181,7 @@ class TestSchoolSetup(BaseTestCase):
 
         school = add_school('Trinity College')
 
-        user = User(
+        user = add_user(
             name='ollie mansell',
             email='test@test.com',
             password='olliepass',
@@ -335,7 +253,7 @@ class TestSchoolSetup(BaseTestCase):
         school = School(
             name='Holy Family Catholic School')
 
-        user = User(
+        user = add_user(
             name='ollie mansell',
             email='test@test.com',
             password='olliepass',
@@ -343,6 +261,7 @@ class TestSchoolSetup(BaseTestCase):
             staff_code='MAO',
             school_id=school.id
         )
+
         db.session.add(user)
         db.session.commit()
 
@@ -405,11 +324,12 @@ class TestSchoolSetup(BaseTestCase):
     def test_patch_preferences_invalid_JSON(self):
         school = add_school('Holy Family Catholic School')
 
-        user = User(
+        user = add_user(
             name='ollie mansell',
             email='test@test.com',
             password='olliepass',
-            role_code=ADMIN,
+            role_code=TEACHER,
+            admin=True,
             staff_code='MAO',
             school_id=school.id
         )
@@ -445,11 +365,12 @@ class TestSchoolSetup(BaseTestCase):
     def test_patch_preferences_wrong_patch_paths(self):
         school = add_school('Holy Family Catholic School')
 
-        user = User(
+        user = add_user(
             name='ollie mansell',
             email='test@test.com',
             password='olliepass',
-            role_code=ADMIN,
+            role_code=TEACHER,
+            admin=True,
             staff_code='MAO',
             school_id=school.id
         )
@@ -516,11 +437,12 @@ class TestSchoolSetup(BaseTestCase):
     def test_patch_preferences_malformed_dates(self):
         school = add_school('Holy Family Catholic School')
 
-        user = User(
+        user = add_user(
             name='ollie mansell',
             email='test@test.com',
             password='olliepass',
-            role_code=ADMIN,
+            admin=True,
+            role_code=TEACHER,
             staff_code='MAO',
             school_id=school.id
         )
@@ -588,16 +510,15 @@ class TestSchoolSetup(BaseTestCase):
 
         school = add_school('Holy Family Catholic School')
 
-        user = User(
+        user = add_user(
             name='ollie mansell',
             email='test@test.com',
             password='olliepass',
-            role_code=ADMIN,
+            role_code=TEACHER,
+            admin=True,
             staff_code='MAO',
             school_id=school.id
         )
-        db.session.add(user)
-        db.session.commit()
 
         with self.client:
             resp_login = self.client.post(
@@ -668,16 +589,15 @@ class TestSchoolSetup(BaseTestCase):
 
         school = add_school('Holy Family Catholic School')
 
-        user = User(
+        user = add_user(
             name='ollie mansell',
             email='test@test.com',
             password='olliepass',
-            role_code=ADMIN,
+            role_code=TEACHER,
+            admin=True,
             staff_code='MAO',
             school_id=school.id
         )
-        db.session.add(user)
-        db.session.commit()
 
         with self.client:
             resp_login = self.client.post(
@@ -736,17 +656,15 @@ class TestSchoolSetup(BaseTestCase):
 
             school = add_school('Holy Family Catholic School')
 
-            user = User(
+            user = add_user(
                 name='ollie mansell',
-                email='o.mansell@holyfamily.watham.sch.uk',
+                email='test@test.com',
                 password='olliepass',
-                role_code=ADMIN,
+                role_code=TEACHER,
+                admin=True,
                 staff_code='MAO',
                 school_id=school.id
             )
-
-            db.session.add(user)
-            db.session.commit()
 
             with self.client:
                 resp_login = self.client.post(
@@ -790,16 +708,15 @@ class TestSchoolSetup(BaseTestCase):
 
             school = add_school('Holy Family Catholic School')
 
-            user = User(
+            user = add_user(
                 name='ollie mansell',
                 email='test@test.com',
                 password='olliepass',
-                role_code=ADMIN,
+                role_code=TEACHER,
+                admin=True,
                 staff_code='MAO',
                 school_id=school.id
             )
-            db.session.add(user)
-            db.session.commit()
 
             with self.client:
                 resp_login = self.client.post(
@@ -831,17 +748,15 @@ class TestSchoolSetup(BaseTestCase):
 
             school = add_school('Holy Family Catholic School')
 
-            user = User(
+            user = add_user(
                 name='ollie mansell',
                 email='test@test.com',
                 password='olliepass',
-                role_code=ADMIN,
+                role_code=TEACHER,
+                admin=True,
                 staff_code='MAO',
                 school_id=school.id
             )
-            db.session.add(user)
-            db.session.commit()
-
             with self.client:
                 resp_login = self.client.post(
                     '/auth/login',
@@ -875,17 +790,15 @@ class TestSchoolSetup(BaseTestCase):
 
             school = add_school('Holy Family Catholic School')
 
-            user = User(
+            user = add_user(
                 name='ollie mansell',
                 email='test@test.com',
                 password='olliepass',
-                role_code=ADMIN,
+                role_code=TEACHER,
+                admin=True,
                 staff_code='MAO',
                 school_id=school.id
             )
-            db.session.add(user)
-            db.session.commit()
-
             with self.client:
                 resp_login = self.client.post(
                     '/auth/login',
@@ -921,17 +834,15 @@ class TestSchoolSetup(BaseTestCase):
 
             school = add_school('Holy Family Catholic School')
 
-            user = User(
+            user = add_user(
                 name='ollie mansell',
                 email='test@test.com',
                 password='olliepass',
-                role_code=ADMIN,
+                role_code=TEACHER,
+                admin=True,
                 staff_code='MAO',
                 school_id=school.id
             )
-            db.session.add(user)
-            db.session.commit()
-
             with self.client:
                 resp_login = self.client.post(
                     '/auth/login',
@@ -968,17 +879,15 @@ class TestSchoolSetup(BaseTestCase):
 
             school = add_school('Holy Family Catholic School')
 
-            user = User(
+            user = add_user(
                 name='ollie mansell',
                 email='test@test.com',
                 password='olliepass',
-                role_code=ADMIN,
+                role_code=TEACHER,
+                admin=True,
                 staff_code='MAO',
                 school_id=school.id
             )
-            db.session.add(user)
-            db.session.commit()
-
             with self.client:
                 resp_login = self.client.post(
                     '/auth/login',
@@ -1014,16 +923,17 @@ class TestSchoolSetup(BaseTestCase):
 
             school = add_school('Holy Family Catholic School')
 
-            user = User(
+            user = add_user(
                 name='ollie mansell',
                 email='o.mansell@holyfamily.watham.sch.uk',
                 password='olliepass',
-                role_code=ADMIN,
+                role_code=TEACHER,
+                admin=True,
                 staff_code='MAO',
                 school_id=school.id
             )
 
-            user2 = User(
+            user2 = add_user(
                 name='denise baxter',
                 email='d.baxter@holyfamily.watham.sch.uk',
                 password='olliepass',
@@ -1031,9 +941,6 @@ class TestSchoolSetup(BaseTestCase):
                 staff_code='BAD',
                 school_id=school.id
             )
-            db.session.add(user)
-            db.session.add(user2)
-            db.session.commit()
 
             with self.client:
                 resp_login = self.client.post(

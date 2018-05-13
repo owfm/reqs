@@ -18,6 +18,7 @@ import pprint
 
 pp = pprint.PrettyPrinter(indent=4)
 
+
 class TestAuthBlueprint(BaseTestCase):
 
     def test_user_registration(self):
@@ -42,6 +43,7 @@ class TestAuthBlueprint(BaseTestCase):
             self.assertTrue(data['status'] == 'success')
             self.assertTrue(data['message'] == 'Successfully registered.')
             self.assertTrue(data['user'])
+            self.assertTrue(data['user']['name'] == 'justatest')
             self.assertTrue(response.content_type == 'application/json')
             self.assertEqual(response.status_code, 201)
 
@@ -65,7 +67,7 @@ class TestAuthBlueprint(BaseTestCase):
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 400)
             self.assertIn(
-                'Sorry. That user already exists.', data['message'])
+                'That email is already taken.', data['message'])
             self.assertIn('fail', data['status'])
 
     def test_user_registration_invalid_json(self):
@@ -97,7 +99,7 @@ class TestAuthBlueprint(BaseTestCase):
             )
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 400)
-            self.assertIn('Invalid payload.', data['message'])
+            self.assertIn('No name provided.', data['message'])
             self.assertIn('fail', data['status'])
 
     def test_user_registration_invalid_json_keys_no_email(self):
@@ -117,7 +119,7 @@ class TestAuthBlueprint(BaseTestCase):
             )
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 400)
-            self.assertIn('Invalid payload.', data['message'])
+            self.assertIn('No email provided.', data['message'])
             self.assertIn('fail', data['status'])
 
     def test_user_registration_invalid_json_keys_no_password(self):
@@ -137,7 +139,7 @@ class TestAuthBlueprint(BaseTestCase):
             )
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 400)
-            self.assertIn('Invalid payload.', data['message'])
+            self.assertIn('No password provided.', data['message'])
             self.assertIn('fail', data['status'])
 
     def test_registered_user_login(self):
@@ -170,8 +172,6 @@ class TestAuthBlueprint(BaseTestCase):
 
         populate_school_with_reqs(school.id)
 
-
-
         with self.client:
             response = self.client.post(
                 '/auth/login',
@@ -187,7 +187,6 @@ class TestAuthBlueprint(BaseTestCase):
             self.assertTrue(data['user']['token'])
             self.assertTrue(response.content_type == 'application/json')
             self.assertEqual(response.status_code, 200)
-
 
     def test_not_registered_user_login(self):
         with self.client:

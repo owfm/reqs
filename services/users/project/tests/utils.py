@@ -197,11 +197,14 @@ def populate_school_db(
         if s['email'] in taken_emails:
             continue
 
-        new_user = User(
-            name=s['name'], email=s['email'], role_code=s['role_code'],
-            staff_code=s['staff_code'], school_id=school.id,
-            password='password')
-        db.session.add(new_user)
+        add_user(
+            name=s['name'],
+            email=s['email'],
+            password='password',
+            role_code=s['role_code'],
+            staff_code=s['staff_code'],
+            school_id=school.id
+            )
 
     q = User.query.filter_by(
         email="o.mansell@holyfamily.watham.sch.uk").first()
@@ -306,26 +309,42 @@ def populate_school_db(
     db.session.commit()
 
 
-def add_user(name, email, password, role_code, staff_code, school_id):
-    user = User(name=name,
-                email=email,
-                password=password,
-                role_code=role_code,
-                staff_code=staff_code,
-                school_id=school_id)
+def add_user(
+        name, email, password, role_code,
+        staff_code, school_id=None, admin=False):
+
+    user_info = {
+        'name': name,
+        'email': email,
+        'password': password,
+        'role_code': role_code,
+        'staff_code': staff_code,
+        'school_id': school_id,
+        'admin': admin
+    }
+
+    user = User(user_info=user_info)
+
     db.session.add(user)
     db.session.commit()
     return user
 
 
 def add_school(name):
+
     s = School(name=name)
     db.session.add(s)
 
     teacher_email = "teach@" + name + ".com"
 
     teacher = add_user(
-        'Teachy Man', teacher_email, 'password', TEACHER, 'TEA', s.id)
+        name='Teachy Man',
+        email=teacher_email,
+        password='password',
+        role_code=TEACHER,
+        staff_code='TEA',
+        school_id=s.id)
+
     db.session.add(teacher)
 
     room1 = Room(name='Room', school_id=s.id)

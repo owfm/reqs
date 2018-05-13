@@ -10,8 +10,6 @@ from project.api.constants import TEACHER, TECHNICIAN, DATE_FORMAT
 from project.api.reqs import calculate_req_time
 from project.tests.utils import populate_school_db, populate_school_with_reqs
 
-
-
 import pprint
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -77,7 +75,6 @@ class TestReqService(BaseTestCase):
             self.assertEqual(response.status_code, 201)
             self.assertIn('reqtitletest was added!', data['message'])
             self.assertIn('success', data['status'])
-
 
     def test_add_req_no_title(self):
 

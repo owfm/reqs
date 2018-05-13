@@ -8,7 +8,7 @@ from project.tests.base import BaseTestCase
 from project.tests.utils import add_user, add_school, populate_school_db,\
     populate_school_with_reqs
 from project.api.excel import extract_users
-from project.api.constants import ADMIN
+from project.api.constants import TEACHER
 import pprint
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -26,12 +26,12 @@ class TestUserService(BaseTestCase):
         add_user(
             name='Oliver Mansell', staff_code='MAO',
             email='o.mansell@holyfamily.watham.sch.uk', password='password',
-            school_id=school.id, role_code=ADMIN)
+            school_id=school.id, admin=True, role_code=TEACHER)
         # admin2
         add_user(
             name='Oliver Mansell', staff_code='MAO',
             email='omansell@lgflmail.org', password='password',
-            school_id=school2.id, role_code=ADMIN)
+            school_id=school2.id, admin=True, role_code=TEACHER)
 
         wb, staff = extract_users("project/api/staffinfo.xlsx")
         wb, staff2 = extract_users("project/api/staffinfo_school2.xlsx")
@@ -40,7 +40,7 @@ class TestUserService(BaseTestCase):
             if s['email'] == "o.mansell@holyfamily.watham.sch.uk":
                 continue
 
-            new_user = User(
+            new_user = add_user(
                 name=s['name'], email=s['email'], role_code=s['role_code'],
                 staff_code=s['staff_code'], school_id=school.id,
                 password='password')
@@ -50,11 +50,10 @@ class TestUserService(BaseTestCase):
             if s['email'] == "omansell@lgflmail.org":
                 continue
 
-            new_user = User(
+            new_user = add_user(
                 name=s['name'], email=s['email'], role_code=s['role_code'],
                 staff_code=s['staff_code'], school_id=school2.id,
                 password='password')
-            db.session.add(new_user)
         db.session.commit()
 
         with self.client:
@@ -86,14 +85,14 @@ class TestUserService(BaseTestCase):
         school2 = add_school(name='Trinity College')
         # admin1
         add_user(
-            name='Oliver Mansell', staff_code='MAO',
+            name='Oliver Mansell', staff_code='MAO', role_code=TEACHER,
             email='o.mansell@holyfamily.watham.sch.uk', password='password',
-            school_id=school.id, role_code=ADMIN)
+            school_id=school.id, admin=True)
         # admin2
         add_user(
             name='Oliver Mansell', staff_code='MAO',
             email='omansell@lgflmail.org', password='password',
-            school_id=school2.id, role_code=ADMIN)
+            school_id=school2.id, admin=True, role_code=TEACHER)
 
         wb, staff = extract_users("project/api/staffinfo.xlsx")
         wb, staff2 = extract_users("project/api/staffinfo_school2.xlsx")
@@ -102,7 +101,7 @@ class TestUserService(BaseTestCase):
             if s['email'] == "o.mansell@holyfamily.watham.sch.uk":
                 continue
 
-            new_user = User(
+            new_user = add_user(
                 name=s['name'], email=s['email'], role_code=s['role_code'],
                 staff_code=s['staff_code'], school_id=school.id,
                 password='password')
@@ -112,7 +111,7 @@ class TestUserService(BaseTestCase):
             if s['email'] == "omansell@lgflmail.org":
                 continue
 
-            new_user = User(
+            new_user = add_user(
                 name=s['name'], email=s['email'], role_code=s['role_code'],
                 staff_code=s['staff_code'], school_id=school2.id,
                 password='password')
@@ -149,12 +148,12 @@ class TestUserService(BaseTestCase):
         add_user(
             name='Oliver Mansell', staff_code='MAO',
             email='o.mansell@holyfamily.watham.sch.uk', password='password',
-            school_id=school.id, role_code=ADMIN)
+            school_id=school.id, admin=True, role_code=TEACHER)
         # admin2
         add_user(
             name='Oliver Mansell', staff_code='MAO',
             email='omansell@lgflmail.org', password='password',
-            school_id=school2.id, role_code=ADMIN)
+            school_id=school2.id, admin=True, role_code=TEACHER)
 
         wb, staff = extract_users("project/api/staffinfo.xlsx")
         wb, staff2 = extract_users("project/api/staffinfo_school2.xlsx")
@@ -163,21 +162,19 @@ class TestUserService(BaseTestCase):
             if s['email'] == "o.mansell@holyfamily.watham.sch.uk":
                 continue
 
-            new_user = User(
+            new_user = add_user(
                 name=s['name'], email=s['email'], role_code=s['role_code'],
                 staff_code=s['staff_code'], school_id=school.id,
                 password='password')
-            db.session.add(new_user)
 
         for s in staff2:
             if s['email'] == "omansell@lgflmail.org":
                 continue
 
-            new_user = User(
+            new_user = add_user(
                 name=s['name'], email=s['email'], role_code=s['role_code'],
                 staff_code=s['staff_code'], school_id=school2.id,
                 password='password')
-            db.session.add(new_user)
         db.session.commit()
 
         with self.client:
@@ -210,12 +207,12 @@ class TestUserService(BaseTestCase):
         add_user(
             name='Oliver Mansell', staff_code='MAO',
             email='o.mansell@holyfamily.watham.sch.uk', password='password',
-            school_id=school.id, role_code=ADMIN)
+            school_id=school.id, admin=True, role_code=TEACHER)
         # admin2
         add_user(
             name='Oliver Mansell', staff_code='MAO',
             email='omansell@lgflmail.org', password='password',
-            school_id=school2.id, role_code=ADMIN)
+            school_id=school2.id, admin=True, role_code=TEACHER)
 
         wb, staff = extract_users("project/api/staffinfo.xlsx")
         wb, staff2 = extract_users("project/api/staffinfo_school2.xlsx")
@@ -224,7 +221,7 @@ class TestUserService(BaseTestCase):
             if s['email'] == "o.mansell@holyfamily.watham.sch.uk":
                 continue
 
-            new_user = User(
+            new_user = add_user(
                 name=s['name'], email=s['email'], role_code=s['role_code'],
                 staff_code=s['staff_code'], school_id=school.id,
                 password='password')
@@ -234,7 +231,7 @@ class TestUserService(BaseTestCase):
             if s['email'] == "omansell@lgflmail.org":
                 continue
 
-            new_user = User(
+            new_user = add_user(
                 name=s['name'], email=s['email'], role_code=s['role_code'],
                 staff_code=s['staff_code'], school_id=school2.id,
                 password='password')
@@ -269,7 +266,7 @@ class TestUserService(BaseTestCase):
         add_user(
             name='Oliver Mansell', staff_code='MAO',
             email='o.mansell@holyfamily.watham.sch.uk', password='password',
-            school_id=school.id, role_code=ADMIN)
+            school_id=school.id, admin=True, role_code=TEACHER)
 
         populate_school_db(school.id)
 

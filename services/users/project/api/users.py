@@ -7,7 +7,6 @@ from flask import Blueprint, jsonify, request
 from project.api.models import User, School
 from project import db
 from project.api.utils import authenticate, authenticate_admin
-from project.api.constants import ADMIN
 
 import pprint
 
@@ -84,7 +83,7 @@ def register_admin():
                 name=name,
                 email=email,
                 password=password,
-                role_code=ADMIN,
+                admin=True,
                 school_id=school.id,
                 staff_code=staff_code))
             db.session.commit()

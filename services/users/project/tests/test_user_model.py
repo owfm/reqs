@@ -40,27 +40,24 @@ class TestUserModel(BaseTestCase):
             'MAO',
             school.id)
 
-        duplicate_user = User(
-                name='justatest',
-                email='test@test.com',
-                password='test',
-                role_code=TEACHER,
-                staff_code='MAO',
-                school_id=school.id)
-        db.session.add(duplicate_user)
-        self.assertRaises(IntegrityError, db.session.commit)
+        user_info = {
+            'name': 'test',
+            'email': 'test@test.com',
+            'password': 'password',
+            'role_code': TEACHER,
+            'staff_code': 'KEO',
+            'school_id': school.id,
+            'admin': True
+        }
 
-    # def test_to_json(self):
-    #     school = add_school('testschool')
-    #
-    #     user = add_user(
-    #         'justatest',
-    #         'test@test.com',
-    #         'test',
-    #         TEACHER,
-    #         'MAO',
-    #         school.id)
-    #     self.assertTrue(isinstance(user.to_json(), dict))
+        new_user = User(user_info=user_info)
+
+        db.session.add(new_user)
+
+        self.assertRaises(
+            IntegrityError,
+            db.session.commit()
+        )
 
     def test_passwords_are_random(self):
         school = add_school('testschool')

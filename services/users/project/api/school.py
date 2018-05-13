@@ -10,6 +10,7 @@ import re
 from project import db
 
 from project.api.models import User, School, Site
+from project.tests.utils import add_user
 from project.api.excel import extract_users
 from project.api.school_utils import process_preferences, get_week_number
 from project.api.utils import authenticate, authenticate_admin
@@ -305,7 +306,7 @@ def prepare_staff_accounts(resp, school_id):
             skipped_emails.append(s['email'])
             continue
 
-        new_user = User(name=s['name'], email=s['email'],
+        new_user = add_user(name=s['name'], email=s['email'],
                         password='password', role_code=s['role_code'],
                         staff_code=s['staff_code'], school_id=school.id)
 
