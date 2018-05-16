@@ -1,6 +1,6 @@
 import { alertConstants } from '../_constants';
 
-export function alert(state = {}, action) {
+export function alerts(state = {open: false, message: ''}, action) {
   switch (action.type) {
     case alertConstants.FLASH:
       return {
@@ -10,7 +10,8 @@ export function alert(state = {}, action) {
 
     case alertConstants.CLEAR:
       return {
-        open: false
+        open: false,
+        message: ''
       };
     default:
       return state

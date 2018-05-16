@@ -1,7 +1,8 @@
-import { userConstants } from '../_constants';
+import { userConstants, schoolConstants, lessonConstants } from '../_constants';
 import { userService } from '../_services';
 import { alertActions } from './';
 import { history } from '../_helpers';
+
 
 export const userActions = {
     login,
@@ -17,8 +18,16 @@ function login(email, password) {
 
         userService.login(email, password)
             .then(
-                user => {
-                    dispatch(success(user));
+                response => {
+
+                    dispatch(success_user(response.user));
+                    dispatch(success_school(response.school));
+
+                    // lessons only returned if user is teacher
+                    if (response.lessons) {
+                      dispatch(success_lessons(response.lessons));
+                    }
+
                     history.push('/');
                 },
                 error => {
@@ -29,7 +38,10 @@ function login(email, password) {
     };
 
     function request(user) { return { type: userConstants.LOGIN_REQUEST, user } }
-    function success(user) { return { type: userConstants.LOGIN_SUCCESS, user } }
+    function success_user(user) { return { type: userConstants.LOGIN_SUCCESS, user } }
+    function success_school(school) {return { type: schoolConstants.SCHOOL_SUCCESS, school } }
+    function success_lessons(items) { return { type: lessonConstants.LESSONS_SUCCESS, items } }
+
     function failure() { return { type: userConstants.LOGIN_FAILURE } }
 }
 

@@ -1,14 +1,19 @@
 import { combineReducers } from 'redux';
-import { reqs } from './req.reducer';
 import { authentication } from './authentication.reducer';
 import { registration } from './registration.reducer';
-import { alert } from './alert.reducer';
+import { reqs } from './reqs.reducer';
+import { alerts } from './alerts.reducer';
+import { lessons } from './lessons.reducer';
+import { school } from './school.reducer';
+
 
 const rootReducer = combineReducers({
   authentication,
   registration,
   reqs,
-  alert
+  school,
+  alerts,
+  lessons
 });
 
 export default rootReducer;

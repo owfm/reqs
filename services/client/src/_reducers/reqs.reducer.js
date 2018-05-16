@@ -38,11 +38,11 @@ export function reqs(state = {}, action) {
           [...state, ...action.reqs]
 
 
-      // case reqConstants.REQ_FAILURE:
-      //   return {
-      //     loading: false,
-      //     error: action.error
-      //   }
+      case reqConstants.REQ_FAILURE:
+        return {
+          loading: false,
+          error: action.error
+        }
 
       default:
         return state;

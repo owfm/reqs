@@ -16,18 +16,14 @@ function login(email, password) {
 
     return axios.post(url, {email, password})
         .then((response) => {
+            console.log('\n\n\n\n\n\n\n\n')
+            console.log(response);
             // login successful if there's a jwt token in the response
-            if (response.data.user && response.data.user.token) {
+            if (response.data.user && response.data.school && response.data.user.token) {
                 // store user details and jwt token in local storage to keep user logged in between page refreshes
                 localStorage.setItem('user', JSON.stringify(response.data.user));
-                localStorage.setItem('school', JSON.stringify(response.data.school));
-                try {
-                  localStorage.setItem('lessons', JSON.stringify(response.data.lessons));
-                } catch (err) {
-                  console.error(err);
-                }
 
-                return response.data.user;
+                return response.data;
             }
         });
 }

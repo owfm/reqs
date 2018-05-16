@@ -3,7 +3,7 @@ import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
 import AppBar from 'material-ui/AppBar';
 
-import { Link } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 
 import { connect } from 'react-redux';
 
@@ -44,9 +44,9 @@ class Navigation extends React.Component {
           open={this.state.open}
           onRequestChange={(open) => this.setState({open})}
         >
-          <MenuItem onClick={this.handleClose}><Link to='/me'>{user.name}</Link></MenuItem>
-          <MenuItem onClick={this.handleClose}><Link to='/week'>Teach</Link></MenuItem>
-          <MenuItem onClick={this.handleClose}><Link to='/logout'>Logout</Link></MenuItem>
+          <MenuItem onClick={this.handleClose}><Redirect to='/me'>{user.name}</Redirect></MenuItem>
+          <MenuItem onClick={this.handleClose}><Redirect to='/week'>Teach</Redirect></MenuItem>
+          {/* <MenuItem onClick={this.handleClose}><Redirect to='/logout'>Logout</Redirect></MenuItem> */}
 
         </Drawer>
       </div>

@@ -4,8 +4,8 @@ import { alertActions } from './';
 import { history } from '../_helpers';
 
 export const reqActions = {
-    getReqs,
-    getReq
+  getReqs,
+  getReq
 };
 
 function getReqs(from, to, all=false) {
@@ -15,13 +15,13 @@ function getReqs(from, to, all=false) {
     dispatch(request())
 
     reqService.getReqs(from, to, all)
-      .then(
-        response => {
-          dispatch(success(response.data.data));
-          dispatch(alertActions.flash('Reqs loaded successfully.'));
-        },
-        error => {dispatch(alertActions.flash(error.message))}
-      );
+    .then(
+      response => {
+        dispatch(success(response.data.data));
+        dispatch(alertActions.flash('Reqs loaded successfully.'));
+      },
+      error => {dispatch(alertActions.flash(error.message))}
+    );
 
   }
   function request() { return { type: reqConstants.REQS_REQUEST } }
@@ -31,25 +31,26 @@ function getReqs(from, to, all=false) {
 }
 
 function getReq(id) {
-    return dispatch => {
+  return dispatch => {
 
-        dispatch(request({ id }));
+    dispatch(request({ id }));
 
-        reqService.getReq(id)
-            .then(
-                req => {
-                    dispatch(success(req));
-                    // TODO: BROWSER HISTORY HERE
-                    // history.push(`/req/${id}`);
-                },
-                error => {
-                    dispatch(failure(error.response.data.message));
-                    dispatch(alertActions.error(error.response.data.message));
-                }
-            );
-    };
+    reqService.getReq(id)
+      .then(
+        req => {
+          console.log(req);
+          dispatch(success(req));
+          // TODO: BROWSER HISTORY HERE
+          // history.push(`/req/${id}`);
+        },
+        error => {
+          console.table(error);
+          dispatch(failure(error.message));
+        }
+      );
+  };
 
-    function request(id) { return { type: reqConstants.REQ_REQUEST, id } }
-    function success(req) { return { type: reqConstants.REQ_SUCCESS, req } }
-    function failure(error) { return { type: reqConstants.REQ_FAILURE, error } }
+  function request(id) { return { type: reqConstants.REQ_REQUEST, id } }
+  function success(req) { return { type: reqConstants.REQ_SUCCESS, req } }
+  function failure(error) { return { type: reqConstants.REQ_FAILURE, error } }
 }

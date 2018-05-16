@@ -1,9 +1,11 @@
 import { authHeader } from '../_helpers';
 import axios from 'axios';
+import moment from 'moment';
 
 export const reqService = {
   getReq,
-  getReqs
+  getReqs,
+  reqsAreStale
 }
 
 function getReq(id) {
@@ -21,7 +23,6 @@ function getReq(id) {
 
 function getReqs(from, to, all) {
 
-
   const url = `${process.env.REACT_APP_USERS_SERVICE_URL}/reqs`;
 
   const params = { from, to, all }
@@ -33,14 +34,13 @@ function getReqs(from, to, all) {
       params
     },
   )
-  .then((response) => {
-    if (response.data.data) {
-      localStorage.setItem('reqs', JSON.stringify(response.data.data));
-    }
-    return response;
-  })
-  .then(handleResponse);
+    .then(handleResponse);
 };
+
+
+function reqsAreStale(state) {
+  return moment().diff(state.reqs.updatedOn, 'seconds') > 1000;
+}
 
 
 function handleResponse(response) {

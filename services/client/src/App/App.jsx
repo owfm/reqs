@@ -1,11 +1,11 @@
 import React from 'react';
-import { Router, Route } from 'react-router-dom';
+import { Router, Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { history } from '../_helpers';
 
 import { alertActions, reqActions } from '../_actions';
 
-import { PrivateRoute } from '../_components';
+import { PrivateRoute, TestPage } from '../_components';
 
 import { HomePage } from '../HomePage';
 import { LoginPage } from '../LoginPage';
@@ -23,7 +23,7 @@ class App extends React.Component {
         const { dispatch } = this.props;
         history.listen((location, action) => {
             // clear alert on location change
-            dispatch(alertActions.clear());
+            // dispatch(alertActions.clear());
         });
     }
 
@@ -31,28 +31,27 @@ class App extends React.Component {
     }
 
     render() {
-        const { alert, dispatch } = this.props;
+        const { alerts, authentication } = this.props;
+
         return (
           <div>
 
             <Snackbar
-              open={alert.open}
-              message={alert.message}
+              open={alerts.open}
+              message={alerts.message}
               autoHideDuration={4000}
             />
-
-            <Navigation />
-
 
             <Router history={history}>
                 <div>
                     <PrivateRoute exact path="/" component={HomePage} />
-                    <PrivateRoute path="/week" component={DisplayWeekContainer} />
+                    <PrivateRoute exact path="/test" component={TestPage} />
+                    <PrivateRoute exact path="/requisition/:id" component={ReqFullContainer} />
+                    <PrivateRoute exact path="/week" component={DisplayWeekContainer} />
 
                     <Route path="/login" component={LoginPage} />
                     <Route path="/register" component={RegisterPage} />
                     <Route path="/logout" component={Logout} />
-                    <Route path="/requisition/:id" component={ReqFullContainer} />
 
                 </div>
             </Router>
@@ -62,10 +61,10 @@ class App extends React.Component {
 }
 
 function mapStateToProps(state) {
-    const { alert, reqs } = state;
+    const { alerts, authentication } = state;
     return {
-        alert,
-        reqs
+        alerts,
+        authentication
     };
 }
 
