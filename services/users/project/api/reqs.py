@@ -112,9 +112,7 @@ def get_all_reqs(resp):
 
     user = User.query.get(resp)
 
-    response_object = {
-
-    }
+    response_object = {}
 
     try:
         reqs = get_reqs_from_query_arguments(request.args, user)
@@ -124,18 +122,22 @@ def get_all_reqs(resp):
         return jsonify(response_object), 400
 
     response_object['status'] = 'success'
+
+    if len(reqs) == 0:
+        response_object['EMPTY'] = True
+
     response_object['data'] = reqs
     return jsonify(response_object), 200
 
 
 def get_reqs_from_query_arguments(request_args, user):
 
-    if not (request.args.get('from') and request.args.get('to')):
+    if not (request_args.get('from') and request_args.get('to')):
         raise ValueError('Please provide date queries.')
 
     try:
-        from_date = datetime.strptime(request.args.get('from'), DATE_FORMAT)
-        to_date = datetime.strptime(request.args.get('to'), DATE_FORMAT)
+        from_date = datetime.strptime(request_args.get('from'), DATE_FORMAT)
+        to_date = datetime.strptime(request_args.get('to'), DATE_FORMAT)
     except ValueError as e:
         raise ValueError(e)
 
@@ -151,7 +153,9 @@ def get_reqs_from_query_arguments(request_args, user):
 
     # if teacher, filter reqs to only give own reqs unless 'all' query supplied
 
-    if user.role_code == TEACHER and not request.args.get('all'):
+    all = True if request_args.get('all') == 'true' else False
+
+    if user.role_code == TEACHER and not all:
         return [req for req in reqs if req['user_id'] == user.id]
     else:
         return reqs

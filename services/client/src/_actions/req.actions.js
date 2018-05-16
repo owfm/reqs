@@ -8,15 +8,19 @@ export const reqActions = {
     getReq
 };
 
-function getReqs(from, to) {
+function getReqs(from, to, all=false) {
+
   return dispatch => {
 
     dispatch(request())
 
-    reqService.getReqs(from, to)
+    reqService.getReqs(from, to, all)
       .then(
-        response => {dispatch(success(response.data.data.reqs))},
-        error => {dispatch(failure(error))}
+        response => {
+          dispatch(success(response.data.data));
+          dispatch(alertActions.flash('Reqs loaded successfully.'));
+        },
+        error => {dispatch(alertActions.flash(error.message))}
       );
 
   }

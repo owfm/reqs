@@ -158,29 +158,3 @@ def get_lessons(user):
     if lessons:
         return lessons
     raise ValueError('No lessons')
-
-
-@auth_blueprint.route('/auth/logout', methods=['GET'])
-def logout_user():
-    # get auth token
-    auth_header = request.headers.get('Authorization')
-    response_object = {
-        'status': 'fail',
-        'message': 'Provide a valid auth token.'
-    }
-    if auth_header:
-        auth_token = auth_header.split(' ')[1]
-        resp = User.decode_auth_token(auth_token)
-        if not isinstance(resp, str):
-            user = User.query.filter_by(id=resp).first()
-            if not user:
-                return jsonify(response_object), 401
-            else:
-                response_object['status'] = 'success'
-                response_object['message'] = 'Successfully logged out.'
-                return jsonify(response_object), 200
-        else:
-            response_object['message'] = resp
-            return jsonify(response_object), 401
-    else:
-        return jsonify(response_object), 403

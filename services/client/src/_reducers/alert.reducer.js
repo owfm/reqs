@@ -2,18 +2,16 @@ import { alertConstants } from '../_constants';
 
 export function alert(state = {}, action) {
   switch (action.type) {
-    case alertConstants.SUCCESS:
+    case alertConstants.FLASH:
       return {
-        type: 'alert-success',
+        open: true,
         message: action.message
       };
-    case alertConstants.ERROR:
-      return {
-        type: 'alert-danger',
-        message: action.message
-      };
+
     case alertConstants.CLEAR:
-      return {};
+      return {
+        open: false
+      };
     default:
       return state
   }

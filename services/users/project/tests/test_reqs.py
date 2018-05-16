@@ -14,22 +14,6 @@ pp = pprint.PrettyPrinter(indent=4)
 
 
 class TestReqService(BaseTestCase):
-    # """Tests for the Req Service."""
-    # def test_calculate_req_time(self):
-    #
-    #     school = School(name='Holy Family Catholic School')
-    #     db.session.add(school)
-    #     db.session.commit()
-    #
-    #     populate_school_db(school.id)
-    #
-    #     populate_school_with_reqs(school.id)
-    #
-    #     db.session.add(School(name='testSchool'))
-    #
-    #     db.session.commit()
-    #
-    #     time = calculate_req_time(161, '16-04-18')
 
     def test_add_req(self):
         """Ensure a new req can be added to the database."""
@@ -901,7 +885,6 @@ class TestReqService(BaseTestCase):
         """ensure get /reqs as technician returns that schools reqs only"""
 
         school1 = add_school(name='testschool1')
-        """ensure get /reqs as teacher returns that teachers reqs only"""
         school2 = add_school(name='testschool2')
 
         teacher1 = add_user(

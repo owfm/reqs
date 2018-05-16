@@ -259,14 +259,30 @@ class TestUserService(BaseTestCase):
             self.assertIn("Isaac", data['data']['name'])
             self.assertEqual(response.status_code, 200)
 
-    def test_populate_db_function(self):
-        school = add_school(name='Holy Family Catholic School')
-        # admin
+    def test_email_check(self):
+
+        school = add_school('holyfamily')
         add_user(
             name='Oliver Mansell', staff_code='MAO',
             email='o.mansell@holyfamily.watham.sch.uk', password='password',
             school_id=school.id, admin=True, role_code=TEACHER)
 
-        populate_school_db(school.id)
+        with self.client:
+            response = self.client.get(
+                '/checkemail?email=not@email.com',
+                content_type='application/json'
+                )
 
-        populate_school_with_reqs(school.id)
+            data = json.loads(response.data.decode())
+
+            self.assertTrue(data['available'])
+
+        with self.client:
+            response = self.client.get(
+                '/checkemail?email=o.mansell@holyfamily.watham.sch.uk',
+                content_type='application/json'
+                )
+
+            data = json.loads(response.data.decode())
+
+            self.assertFalse(data['available'])

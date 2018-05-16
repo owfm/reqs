@@ -16,6 +16,9 @@ class HomePage extends React.Component {
 
                 <p>
                     <Link to="/login">Logout</Link>
+                    <br/>
+                    <Link to="/week">Teach</Link>
+
                 </p>
             </div>
         );
@@ -23,11 +26,10 @@ class HomePage extends React.Component {
 }
 
 function mapStateToProps(state) {
-    const { users, authentication } = state;
+    const { authentication } = state;
     const { user } = authentication;
     return {
-        user,
-        users
+        user
     };
 }
 

@@ -1,0 +1,104 @@
+.req-small {
+  cursor: pointer;
+  padding: 5px;
+  border: 1px solid palevioletred;
+  display:grid;
+  grid-template-columns: auto 1fr 10px;
+  grid-template-rows: auto 1fr;
+  justify-items: start;
+  align-items: end;
+  position: relative;
+  border-radius: 5px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  -webkit-transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.req-small:hover {
+  background: rgb(240,240,240);
+}
+
+.add-req-label {
+  font-size: small;
+  visibility: hidden;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 50%;
+  transform: translateX(-50%);
+  font-weight: bold;
+  background: palevioletred;
+  color: white;
+  padding: 3px;
+  border-radius: 2px;
+}
+
+.req-small:hover > .add-req-label {
+  visibility: visible;
+}
+
+.status-bar {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 42px;
+  height: 16px;
+  border-radius: 3px;
+}
+
+.done {
+  background: #dff0d8;
+}
+
+.issue {
+  background: #f2dede;
+}
+
+.pending {
+  background: #d9edf7;
+}
+
+.req-small::after {
+  content: "";
+  border-radius: 5px;
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  -webkit-transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.req-small:hover::after {
+    opacity: 1;
+}
+
+.req-small h1 {
+  padding-right: 5px;
+  margin:0;
+  font-size: 16px;
+  font-weight: 600;
+  justify-self: start;
+  align-self: start;
+
+}
+
+.req-small h3 {
+  padding: 5px;
+  margin:0;
+  color: darkgrey;
+  font-size: 12px;
+  justify-self: start;
+  align-self: end;
+}
+
+.req-mini-info-box {
+  grid-column-start: 1;
+  grid-column-end: -2;
+  place-self: start;
+}

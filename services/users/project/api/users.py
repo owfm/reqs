@@ -15,33 +15,19 @@ pp = pprint.PrettyPrinter(indent=4)
 users_blueprint = Blueprint('users', __name__, template_folder='./templates')
 
 
-@users_blueprint.route('/checkemail', methods=['POST'])
+@users_blueprint.route('/checkemail', methods=['GET'])
 def check_email():
 
     ''' checks to see if an email exists in database '''
 
-    post_data = request.get_json()
-    response_object = {
-        'status': 'fail',
-        'message': 'Invalid payload'
-    }
+    email = request.args.get('email')
 
-    if not post_data:
-        return jsonify(response_object)
-    email = post_data.get('email')
-    try:
-        user = User.query.filter(User.email == email).first()
-        if not user:
-            response_object['status'] = 'success'
-            response_object['message'] = 'User not found.'
-            return jsonify(response_object), 200
-        else:
-            response_object['status'] = 'success'
-            response_object['message'] = 'User found.'
-            return jsonify(response_object), 200
+    user = User.query.filter(User.email == email).first()
 
-    except ValueError as e:
-        return jsonify(response_object), 400
+    if not user:
+        return jsonify({'available': True}), 200
+    else:
+        return jsonify({'available': False}), 200
 
 
 @users_blueprint.route('/ping', methods=['GET'])

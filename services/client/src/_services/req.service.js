@@ -19,13 +19,12 @@ function getReq(id) {
 }
 
 
-function getReqs(from, to) {
+function getReqs(from, to, all) {
 
-  console.log('getReqs service \n');
 
   const url = `${process.env.REACT_APP_USERS_SERVICE_URL}/reqs`;
 
-  const params = { from, to };
+  const params = { from, to, all }
 
   return axios.get(
     url,
@@ -34,22 +33,14 @@ function getReqs(from, to) {
       params
     },
   )
+  .then((response) => {
+    if (response.data.data) {
+      localStorage.setItem('reqs', JSON.stringify(response.data.data));
+    }
+    return response;
+  })
   .then(handleResponse);
 };
-
-// function getLesson(id)
-//
-//
-// function getLessons(userId)
-//
-//
-// function postReq(req)
-// title
-// equipment
-// notes
-// lesson id
-// filenames
-// week beginning date
 
 
 function handleResponse(response) {
