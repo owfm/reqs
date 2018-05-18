@@ -62,4 +62,4 @@ const TechnicianReqOptionButtons = (props) => {
 
 };
 
-export default TechnicianReqOptionButtons;
+export { TechnicianReqOptionButtons };

@@ -5,15 +5,26 @@ import { reqs } from './reqs.reducer';
 import { alerts } from './alerts.reducer';
 import { lessons } from './lessons.reducer';
 import { school } from './school.reducer';
+import { filters } from './filter.reducer';
 
 
-const rootReducer = combineReducers({
+
+
+const appReducer = combineReducers({
   authentication,
   registration,
   reqs,
   school,
   alerts,
-  lessons
+  lessons,
+  filters
 });
+
+const rootReducer = (state, action) => {
+  if (action.type === 'USERS_LOGOUT') {
+    state = undefined
+  }
+  return appReducer(state, action)
+}
 
 export default rootReducer;

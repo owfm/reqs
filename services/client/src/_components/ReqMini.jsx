@@ -35,12 +35,8 @@ class ReqMini extends React.Component {
 
 
 
-    if (this.state.redirect && type === 'requisition') {
-      return <Redirect push to={`requisition/${id}`} />
-    }
-
-    if (this.state.redirect && type === 'lesson') {
-      return <Redirect push to={`submit/${id}`} />
+    if (this.state.redirect) {
+      return <Redirect push to={`${type}/${id}`} />
     }
 
     return (

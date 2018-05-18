@@ -1,8 +1,10 @@
 import React from 'react';
 import { Redirect } from 'react-router';
+import { connect } from 'react-redux';
 
 import { reqActions, alertActions } from '../_actions';
-import { connect } from 'react-redux';
+
+import { ReqFull } from './';
 
 class ReqFullContainer extends React.Component {
   constructor(props) {
@@ -11,26 +13,22 @@ class ReqFullContainer extends React.Component {
 
   componentDidMount() {
 
-    const { dispatch } = this.props;
-    const { items } = this.props.reqs;
-    const { id } = this.props.match.params;
 
-    try {
-      const req = items.find(req => req.id == id);
-    } catch (err) {
-      dispatch(reqActions.getReq(id));
-      // console.log(err)
+
+
     }
-
-  }
 
   render() {
 
-    const { reqs, dispatch } = this.props;
-    const { id } = this.props.match.params;
+    const { dispatch, history, reqs, lessons } = this.props;
+    const { id, type } = this.props.match.params;
+
+    const session = type === 'requisition' ?
+      reqs.items.find((req) => req.id == id) :
+      lessons.items.find((lesson) => lesson.id == id);
 
     if (reqs.loading) {
-      return(<div>Loading...</div>);
+      return(<div>Twats...</div>);
     }
 
     if (reqs.error) {
@@ -38,22 +36,23 @@ class ReqFullContainer extends React.Component {
       return <Redirect push to='/week' />
     }
 
-    // const req = reqs.items.find(req => req.id == id);
-
-
+    if (!session) {
+      dispatch(alertActions.flash("Not found!"))
+      return <Redirect push to='/week' />
+    }
 
     return (
-      null
-      // <div>{req.title}</div>
+      <ReqFull history={history} session={session} />
     )
   }
 }
 
 
 function mapStateToProps(state) {
-    const { reqs } = state;
+    const { reqs, lessons } = state;
     return {
-      reqs
+      reqs,
+      lessons
     };
 }
 

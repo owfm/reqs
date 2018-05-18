@@ -1,7 +1,9 @@
 import React from 'react';
-import { UserCode } from '../utils/Constants';
-import TeacherReqOptionButtons from './TeacherReqOptionButtons';
-import TechnicianReqOptionButtons from './TechnicianReqOptionButtons';
+import { appConstants } from '../_constants';
+import {
+  TeacherReqOptionButtons,
+  TechnicianReqOptionButtons
+} from './';
 
 import styled from 'styled-components';
 
@@ -21,11 +23,11 @@ const ReqInputLabel = styled.h4`
   font-weight: 600;
 `
 
-const ReactFullForm = (props) => {
+const ReqFullForm = (props) => {
 
-  const roleCode = props.roleCode;
-  const type = props.req.type;
-  const isEditing = props.isEditing;
+  const { roleCode, isEditing } = props;
+  const { type } = props.req;
+  const { UserCode } = appConstants;
 
   return (
 
@@ -83,4 +85,6 @@ const ReactFullForm = (props) => {
 
 };
 
-export default ReactFullForm;
+
+
+export { ReqFullForm };

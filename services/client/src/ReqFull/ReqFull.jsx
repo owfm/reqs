@@ -1,16 +1,14 @@
 import React from 'react';
-import Loading from './Loading';
 import { postReqEdit, postNewReq } from '../utils/Helpers';
-import ReqFullForm from './ReqFullForm';
-import ReqIssueInfo from './ReqIssueInfo';
-import { ReqHeader } from './ReqHeader';
+import { ReqFullForm, ReqHeader, ReqIssueInfo } from '/';
+
 import './ReqFull.css';
 
 class ReqFull extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      req: {...this.props.req},
+      req: {...this.props.session},
       valid: false,
       isEditing: false,
     }
@@ -19,12 +17,17 @@ class ReqFull extends React.Component {
     this.handleEditClick = this.handleEditClick.bind(this);
     this.handleEditReq = this.handleEditReq.bind(this);
     this.handlePostNewReq = this.handlePostNewReq.bind(this);
+    this.goBack = this.goBack.bind(this);
+  }
+
+  goBack(){
+    this.props.history.goBack();
   }
 
   handlePostNewReq (e) {
     e.preventDefault();
     const data = {
-      'lesson_id': this.props.req.id,
+      'lesson_id': this.props.session.id,
       'title': this.state.req.title,
       'equipment': this.state.req.equipment,
       'notes': this.state.req.notes,
@@ -35,7 +38,6 @@ class ReqFull extends React.Component {
     .then((res) => {
       this.props.emitSnackbar(res.data.message);
       this.props.updateStateWithNewOrEditedReq(res.data.data);
-      this.props.handleModalClose();
     })
     .catch((err) => this.props.emitSnackbar(err))
   }
@@ -48,20 +50,17 @@ class ReqFull extends React.Component {
     if (isEditing){
       // discard changes, revert back to props.
       this.setState ({
-        req: {title: this.props.req.title,
-              equipment: this.props.req.equipment,
-              notes: this.props.req.notes}
+        req: {title: this.props.session.title,
+              equipment: this.props.session.equipment,
+              notes: this.props.session.notes}
             })
         isEditing: false
     }
-    this.setState({
-      isEditing: !isEditing
-    })
   }
 
   handleEditReq(e) {
     e.preventDefault();
-    postReqEdit(this.props.req, this.state.req)
+    postReqEdit(this.props.session, this.state.req)
     .then((res) => {
       this.setState({
         isEditing: false,
@@ -89,24 +88,24 @@ class ReqFull extends React.Component {
 
   render() {
 
-    if (this.props.req) {
+    if (this.props.session) {
 
-      const isEditing = this.state.isEditing;
-      const hasIssue = this.props.req.hasIssue;
+      const hasIssue = this.props.session.hasIssue;
       const valid = this.state.valid;
 
       return(
 
         <div>
 
-        <ReqHeader req={this.props.req}/>
+        <button onClick={this.goBack}>Back</button>
+
+        <ReqHeader req={this.props.session}/>
 
         <ReqFullForm
           handlePostNewReq={this.handlePostNewReq}
           handleModalClose={this.props.handleModalClose}
           handlePostNewReq={this.handlePostNewReq}
           handleEditReq={this.handleEditReq}
-          isEditing={isEditing}
           valid={valid}
           handleInputChange={this.handleInputChange}
           req={this.state.req}
@@ -114,12 +113,12 @@ class ReqFull extends React.Component {
           roleCode={this.props.roleCode}
         />
 
-        {hasIssue && <ReqIssueInfo req={this.props.req}/>}
+        {hasIssue && <ReqIssueInfo req={this.props.session}/>}
 
       </div>
     )} else {
       return (
-        <Loading />
+        <div>Loading...</div>
       )
     }
   }
@@ -127,4 +126,4 @@ class ReqFull extends React.Component {
 
 
 
-export default ReqFull;
+export { ReqFull };

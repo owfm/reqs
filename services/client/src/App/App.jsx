@@ -1,18 +1,16 @@
 import React from 'react';
 import { Router, Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
+
 import { history } from '../_helpers';
-
 import { alertActions, reqActions } from '../_actions';
-
-import { PrivateRoute, TestPage } from '../_components';
+import { PrivateRoute, TestPage, Navigation, Logout } from '../_components';
 
 import { HomePage } from '../HomePage';
 import { LoginPage } from '../LoginPage';
 import { RegisterPage } from '../RegisterPage';
 import { DisplayWeekContainer } from '../DisplayWeek';
 import { ReqFullContainer } from '../ReqFull';
-import { Navigation, Logout } from '../_components';
 
 import Snackbar from 'material-ui/Snackbar';
 
@@ -28,6 +26,7 @@ class App extends React.Component {
     }
 
     componentDidMount() {
+
     }
 
     render() {
@@ -44,10 +43,13 @@ class App extends React.Component {
 
             <Router history={history}>
                 <div>
+                  <Navigation/>
+
                     <PrivateRoute exact path="/" component={HomePage} />
                     <PrivateRoute exact path="/test" component={TestPage} />
-                    <PrivateRoute exact path="/requisition/:id" component={ReqFullContainer} />
                     <PrivateRoute exact path="/week" component={DisplayWeekContainer} />
+                    <PrivateRoute exact path="/:type/:id" component={ReqFullContainer} />
+
 
                     <Route path="/login" component={LoginPage} />
                     <Route path="/register" component={RegisterPage} />

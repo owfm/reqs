@@ -1,6 +1,7 @@
 import { authHeader } from '../_helpers';
 import axios from 'axios';
 import userConstants from '../_constants';
+import handleResponse from './handle-response.js';
 
 export const userService = {
     login,
@@ -16,22 +17,17 @@ function login(email, password) {
 
     return axios.post(url, {email, password})
         .then((response) => {
-            console.log('\n\n\n\n\n\n\n\n')
-            console.log(response);
             // login successful if there's a jwt token in the response
             if (response.data.user && response.data.school && response.data.user.token) {
                 // store user details and jwt token in local storage to keep user logged in between page refreshes
                 localStorage.setItem('user', JSON.stringify(response.data.user));
-
                 return response.data;
             }
         });
 }
 
 function logout() {
-    // remove user from local storage to log user out
-    localStorage.removeItem('user');
-    localStorage.removeItem('school');
+    localStorage.clear();
 }
 
 function register(user) {
@@ -64,10 +60,6 @@ function _delete(id) {
     return fetch('/users/' + id, requestOptions).then(handleResponse);;
 }
 
-function handleResponse(response) {
-    if (!response.ok) {
-        return Promise.reject(response.statusText);
-    }
+function fetchLessons(user) {
 
-    return response.json();
 }

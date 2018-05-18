@@ -1,39 +1,27 @@
 import React from 'react';
-import styled from 'styled-components';
 import moment from 'moment';
 import { ReqMini } from '../_components';
-
+import uuidv4 from 'uuid/v4';
 import { appConstants } from '../_constants'
-
-const MainGrid = styled.div`
-padding: 20px;
-display: grid;
-grid-template-rows: auto repeat(${props=>props.periods.length}, auto);
-grid-gap: 10px;
-grid-template-columns: auto repeat(5, 1fr);
-`
-const SessionGrid = styled.div`
-  display: grid;
-  grid-gap: 5px;
-`
+import { MainGrid, SessionGrid } from './components';
 
 
 export const DisplayWeek = (props) => {
 
-  const { periods, reqs } = props;
+  const { periods, sessions } = props;
   const { days } = appConstants;
 
   const sessionGridContents = [];
 
   periods.forEach((period) => {
-    sessionGridContents.push(<div style={{'alignSelf': 'center', 'justifySelf': 'center', 'fontWeight': 'bold'}}>{period}</div>);
+    sessionGridContents.push(<div key={`period${period}`} style={{'alignSelf': 'center', 'justifySelf': 'center', 'fontWeight': 'bold'}}>{period}</div>);
 
     days.forEach(day => {
       sessionGridContents.push(
-        <SessionGrid>
-          {props.reqs.items
-            .filter(req=>req.period===period && req.day===day)
-            .map(req=><ReqMini session={req} key={`${req.id}${req.type}`}/>)
+        <SessionGrid key={uuidv4()}>
+          {sessions
+            .filter(session=>session.period===period && session.day===day)
+            .map(session=><ReqMini session={session} key={uuidv4()}/>)
           }
         </SessionGrid>
       )

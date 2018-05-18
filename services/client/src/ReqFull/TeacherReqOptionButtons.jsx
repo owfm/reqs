@@ -71,4 +71,4 @@ const TeacherReqOptionButtons = (props) => {
 
 };
 
-export default TeacherReqOptionButtons;
+export { TeacherReqOptionButtons };

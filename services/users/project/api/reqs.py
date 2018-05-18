@@ -123,9 +123,6 @@ def get_all_reqs(resp):
 
     response_object['status'] = 'success'
 
-    if len(reqs) == 0:
-        response_object['EMPTY'] = True
-
     response_object['data'] = reqs
     return jsonify(response_object), 200
 
@@ -183,32 +180,28 @@ def get_single_req(resp, req_id):
         'status': 'fail',
         'message': 'Req does not exist'
     }
-    try:
-        req = Req.query.get(req_id)
-        if not req:
-            return jsonify(response_object), 404
-
-        if (user.role_code is TEACHER) and (req.user_id is user.id):
-            response_object = {
-                'status': 'success',
-                'data': req.to_json()
-            }
-            return jsonify(response_object), 200
-
-        if ((user.role_code is not TEACHER) and
-                (req.school_id is user.school_id)):
-                response_object = {
-                    'status': 'success',
-                    'data': req.to_json()
-                }
-                return jsonify(response_object), 200
-
-        response_object['status'] = 'fail'
-        response_object['message'] = 'That req is not yours to see.'
-        return jsonify(response_object), 401
-
-    except ValueError:
+    req = Req.query.get(req_id)
+    if not req:
         return jsonify(response_object), 404
+
+    if req.user_id is user.id:
+        response_object = {
+            'status': 'success',
+            'data': req_to_JSON(req)
+        }
+        return jsonify(response_object), 200
+
+    if ((user.role_code is TECHNICIAN) and (req.school_id is user.school_id)):
+        response_object = {
+            'status': 'success',
+            'data': req_to_JSON(req)
+        }
+        return jsonify(response_object), 200
+
+    response_object['status'] = 'fail'
+    response_object['message'] = 'Unauthorised.'
+    return jsonify(response_object), 401
+
 
 
 @reqs_blueprint.route('/reqs/<req_id>', methods=['PATCH'])

@@ -1,6 +1,12 @@
 import { lessonConstants } from '../_constants';
 
-export function lessons(state = {}, action) {
+const initialState = {
+  loading: false,
+  error: null,
+  items: []
+}
+
+export function lessons(state = initialState, action) {
   switch (action.type) {
     case lessonConstants.LESSONS_REQUEST:
       return {
@@ -17,7 +23,6 @@ export function lessons(state = {}, action) {
     case lessonConstants.LESSONS_FAILURE:
       return {
         loading: false,
-        fetched: false,
         error: action.error
       }
 

@@ -81,7 +81,6 @@ def get_week_number(date, preferences):
         raise ValueError('Date was weekend. Only submit weekday values')
 
     if preferences['weeks_timetable'] is 1:
-        print('returning because weeks_timetable is 1')
         return 1
 
     if not preferences['dates_processed']:

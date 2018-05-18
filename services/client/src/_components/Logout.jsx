@@ -14,7 +14,6 @@ class Logout extends React.Component {
     const { dispatch } = this.props;
     userService.logout();
     dispatch(userActions.logout());
-    dispatch(alertActions.flash('Logged out!'))
   }
 
   render(){

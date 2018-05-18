@@ -1,5 +1,6 @@
 import React from 'react';
 import Drawer from 'material-ui/Drawer';
+import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
 import AppBar from 'material-ui/AppBar';
 
@@ -23,16 +24,13 @@ class Navigation extends React.Component {
 
     const { authentication } = this.props;
     const { user } = authentication;
-    const { UserCode } = appConstants;
-
-    const title = `${user.name} (${UserCode[user.role_code]})`
 
     return (
       <div>
 
         <AppBar
           style={{zIndex: '0'}}
-          title={title}
+          title={authentication.loggedIn ? user.name : 'Welcome'}
           iconClassNameRight="muidocs-icon-navigation-expand-more"
           onLeftIconButtonClick={this.handleToggle}
         />
@@ -44,11 +42,8 @@ class Navigation extends React.Component {
           open={this.state.open}
           onRequestChange={(open) => this.setState({open})}
         >
-          <MenuItem onClick={this.handleClose}><Redirect to='/me'>{user.name}</Redirect></MenuItem>
-          <MenuItem onClick={this.handleClose}><Redirect to='/week'>Teach</Redirect></MenuItem>
-          {/* <MenuItem onClick={this.handleClose}><Redirect to='/logout'>Logout</Redirect></MenuItem> */}
-
         </Drawer>
+
       </div>
     );
   }

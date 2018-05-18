@@ -17,4 +17,4 @@ const ReqIssueInfo = (props) => {
   )
 }
 
-export default ReqIssueInfo;
+export { ReqIssueInfo };

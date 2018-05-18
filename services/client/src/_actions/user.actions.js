@@ -19,6 +19,8 @@ function login(email, password) {
         userService.login(email, password)
             .then(
                 response => {
+                  console.log('\n\n\n\n');
+                  console.log(response);
 
                     dispatch(success_user(response.user));
                     dispatch(success_school(response.school));
