@@ -13,7 +13,7 @@ const styles = {
 
 const DateSelect = (props) => {
 
-    const date = moment(props.currentWbDate, 'DD-MM-YY').format('ddd DD/MM')
+    const date = moment(props.currentWbStamp, 'DD-MM-YY').format('ddd DD/MM')
 
     const inTerm = Number.isInteger(props.weekNumber);
 

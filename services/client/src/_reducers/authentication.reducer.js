@@ -1,6 +1,7 @@
 import { userConstants } from '../_constants';
 
 let user = JSON.parse(localStorage.getItem('user'));
+
 const initialState = user ? { loggedIn: true, loggingIn: false, user } : { loggedIn: false};
 
 export function authentication(state = initialState, action) {
@@ -20,5 +21,6 @@ export function authentication(state = initialState, action) {
       return {};
     default:
       return state
+
   }
 }

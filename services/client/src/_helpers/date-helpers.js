@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-export const getWbNumberFromDate = (date) => {
+export const getWbStampFromDate = (date) => {
 
   // if in week, go back to monday.
   // if weekend, jump to next Monday

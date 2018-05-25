@@ -135,12 +135,12 @@ class TestSchoolSetup(BaseTestCase):
                     "op": "replace",
                     "path": "/term_dates", "value":
                     [
-                        HalfTerm("01-09-17", "20-10-17"),
-                        HalfTerm("30-10-17", "20-12-17"),
-                        HalfTerm("03-01-18", "09-02-18"),
-                        HalfTerm("19-02-18", "29-03-18"),
-                        HalfTerm("16-04-18", "25-05-18"),
-                        HalfTerm("04-06-18", "20-07-18")
+                        HalfTerm("20170901", "20171020"),
+                        HalfTerm("20171030", "20171220"),
+                        HalfTerm("20180103", "20180209"),
+                        HalfTerm("20180219", "20180329"),
+                        HalfTerm("20180416", "20180525"),
+                        HalfTerm("20180604", "20180720")
                     ],
                     },
                     {
@@ -168,9 +168,9 @@ class TestSchoolSetup(BaseTestCase):
             self.assertEqual(school.preferences['weeks_timetable'], 2)
             self.assertEqual(
                 school.preferences['term_dates'][0][0],
-                "01-09-17")
+                "20170901")
             self.assertEqual(
-                school.preferences['term_dates'][5][1], "20-07-18")
+                school.preferences['term_dates'][5][1], "20180720")
 
             self.assertIn("success", data['status'])
             self.assertIn(
@@ -222,12 +222,12 @@ class TestSchoolSetup(BaseTestCase):
                     "op": "replace",
                     "path": "/term_dates", "value":
                         [
-                            HalfTerm("01-09-17", "20-10-17"),
-                            HalfTerm("30-10-17", "20-12-17"),
-                            HalfTerm("03-01-18", "09-02-18"),
-                            HalfTerm("19-02-18", "29-03-18"),
-                            HalfTerm("16-04-18", "25-05-18"),
-                            HalfTerm("04-06-18", "20-07-18")
+                            HalfTerm("20170901", "20171020"),
+                            HalfTerm("20171030", "20171220"),
+                            HalfTerm("20180103", "20180209"),
+                            HalfTerm("20180219", "20180329"),
+                            HalfTerm("20180416", "20180525"),
+                            HalfTerm("20180604", "20180720")
                         ]
                     }
                     ]),
@@ -295,12 +295,12 @@ class TestSchoolSetup(BaseTestCase):
                     "op": "replace",
                     "path": "/term_dates", "value":
                         [
-                            HalfTerm("01-09-17", "20-10-17"),
-                            HalfTerm("30-10-17", "20-12-17"),
-                            HalfTerm("03-01-18", "09-02-18"),
-                            HalfTerm("19-02-18", "29-03-18"),
-                            HalfTerm("16-04-18", "25-05-18"),
-                            HalfTerm("04-06-18", "20-07-18")
+                            HalfTerm("20170901", "20171020"),
+                            HalfTerm("20171030", "20171220"),
+                            HalfTerm("20180103", "20180209"),
+                            HalfTerm("20180219", "20180329"),
+                            HalfTerm("20180416", "20180525"),
+                            HalfTerm("20180604", "20180720")
                         ]
                     }
                     ]),
@@ -407,12 +407,12 @@ class TestSchoolSetup(BaseTestCase):
                     "op": "replace",
                     "path": "/term_dates", "value":
                         [
-                            HalfTerm("01-09-17", "20-10-17"),
-                            HalfTerm("30-10-17", "20-12-17"),
-                            HalfTerm("03-01-18", "09-02-18"),
-                            HalfTerm("19-02-18", "29-03-18"),
-                            HalfTerm("16-04-18", "25-05-18"),
-                            HalfTerm("04-06-18", "20-07-18")
+                            HalfTerm("20170901", "20171020"),
+                            HalfTerm("20171030", "20171220"),
+                            HalfTerm("20180103", "20180209"),
+                            HalfTerm("20180219", "20180329"),
+                            HalfTerm("20180416", "20180525"),
+                            HalfTerm("20180604", "20180720")
                         ]
                     }
                     ]),
@@ -479,12 +479,12 @@ class TestSchoolSetup(BaseTestCase):
                     "op": "replace",
                     "path": "/term_dates", "value":
                         [
-                            HalfTerm("01-09-2017", "20-10-17"),
-                            HalfTerm("30-10-17", "20-12-17"),
-                            HalfTerm("03-01-18", "09-02-18"),
-                            HalfTerm("19-02-18", "29-03-18"),
-                            HalfTerm("16-04-18", "25-05-18"),
-                            HalfTerm("04-06-18", "20-07-18")
+                            HalfTerm("170901", "20171020"),
+                            HalfTerm("171030", "20171220"),
+                            HalfTerm("180103", "20180209"),
+                            HalfTerm("180219", "20180329"),
+                            HalfTerm("180416", "20180525"),
+                            HalfTerm("180604", "20180720")
                         ]
                     }
                     ]),

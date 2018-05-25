@@ -215,12 +215,13 @@ def populate_school_db(
         "dates_processed": False,
         "days_notice": 7,
         "term_dates": [
-                HalfTerm("01-09-17", "20-10-17"),
-                HalfTerm("30-10-17", "20-12-17"),
-                HalfTerm("03-01-18", "09-02-18"),
-                HalfTerm("19-02-18", "29-03-18"),
-                HalfTerm("16-04-18", "25-05-18"),
-                HalfTerm("04-06-18", "20-07-18")
+
+            HalfTerm("20170904", "20171020"),
+            HalfTerm("20171030", "20171220"),
+            HalfTerm("20180103", "20180209"),
+            HalfTerm("20180219", "20180329"),
+            HalfTerm("20180416", "20180525"),
+            HalfTerm("20180604", "20180720")
             ],
         "period_start_times": {
                             '1': '0900',

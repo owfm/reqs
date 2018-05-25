@@ -240,7 +240,8 @@ class Req(db.Model):
     __tablename__ = 'reqs'
 
     id = db.Column(db.Integer, primary_key=True)
-    submitted_at = db.Column(db.DateTime,  default=datetime.datetime.utcnow)
+    submitted_at = db.Column(db.DateTime, default=datetime.datetime.now())
+    last_updated = db.Column(db.DateTime, default=datetime.datetime.now())
 
     # details of requisition
     title = db.Column(db.String(1000), nullable=False)

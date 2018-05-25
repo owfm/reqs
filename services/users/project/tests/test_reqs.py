@@ -47,7 +47,7 @@ class TestReqService(BaseTestCase):
                     'equipment': 'equipmenttest',
                     'notes': 'notestest',
                     'lesson_id': 1,
-                    'currentWbDate': '16-04-18'
+                    'currentWbStamp': '20180416'
                     }),
                 content_type='application/json',
                 headers={'Authorization': f'Bearer {token}'}
@@ -89,7 +89,7 @@ class TestReqService(BaseTestCase):
                     'equipment': 'equipmenttest',
                     'notes': 'notestest',
                     'lesson_id': 1,
-                    'currentWbDate': '16-04-18'
+                    'currentWbStamp': '20180416'
                     }),
                 content_type='application/json',
                 headers={'Authorization': f'Bearer {token}'}
@@ -132,7 +132,7 @@ class TestReqService(BaseTestCase):
                     'equipment': 'equipmenttest',
                     'notes': 'notestest',
                     'lesson_id': 1,
-                    'currentWbDate': '16-04-18'
+                    'currentWbStamp': '20180416'
                     }),
                 content_type='application/json',
                 headers={'Authorization': f'Bearer {token}'}
@@ -203,7 +203,7 @@ class TestReqService(BaseTestCase):
                     'equipment': 'equipmenttest',
                     'notes': 'notestest',
                     'lesson_id': 1,
-                    'currentWbDate': '16-04-18'
+                    'currentWbStamp': '20180416'
                     }),
                 content_type='application/json'
             )
@@ -224,7 +224,7 @@ class TestReqService(BaseTestCase):
                     'equipment': 'equipmenttest',
                     'notes': 'notestest',
                     'lesson_id': 1,
-                    'currentWbDate': '16-04-18'
+                    'currentWbStamp': '20180416'
                     }),
                 content_type='application/json',
             )
@@ -262,7 +262,7 @@ class TestReqService(BaseTestCase):
                     'equipment': 'equipmenttest',
                     'notes': 'notestest',
                     'lesson_id': 1,
-                    'currentWbDate': '16-04-18'
+                    'currentWbStamp': '20180416'
                     }),
                 content_type='application/json',
                 headers={'Authorization': f'Bearer {token}'}
@@ -867,7 +867,7 @@ class TestReqService(BaseTestCase):
             token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.get(
-                '/reqs?from=' + from_str + '&to=' + to_str,
+                '/reqs?wb=' + from_str,
                 headers={'Authorization': f'Bearer {token}'}
             )
 
@@ -964,7 +964,7 @@ class TestReqService(BaseTestCase):
             token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.get(
-                '/reqs?from=' + from_str + '&to=' + to_str,
+                '/reqs?wb=' + from_str,
                 headers={'Authorization': f'Bearer {token}'}
             )
 
@@ -978,14 +978,10 @@ class TestReqService(BaseTestCase):
 
             self.assertIn('success', data['status'])
 
-    def test_get_schools_reqs_as_technician_discount_old_reqs(self):
-        """ensure get /reqs as technician returns
-        that schools reqs less than 2 weeks old"""
+    def test_req_date_query(self):
 
         school1 = add_school(name='testschool')
         school2 = add_school(name='testschool2')
-
-        now = datetime.now()
 
         teacher1 = add_user(
             'ollie mansell',
@@ -1023,23 +1019,24 @@ class TestReqService(BaseTestCase):
             "teacher 1 school 1 current",
             "equipment",
             "notes",
-            now,
+            datetime(2018, 5, 27, 23, 59),
             teacher1.id,
             school1.id)
 
         # other_req2
         add_req(
-            "teach 1 school 1 old",
-            "equipment2",
-            "notes2", now - timedelta(weeks=6),
-            teacher1.id,
-            school1.id)
+            "SHOULD RETURN",
+            "equipment3",
+            "notes3",
+            datetime(2018, 5, 21, 9, 0, 0),
+            teacher2.id,
+            school2.id)
 
         add_req(
             "SHOULD RETURN",
             "equipment3",
             "notes3",
-            now,
+            datetime(2018, 5, 21, 9, 0, 0),
             teacher2.id,
             school2.id)
 
@@ -1047,28 +1044,19 @@ class TestReqService(BaseTestCase):
             "SHOULD RETURN",
             "equipment5",
             "notes5",
-            now,
+            datetime(2018, 5, 25, 15, 10),
             teacher3.id,
             school2.id)
 
         add_req(
-            "teach 2 school 2 old",
-            "equipment4",
-            "notes4",
-            now - timedelta(weeks=6),
-            teacher2.id,
-            school2.id)
-
-        add_req(
-            "teach 3 school 2 old",
+            "OLD REQ",
             "equipment6",
             "notes6",
-            now - timedelta(weeks=6),
+            datetime(2018, 5, 18, 9, 0, 0),
             teacher3.id,
             school2.id)
 
-        from_str = (now - timedelta(weeks=5)).strftime(DATE_FORMAT)
-        to_str = (now + timedelta(weeks=2)).strftime(DATE_FORMAT)
+        wb = datetime(2018, 5, 21).strftime(DATE_FORMAT)
 
         with self.client:
             resp_login = self.client.post(
@@ -1082,7 +1070,7 @@ class TestReqService(BaseTestCase):
             token = json.loads(resp_login.data.decode())['user']['token']
 
             response = self.client.get(
-                '/reqs?from=' + from_str + '&to=' + to_str,
+                '/reqs?wb=' + wb,
                 headers={'Authorization': f'Bearer {token}'}
             )
 

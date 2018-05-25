@@ -14,7 +14,7 @@ class MainController extends React.Component {
     super(props);
     this.state = {
       modalOpen: false,
-      currentWbDate: null,
+      currentWbStamp: null,
       modalSessionObj: null,
       school: null,
       sessions: null,
@@ -36,10 +36,10 @@ class MainController extends React.Component {
 
   componentDidMount(){
     const now = moment();
-    const monday = getWbNumberFromDate(now);
+    const monday = getWbStampFromDate(now);
     const monday_str = monday.format('DD-MM-YY');
     this.setState({
-      currentWbDate: monday_str
+      currentWbStamp: monday_str
     });
 
     getWeekNumber(monday.format("DD-MM-YY"))
@@ -122,9 +122,9 @@ class MainController extends React.Component {
     .filter(session => {
       if (session.type === 'requisition') {
         const reqDate = parseReqTime(session.time, 'date');
-        const currentWbDate = moment(this.state.currentWbDate, 'DD-MM-YY');
-        return reqDate.isSameOrAfter(currentWbDate) &&
-            reqDate.isSameOrBefore(currentWbDate.add(5, 'days'))
+        const currentWbStamp = moment(this.state.currentWbStamp, 'DD-MM-YY');
+        return reqDate.isSameOrAfter(currentWbStamp) &&
+            reqDate.isSameOrBefore(currentWbStamp.add(5, 'days'))
 
       } else if (session.type === 'lesson') {
         return session.week === this.state.weekNumber;
@@ -204,7 +204,7 @@ class MainController extends React.Component {
 
   handleWeekChange = (change) => {
 
-    const oldDateStr = this.state.currentWbDate.toString();
+    const oldDateStr = this.state.currentWbStamp.toString();
     const newDate = moment(oldDateStr, 'DD-MM-YY').add(change, 'days');
     const newDateStr = newDate.format("DD-MM-YY");
     getWeekNumber(newDateStr)
@@ -216,7 +216,7 @@ class MainController extends React.Component {
     .catch((err) => console.error(err))
 
     this.setState({
-      currentWbDate: newDateStr
+      currentWbStamp: newDateStr
     })
   }
 
@@ -256,7 +256,7 @@ class MainController extends React.Component {
           >
             <ReqFull
               updateStateWithNewOrEditedReq={this.updateStateWithNewOrEditedReq}
-              currentWbDate={this.state.currentWbDate}
+              currentWbStamp={this.state.currentWbStamp}
               emitSnackbar={this.props.emitSnackbar}
               roleCode={this.props.user.role_code}
               req={this.state.modalSessionObj}
@@ -277,7 +277,7 @@ class MainController extends React.Component {
           handleSetModalType={this.handleSetModalType}
           handleWeekChange={this.handleWeekChange}
           emitSnackbar={this.props.emitSnackbar}
-          currentWbDate={this.state.currentWbDate}
+          currentWbStamp={this.state.currentWbStamp}
         />
 
         </div>
@@ -289,7 +289,7 @@ class MainController extends React.Component {
 
   export default MainController;
 
-  const getWbNumberFromDate = (date) => {
+  const getWbStampFromDate = (date) => {
 
     // if in week, go back to monday.
     // if weekend, jump to next Monday

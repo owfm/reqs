@@ -14,7 +14,7 @@ TEACHER = 1
 TECHNICIAN = 2
 USER_ROLE = {
     TEACHER: 'teacher',
-    TECHNICIAN: 'technician',
+    TECHNICIAN: 'technician'
 }
 USER_ROLE = OrderedDict(sorted(USER_ROLE.items()))
 
@@ -50,7 +50,8 @@ EDITABLE_PREFERENCES = ['/'+key for key in PREFERENCES_TEMPLATE
 
 DAY_TO_ISO = {"Mon": 1, "Tue": 2, "Wed": 3, "Thu": 4, "Fri": 5}
 
-DATE_FORMAT = "%d-%m-%y"
-DATETIME_FORMAT = "%Y-%m-%d %H:%M"
+DATE_FORMAT = "%Y%m%d"
+DATETIME_FORMAT = "%Y%m%dT%H%M"
+TIMESTAMP_FORMAT = "%Y%m%dT%H%M%S"
 TIME_FORMAT = "%H%M"
 POSTGRES_FORMAT = "%a, %d %b %Y %H:%M:%S GMT"

@@ -20,10 +20,13 @@ function getReq(id) {
 
 }
 
-function getReqs(from, to, all) {
+function getReqs(wb, lastupdated, all) {
 
   const url = `${process.env.REACT_APP_USERS_SERVICE_URL}/reqs`;
-  const params = { from, to, all }
+  const params = { wb, all }
+  if (lastupdated) {
+    params['lastupdated'] = lastupdated;
+  }
   return axios.get(
     url,
     {

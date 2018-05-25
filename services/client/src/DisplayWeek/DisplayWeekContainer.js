@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { history } from '../_helpers';
 import { alertActions, reqActions, filterActions } from '../_actions';
 import { reqService } from '../_services';
+import { appConstants } from '../_constants';
 
 import { DisplayWeek } from './DisplayWeek';
 
@@ -24,31 +25,60 @@ class DisplayWeekContainer extends React.Component {
 
   componentDidMount() {
 
+    this.props.dispatch(filterActions.setWeek(1))
+
     // TODO: WORK OUT HOW TO CHECK IF IT IS NECESSARY TO FETCH MORE DATA
 
-    const { reqsAreStale } = this.props;
+    const { reqs, filters } = this.props;
 
-    if (reqsAreStale) {
-      this.props.dispatch(reqActions.getReqs('01-09-17', '14-05-18', false));
+    // if (reqsAreStale) {
+
+    const wb = moment(filters.currentWbStamp).format(appConstants.dateFormat);
+
+    this.props.dispatch(reqActions.getReqs(wb, false));
+    // }
+
+  }
+
+  componentDidUpdate(prevProps){
+
+    const { filters, reqs, dispatch, lastupdated } = this.props;
+    const { currentWbStamp } = filters;
+
+    // if week has changed, fetch any new or edited reqs relating to the current week
+    if ( filters.currentWbStamp !== prevProps.filters.currentWbStamp ) {
+      dispatch(reqActions.getReqs(currentWbStamp, lastupdated, false));
     }
 
   }
 
   render() {
 
-      const { sessions = [], school, reqsLoading } = this.props;
-
+      const { school, sessions, reqsLoading } = this.props;
 
       // school have different numbers of periods - get an array of period numbers from school preferences
       const periods = Object.keys(school.school.preferences.period_start_times).map(p => parseInt(p))
+
+      const sites = ['Walthamstow', 'Wiseman Upstairs', 'Wiseman Downstairs'];
 
       return (
 
 
         <div>
-          <button onClick={()=>this.props.dispatch(filterActions.forwardWeek())}>Forward Week</button>
           <button onClick={()=>this.props.dispatch(filterActions.backwardWeek())}>Backward Week</button>
-          {moment(this.props.filters.currentWbBeginningDate).format('Y-M-D')}
+          <button onClick={()=>this.props.dispatch(filterActions.forwardWeek())}>Forward Week</button>
+
+          <button onClick={()=>this.props.dispatch(filterActions.setWeek(1))}>Set Week 1</button>
+          <button onClick={()=>this.props.dispatch(filterActions.setWeek(2))}>Set Week 2</button>
+
+          {sites.map(s => {
+            <button onClick={()=>this.props.dispatch(filterActions.setSiteFilter(s))}>{s}</button>
+          })}
+          <button onClick={()=>this.props.dispatch(filterActions.clearSiteFilter())}>Clear Site Filter</button>
+
+
+          {moment(this.props.filters.currentWbStamp).format('Y-M-D')}
+
 
           {reqsLoading ? <div>Loading...</div> : <DisplayWeek sessions={sessions} periods={periods} />}
         </div>
@@ -59,17 +89,19 @@ class DisplayWeekContainer extends React.Component {
 function mapStateToProps(state) {
 
   const { school, reqs, filters } = state;
+  const { currentWbStamp } = filters;
 
   const periods = Object.keys(school.school.preferences.period_start_times).map(p => parseInt(p))
 
+  const lastupdated = reqs[currentWbStamp] ? moment(reqs[currentWbStamp].lastupdated).format(appConstants.timeStampFormat) : null;
 
   return {
     periods,
-    school: school,
+    school,
     sessions: reqActions.getVisibleSessions(state),
-    reqsAreStale: reqActions.reqsAreStale(reqs),
     reqsLoading: reqs.loading,
-    filters
+    filters,
+    lastupdated
   };
 }
 

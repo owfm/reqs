@@ -1,13 +1,25 @@
-import { reqConstants } from '../_constants';
+import { filterActions } from '../_actions';
+import { reqConstants, appConstants } from '../_constants';
+import { getWbStamp } from '../_helpers';
 import moment from 'moment';
+
+const wbStamp = filterActions.getWbStampFromDate(moment());
 
 const initialState = {
   loading: false,
   isEditing: false,
-  updatedOn: null,
-  error: null,
-  items: []
+  error: null
+};
+
+initialState[wbStamp] = {
+  items: [],
+  'lastupdated': null
 }
+// create key for current week of reqs, populate with empty array of items
+// const wbStamp = getWbStamp(moment());
+// initialState[wbStamp]['items'] = [];
+// initialState[wbStamp]['lastupdated'] = null;
+
 
 export function reqs(state = initialState, action) {
   switch (action.type) {
@@ -18,12 +30,19 @@ export function reqs(state = initialState, action) {
       };
 
     case reqConstants.REQS_SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        updatedOn: moment(),
-        items: [...state.items || [], ...action.items]
-      }
+
+      // copy state
+      const newState = { ...state };
+      newState.loading = false;
+
+      const { wbStamp, items, timestamp } = action;
+      const extantItems = state[wbStamp] ? state[wbStamp].items : [];
+
+      newState[wbStamp] = {};
+      newState[wbStamp]['items'] = merge(extantItems, action.items);
+      newState[wbStamp]['lastupdated'] = action.timestamp;
+
+      return newState;
 
     case reqConstants.REQS_FAILURE:
       return {
@@ -64,4 +83,25 @@ export function reqs(state = initialState, action) {
 
 
   }
+}
+
+function merge(old = [],updated) {
+  var o = {};
+
+  old.forEach(function(v) {
+    o[v.id] = v;
+  })
+
+  updated.forEach(function(v) {
+    o[v.id] = v;
+  })
+
+  var r = [];
+
+  for(var p in o) {
+    if(o.hasOwnProperty(p))
+      r.push(o[p]);
+  }
+
+  return r;
 }

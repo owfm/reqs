@@ -28,7 +28,7 @@ class ReqFull extends React.Component {
       'title': this.state.req.title,
       'equipment': this.state.req.equipment,
       'notes': this.state.req.notes,
-      'currentWbDate': this.props.currentWbDate
+      'currentWbStamp': this.props.currentWbStamp
     }
 
     postNewReq(data)

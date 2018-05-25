@@ -4,5 +4,7 @@ export const appConstants = {
   1: 'Teacher',
   2: 'Technician'
   },
-  days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
+  days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+  dateFormat: 'YYYYMMDD',
+  timeStampFormat:'YYYYMMDDTHHmmss'
 };

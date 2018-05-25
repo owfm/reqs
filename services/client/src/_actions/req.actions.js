@@ -1,4 +1,4 @@
-import { reqConstants } from '../_constants';
+import { reqConstants, appConstants } from '../_constants';
 import { reqService } from '../_services';
 import { alertActions } from './';
 import { history } from '../_helpers';
@@ -9,37 +9,41 @@ export const reqActions = {
   getReq,
   reqToggleEdit,
   reqsAreStale,
-  getVisibleSessions
+  getVisibleSessions,
+  getWbStamp
 };
 
 const reqToggleEdit = () => {
   type: reqConstants.REQS_EDIT_TOGGLE
 }
 
-function getReqs(from, to, all=false) {
+function getReqs(wb, lastupdated=null, all=false) {
 
   return dispatch => {
 
     dispatch(request())
 
-    reqService.getReqs(from, to, all)
+    reqService.getReqs(wb, lastupdated, all)
     .then(
       response => {
-        console.log('ACTIONS RESPONSE OK');
-        dispatch(success(response.data.data));
-        dispatch(alertActions.flash('Reqs loaded successfully.'));
+        dispatch(success(wb, response.data.data));
       },
       error => {
-        console.error(error);
-        console.log('ACTIONS RESPONSE FAIL');
-
         dispatch(alertActions.flash(error.message))}
     );
 
   }
 
   function request() { return { type: reqConstants.REQS_REQUEST } }
-  function success(items) { return { type: reqConstants.REQS_SUCCESS, items } }
+
+  function success(wbStamp, items) {
+    return {
+      type: reqConstants.REQS_SUCCESS,
+      timestamp: moment(),
+      wbStamp,
+      items,
+    }
+  }
   function failure(error) { return { type: reqConstants.REQS_FAILURE, error } }
 
 }
@@ -55,7 +59,6 @@ function getReq(id) {
           dispatch(success(req));
         },
         error => {
-          console.log(error);
           dispatch(failure(error.message));
         }
       );
@@ -79,9 +82,52 @@ function reqsAreStale(reqs) {
 
 
 function getVisibleSessions(state) {
-  const { reqs, lessons } = state;
 
-  return [];
-  return [...reqs.items, ...lessons.items]
-  // return [...state.reqs.items, ...state.lessons.items];
+  const { reqs, lessons, filters } = state;
+  const { currentWbStamp } = filters;
+  const wbStamp = moment(currentWbStamp).format(appConstants.dateFormat);
+
+  if (!reqs.hasOwnProperty(wbStamp)) {
+    return [...lessons.items] || [];
+  }
+
+  const sessions = [...reqs[wbStamp].items, ...lessons.items]
+
+  return sessions.filter(s => s.week === filters.currentWeek);
+
+  // const reqSessions = reqs[wbStamp]['items'];
+  // console.log(reqSessions);
+
+  // return sessions.filter(s => s.week === filters.currentWeek)
+  // return [];
 }
+
+function getWbStamp(currentWbStamp){
+  return moment(currentWbStamp).format(appConstants.dateFormat);
+}
+
+
+function getVisibleSessions(state) {
+  const { filters, reqs, lessons } = state;
+  const { currentWbStamp } = filters;
+
+  const reqsSessions = reqs[currentWbStamp] ? [...reqs[currentWbStamp].items] : []
+  const lessonSessions = lessons.items.filter(l => l.week === filters.currentWeek);
+  return [...reqsSessions, ...lessonSessions];
+}
+
+
+// function dateFilter (sessions) {
+//   return sessions
+//   .filter(session => {
+//     if (session.type === 'requisition') {
+//       const reqDate = parseReqTime(session.time, 'date');
+//       const currentWbStamp = moment(this.state.currentWbStamp, 'DD-MM-YY');
+//       return reqDate.isSameOrAfter(currentWbStamp) &&
+//           reqDate.isSameOrBefore(currentWbStamp.add(5, 'days'))
+//
+//     } else if (session.type === 'lesson') {
+//       return session.week === this.state.weekNumber;
+//     }
+//   })
+// }

@@ -21,14 +21,14 @@ function MainDisplay(props) {
             /> */}
             <DateSelect
               weekNumber={props.weekNumber}
-              currentWbDate={props.currentWbDate}
+              currentWbStamp={props.currentWbStamp}
               handleWeekChange={props.handleWeekChange}
               />
 
           </div>
 
           <WeekGrid
-            currentWbDate={props.currentWbDate}
+            currentWbStamp={props.currentWbStamp}
             emitSnackbar={props.emitSnackbar}
             handleSetModalObject={props.handleSetModalObject}
             handleModalOpen={props.handleModalOpen}

@@ -5,6 +5,7 @@ import './ReqMini.css';
 import Truncate from 'react-truncate';
 import ActionBuild from 'material-ui/svg-icons/action/build';
 import ActionDescription from 'material-ui/svg-icons/action/description';
+import moment from 'moment';
 
 class ReqMini extends React.Component {
 
@@ -44,10 +45,11 @@ class ReqMini extends React.Component {
         <div className={`status-bar ${statusClass}`}></div>
         <h1>{this.props.session.classgroup.name}</h1>
         <h3>({this.props.session.room.name})</h3>
-        <div></div>
         {this.props.session.type === 'lesson' && <div className={'add-req-label'}>+ add req</div>}
         <div className='req-mini-info-box'>
+          <div>{this.props.session.type === 'requisition' && moment(this.props.session.time).fromNow()}</div>
           <div><strong>{this.props.session.title}</strong></div>
+          <div>{this.props.time}</div>
           <br/>
           {equipmentSet &&
             <Truncate lines={2} ellipsis={<span>... </span>}>

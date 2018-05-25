@@ -7,12 +7,12 @@ from project import db
 from project.api.utils import authenticate
 from project.api.constants import TEACHER, TECHNICIAN,\
             TECHNICIAN_PATCH_AUTH, TEACHER_PATCH_AUTH,\
-            DATE_FORMAT
+            DATE_FORMAT, TIMESTAMP_FORMAT
 from project.tests.utils import req_to_JSON
 from jsonpatch import JsonPatch, InvalidJsonPatch
 from jsondiff import diff
 import pprint
-from datetime import datetime, timedelta
+from datetime import datetime, time, date, timedelta
 
 
 reqs_blueprint = Blueprint('reqs', __name__)
@@ -69,7 +69,7 @@ def validate_new_req(post_data, user):
     if not post_data.get('lesson_id'):
         raise ValueError('No lesson ID was provided.')
     try:
-        datetime.strptime(post_data.get('currentWbDate'), DATE_FORMAT)
+        datetime.strptime(post_data.get('currentWbStamp'), DATE_FORMAT)
     except ValueError:
         raise ValueError('Submitted date improperly formatted.')
 
@@ -78,7 +78,7 @@ def create_new_req(post_data, user):
     title = post_data.get('title')
     equipment = post_data.get('equipment')
     notes = post_data.get('notes')
-    week_beginning_date = post_data.get('currentWbDate')
+    week_beginning_date = post_data.get('currentWbStamp')
     lesson_id = post_data.get('lesson_id')
 
     time = calculate_req_time(lesson_id, week_beginning_date)
@@ -117,6 +117,7 @@ def get_all_reqs(resp):
     try:
         reqs = get_reqs_from_query_arguments(request.args, user)
     except ValueError as e:
+        print(str(e))
         response_object['status'] = 'fail'
         response_object['message'] = str(e)
         return jsonify(response_object), 400
@@ -129,44 +130,42 @@ def get_all_reqs(resp):
 
 def get_reqs_from_query_arguments(request_args, user):
 
-    if not (request_args.get('from') and request_args.get('to')):
-        raise ValueError('Please provide date queries.')
+    if not request_args.get('wb'):
+        raise ValueError('Please provide week beginning date query.')
 
     try:
-        from_date = datetime.strptime(request_args.get('from'), DATE_FORMAT)
-        to_date = datetime.strptime(request_args.get('to'), DATE_FORMAT)
+        wb = datetime.strptime(request_args.get('wb'), DATE_FORMAT)
     except ValueError as e:
         raise ValueError(e)
 
-    if from_date > to_date:
-        raise ValueError('"To" date must follow "From" date')
+    if wb.isoweekday() is not 1:
+        raise ValueError('Supplied date is not a Monday.')
 
-    reqs = [req_to_JSON(req) for req in db.session.query(Req)
-            .filter(Req.school_id == user.school_id)
-            .filter(Req.time >= from_date)
-            .filter(Req.time <= to_date)
-            .all()
-            ]
+    # create from - to datetime objects to cover whole week
+    from_datetime = datetime.combine(wb.date(), time.min)
+    to_datetime = datetime.combine((wb.date() + timedelta(days=6)), time.max)
+
+    query = db.session.query(Req).filter(
+        Req.school_id == user.school_id,
+        Req.time > from_datetime,
+        Req.time < to_datetime)
+
+    if request_args.get('lastupdated'):
+        try:
+            last_updated = datetime.strptime(
+                request_args.get('lastupdated'), TIMESTAMP_FORMAT)
+            query = query.filter(Req.last_updated > last_updated)
+        except ValueError:
+            pass
 
     # if teacher, filter reqs to only give own reqs unless 'all' query supplied
 
     all = True if request_args.get('all') == 'true' else False
 
     if user.role_code == TEACHER and not all:
-        return [req for req in reqs if req['user_id'] == user.id]
-    else:
-        return reqs
+        query = query.filter(Req.user_id == user.id)
 
-    # TODO: test that this returns reqs ON the date
-
-
-def get_sessions_helper(start_date, end_date, user):
-
-    reqs = [req_to_JSON(req) for req in db.session.query(Req)
-            .filter(Req.user_id == user.id)
-            .all()]
-
-    return reqs
+    return [req_to_JSON(req) for req in query]
 
 
 @reqs_blueprint.route('/reqs/<req_id>', methods=['GET'])
@@ -201,7 +200,6 @@ def get_single_req(resp, req_id):
     response_object['status'] = 'fail'
     response_object['message'] = 'Unauthorised.'
     return jsonify(response_object), 401
-
 
 
 @reqs_blueprint.route('/reqs/<req_id>', methods=['PATCH'])
@@ -280,8 +278,9 @@ def update_single_requisition(resp, req_id):
 
     req.fromdict(data_update)
     db.session.commit()
-
     req = Req.query.get(req_id)
+    req.last_updated = datetime.now()
+    db.session.commit()
 
     response_object = {
         'status': 'success',

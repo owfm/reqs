@@ -16,12 +16,12 @@ PREFERENCES = {
     "dates_processed": False,
     "days_notice": 3,
     "term_dates": [
-        HalfTerm("04-09-17", "20-10-17"),
-        HalfTerm("30-10-17", "15-12-17"),
-        HalfTerm("03-01-18", "09-02-18"),
-        HalfTerm("19-02-18", "29-03-18"),
-        HalfTerm("16-04-18", "25-05-18"),
-        HalfTerm("04-06-18", "20-07-18")
+        HalfTerm("20170904", "20171020"),
+        HalfTerm("20171030", "20171220"),
+        HalfTerm("20180103", "20180209"),
+        HalfTerm("20180219", "20180329"),
+        HalfTerm("20180416", "20180525"),
+        HalfTerm("20180604", "20180720")
     ],
     "week_number_start": [],
     "period_start_times": {
@@ -43,12 +43,13 @@ PREFERENCES_WEEKEND_STARTS = {
     "dates_processed": False,
     "days_notice": 3,
     "term_dates": [
-        HalfTerm("03-09-17", "21-10-17"),
-        HalfTerm("30-10-17", "20-12-17"),
-        HalfTerm("03-01-18", "09-02-18"),
-        HalfTerm("19-02-18", "29-03-18"),
-        HalfTerm("16-04-18", "25-05-18"),
-        HalfTerm("04-06-18", "20-07-18")
+
+        HalfTerm("20170903", "20171020"),
+        HalfTerm("20171030", "20171220"),
+        HalfTerm("20180103", "20180209"),
+        HalfTerm("20180219", "20180329"),
+        HalfTerm("20180416", "20180525"),
+        HalfTerm("20180604", "20180720")
     ],
     "week_number_start": [],
     "period_start_times": {
@@ -70,12 +71,12 @@ PREFERENCES_DATES_WRONG_ORDER = {
     "dates_processed": False,
     "days_notice": 3,
     "term_dates": [
-        HalfTerm("01-09-17", "20-10-17"),
-        HalfTerm("03-01-18", "09-02-18"),
-        HalfTerm("30-10-17", "20-12-17"),
-        HalfTerm("19-02-18", "29-03-18"),
-        HalfTerm("04-06-18", "20-07-18"),
-        HalfTerm("25-05-18", "16-04-18")
+        HalfTerm("20171030", "20171220"),
+        HalfTerm("20170901", "20171020"),
+        HalfTerm("20180103", "20180209"),
+        HalfTerm("20180219", "20180329"),
+        HalfTerm("20180416", "20180525"),
+        HalfTerm("20180604", "20180720")
     ],
     "week_number_start": [],
     "period_start_times": {
@@ -121,17 +122,17 @@ class TestSchoolUtils(BaseTestCase):
             PREFERENCES["term_dates"])
 
         # autumn term 1
-        check_in_term_resp = check_in_term("04-09-17", term_dates)
+        check_in_term_resp = check_in_term("20170904", term_dates)
         self.assertTrue(check_in_term_resp[0])
         self.assertEqual(check_in_term_resp[1], 0)
 
         # in summer term 2
-        check_in_term_resp = check_in_term("14-06-18", term_dates)
+        check_in_term_resp = check_in_term("20180614", term_dates)
         self.assertTrue(check_in_term_resp[0])
         self.assertEqual(check_in_term_resp[1], 5)
 
         # aftr summer term
-        in_term, term_index = check_in_term("21-07-18", term_dates)
+        in_term, term_index = check_in_term("20180721", term_dates)
         self.assertFalse(in_term)
         self.assertEqual(term_index, -1)
 
@@ -140,19 +141,19 @@ class TestSchoolUtils(BaseTestCase):
 
     def test_get_week_beginning_date(self):
         # THURSDAY
-        test_date = get_week_beginning_date("22-03-18")
+        test_date = get_week_beginning_date("20180322")
         test_date_string = datetime.strftime(test_date, DATE_FORMAT)
-        self.assertEqual(test_date_string, "19-03-18")
+        self.assertEqual(test_date_string, "20180319")
 
         # SATURDAY
-        test_date = get_week_beginning_date("24-03-18")
+        test_date = get_week_beginning_date("20180324")
         test_date_string = datetime.strftime(test_date, DATE_FORMAT)
-        self.assertEqual(test_date_string, "19-03-18")
+        self.assertEqual(test_date_string, "20180319")
 
         # SUNDAY
-        test_date = get_week_beginning_date("25-03-18")
+        test_date = get_week_beginning_date("20180325")
         test_date_string = datetime.strftime(test_date, DATE_FORMAT)
-        self.assertEqual(test_date_string, "19-03-18")
+        self.assertEqual(test_date_string, "20180319")
 
     def test_process_preferences(self):
 
@@ -174,19 +175,19 @@ class TestSchoolUtils(BaseTestCase):
         ensure_term_dates_are_weekdays(converted_dates)
 
         self.assertEqual(datetime.strftime(
-            converted_dates[AUTUMN1][START], DATE_FORMAT), "04-09-17")
+            converted_dates[AUTUMN1][START], DATE_FORMAT), "20170904")
         self.assertEqual(datetime.strftime(
-            converted_dates[AUTUMN1][END], DATE_FORMAT), "20-10-17")
+            converted_dates[AUTUMN1][END], DATE_FORMAT), "20171020")
 
     def test_get_week_number(self):
 
         process_preferences(PREFERENCES)
 
-        test1 = datetime.strptime("05-09-17", DATE_FORMAT)
+        test1 = datetime.strptime("20170905", DATE_FORMAT)
         self.assertEqual(get_week_number(test1, PREFERENCES), 1)
 
-        test2 = datetime.strptime("11-09-17", DATE_FORMAT)
+        test2 = datetime.strptime("20170911", DATE_FORMAT)
         self.assertEqual(get_week_number(test2, PREFERENCES), 2)
 
-        test3 = datetime.strptime("25-04-18", DATE_FORMAT)
+        test3 = datetime.strptime("20180425", DATE_FORMAT)
         self.assertEqual(get_week_number(test3, PREFERENCES), 2)

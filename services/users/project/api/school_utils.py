@@ -97,8 +97,6 @@ def get_week_number(date, preferences):
 
     in_term, term_index = check_in_term(date, term_dates)
 
-    print('Term index: {}'.format(term_index))
-
     if not in_term:
         return False, "Date outside term-time."
 
