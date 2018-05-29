@@ -6,5 +6,6 @@ export const appConstants = {
   },
   days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
   dateFormat: 'YYYYMMDD',
-  timeStampFormat:'YYYYMMDDTHHmmss'
+  timeStampFormat:'YYYYMMDDTHHmmss',
+  staleMilliseconds: 300000
 };

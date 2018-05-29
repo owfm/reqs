@@ -1,4 +1,5 @@
 import { reqConstants, appConstants } from '../_constants';
+import { filterActions } from '../_actions';
 import { reqService } from '../_services';
 import { alertActions } from './';
 import { history } from '../_helpers';
@@ -8,9 +9,9 @@ export const reqActions = {
   getReqs,
   getReq,
   reqToggleEdit,
-  reqsAreStale,
   getVisibleSessions,
-  getWbStamp
+  getWbStamp,
+  stale
 };
 
 const reqToggleEdit = () => {
@@ -26,7 +27,12 @@ function getReqs(wb, lastupdated=null, all=false) {
     reqService.getReqs(wb, lastupdated, all)
     .then(
       response => {
-        dispatch(success(wb, response.data.data));
+        dispatch(success(wb, response.data.items));
+
+        // TODO HANDLE HOLIDAYS
+
+        dispatch(filterActions.setWeek(response.data.weeknumber));
+
       },
       error => {
         dispatch(alertActions.flash(error.message))}
@@ -69,38 +75,10 @@ function getReq(id) {
   function failure(error) { return { type: reqConstants.REQ_FAILURE, error } }
 }
 
-function reqsAreStale(reqs) {
-
-  return true;
-
-  // if no items in reqs state, set stale to trigger fetch from server.
-  if (reqs.items.length === 0) {
-    return true;
-  }
-  return moment().diff(reqs.updatedOn, 'seconds') > 1000;
-};
-
-
-function getVisibleSessions(state) {
-
-  const { reqs, lessons, filters } = state;
-  const { currentWbStamp } = filters;
-  const wbStamp = moment(currentWbStamp).format(appConstants.dateFormat);
-
-  if (!reqs.hasOwnProperty(wbStamp)) {
-    return [...lessons.items] || [];
-  }
-
-  const sessions = [...reqs[wbStamp].items, ...lessons.items]
-
-  return sessions.filter(s => s.week === filters.currentWeek);
-
-  // const reqSessions = reqs[wbStamp]['items'];
-  // console.log(reqSessions);
-
-  // return sessions.filter(s => s.week === filters.currentWeek)
-  // return [];
+function stale(lastupdated){
+  return lastupdated ? moment().diff(moment(lastupdated)) > appConstants.staleMilliseconds : true;
 }
+
 
 function getWbStamp(currentWbStamp){
   return moment(currentWbStamp).format(appConstants.dateFormat);
@@ -112,22 +90,6 @@ function getVisibleSessions(state) {
   const { currentWbStamp } = filters;
 
   const reqsSessions = reqs[currentWbStamp] ? [...reqs[currentWbStamp].items] : []
-  const lessonSessions = lessons.items.filter(l => l.week === filters.currentWeek);
+  const lessonSessions = lessons.items.filter(l => l.week === filters.weekNumber);
   return [...reqsSessions, ...lessonSessions];
 }
-
-
-// function dateFilter (sessions) {
-//   return sessions
-//   .filter(session => {
-//     if (session.type === 'requisition') {
-//       const reqDate = parseReqTime(session.time, 'date');
-//       const currentWbStamp = moment(this.state.currentWbStamp, 'DD-MM-YY');
-//       return reqDate.isSameOrAfter(currentWbStamp) &&
-//           reqDate.isSameOrBefore(currentWbStamp.add(5, 'days'))
-//
-//     } else if (session.type === 'lesson') {
-//       return session.week === this.state.weekNumber;
-//     }
-//   })
-// }

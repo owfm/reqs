@@ -2,13 +2,14 @@
 
 from sqlalchemy import exc
 from flask import Blueprint, jsonify, request
-from project.api.models import Req, User, Lesson
+from project.api.models import Req, User, Lesson, School
 from project import db
 from project.api.utils import authenticate
 from project.api.constants import TEACHER, TECHNICIAN,\
             TECHNICIAN_PATCH_AUTH, TEACHER_PATCH_AUTH,\
             DATE_FORMAT, TIMESTAMP_FORMAT
 from project.tests.utils import req_to_JSON
+from project.api.school_utils import get_week_number
 from jsonpatch import JsonPatch, InvalidJsonPatch
 from jsondiff import diff
 import pprint
@@ -115,7 +116,7 @@ def get_all_reqs(resp):
     response_object = {}
 
     try:
-        reqs = get_reqs_from_query_arguments(request.args, user)
+        reqs, week_number = parse_reqs_query_arguments(request.args, user)
     except ValueError as e:
         print(str(e))
         response_object['status'] = 'fail'
@@ -124,11 +125,14 @@ def get_all_reqs(resp):
 
     response_object['status'] = 'success'
 
-    response_object['data'] = reqs
+    response_object['items'] = reqs
+
+    response_object['weeknumber'] = week_number
+
     return jsonify(response_object), 200
 
 
-def get_reqs_from_query_arguments(request_args, user):
+def parse_reqs_query_arguments(request_args, user):
 
     if not request_args.get('wb'):
         raise ValueError('Please provide week beginning date query.')
@@ -165,7 +169,14 @@ def get_reqs_from_query_arguments(request_args, user):
     if user.role_code == TEACHER and not all:
         query = query.filter(Req.user_id == user.id)
 
-    return [req_to_JSON(req) for req in query]
+    school = School.query.get(user.school_id)
+
+    try:
+        week_number = get_week_number(wb, school.preferences)
+    except ValueError as e:
+        raise ValueError(e)
+
+    return [req_to_JSON(req) for req in query], week_number
 
 
 @reqs_blueprint.route('/reqs/<req_id>', methods=['GET'])

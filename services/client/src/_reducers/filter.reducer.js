@@ -6,17 +6,25 @@ const initialState = {
   currentWbStamp: filterActions.getWbStampFromDate(moment()),
   site: null,
   status: null,
-  currentWeek: 1
+  currentWeek: 1,
+  holiday: false
 }
 
 export function filters(state = initialState, action) {
 
   switch (action.type) {
 
+    case filterConstants.SET_WB_STAMP:
+      return {
+        ...state,
+        currentWbStamp: action.currentWbStamp
+      }
+
     case filterConstants.SET_WEEK:
       return {
         ...state,
-        currentWeek: action.week
+        holiday: false,
+        weekNumber: action.weekNumber
       }
 
     case filterConstants.SET_WB_DATE:
@@ -25,8 +33,6 @@ export function filters(state = initialState, action) {
       };
 
     case filterConstants.FORWARD_WEEK:
-
-
       return {
         ...state,
         currentWbStamp: moment(state.currentWbStamp).add(7, 'days').format(appConstants.dateFormat)

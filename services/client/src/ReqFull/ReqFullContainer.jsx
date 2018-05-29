@@ -49,9 +49,10 @@ class ReqFullContainer extends React.Component {
 
 
 function mapStateToProps(state) {
-    const { reqs, lessons } = state;
+    const { reqs, lessons, filters } = state;
+    const { currentWbStamp } = filters;
     return {
-      reqs,
+      reqs: reqs[currentWbStamp],
       lessons
     };
 }

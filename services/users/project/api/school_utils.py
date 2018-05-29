@@ -98,7 +98,7 @@ def get_week_number(date, preferences):
     in_term, term_index = check_in_term(date, term_dates)
 
     if not in_term:
-        return False, "Date outside term-time."
+        return "Date outside term-time."
 
     ''' find number of "whole" weeks elapsed between current week and
     week at the start of term. If this number is even, then the current

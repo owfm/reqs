@@ -21,35 +21,42 @@ class DisplayWeekContainer extends React.Component {
         // clear alert on location change
         dispatch(alertActions.clear());
     });
+
+    this.goToCurrentWeek = this.goToCurrentWeek.bind(this);
   }
 
   componentDidMount() {
 
-    this.props.dispatch(filterActions.setWeek(1))
-
-    // TODO: WORK OUT HOW TO CHECK IF IT IS NECESSARY TO FETCH MORE DATA
-
-    const { reqs, filters } = this.props;
-
-    // if (reqsAreStale) {
+    const { lastupdated, filters } = this.props;
 
     const wb = moment(filters.currentWbStamp).format(appConstants.dateFormat);
 
-    this.props.dispatch(reqActions.getReqs(wb, false));
-    // }
+    // fetch if reqs are stale
+    if ( reqActions.stale(lastupdated) ) {
+      this.props.dispatch(reqActions.getReqs(wb, false));
+    }
 
   }
 
   componentDidUpdate(prevProps){
 
-    const { filters, reqs, dispatch, lastupdated } = this.props;
+    const { filters, dispatch, lastupdated } = this.props;
     const { currentWbStamp } = filters;
 
     // if week has changed, fetch any new or edited reqs relating to the current week
-    if ( filters.currentWbStamp !== prevProps.filters.currentWbStamp ) {
-      dispatch(reqActions.getReqs(currentWbStamp, lastupdated, false));
+    if ( currentWbStamp !== prevProps.filters.currentWbStamp ) {
+      if ( reqActions.stale(lastupdated) ) {
+        dispatch(reqActions.getReqs(currentWbStamp, lastupdated, false));
+      }
+
     }
 
+  }
+
+  goToCurrentWeek = () => {
+    const { dispatch } = this.props;
+    const now = moment();
+    dispatch(filterActions.setCurrentWeek(now));
   }
 
   render() {
@@ -65,6 +72,7 @@ class DisplayWeekContainer extends React.Component {
 
 
         <div>
+          <button onClick={()=>this.goToCurrentWeek()}>Go To Current Week</button>
           <button onClick={()=>this.props.dispatch(filterActions.backwardWeek())}>Backward Week</button>
           <button onClick={()=>this.props.dispatch(filterActions.forwardWeek())}>Forward Week</button>
 
