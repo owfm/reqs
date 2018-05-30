@@ -85,9 +85,9 @@ function getWbStamp(currentWbStamp){
 }
 
 
-function getVisibleSessions(state) {
+function getVisibleSessions(state, currentWbStamp) {
+  
   const { filters, reqs, lessons } = state;
-  const { currentWbStamp } = filters;
 
   const reqsSessions = reqs[currentWbStamp] ? [...reqs[currentWbStamp].items] : []
   const lessonSessions = lessons.items.filter(l => l.week === filters.weekNumber);

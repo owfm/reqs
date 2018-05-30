@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect } from 'react-router';
+import { Redirect, withRouter } from 'react-router';
 import { connect } from 'react-redux';
 
 import { reqActions, alertActions } from '../_actions';
@@ -20,19 +20,14 @@ class ReqFullContainer extends React.Component {
 
   render() {
 
-    const { dispatch, history, reqs, lessons } = this.props;
-    const { id, type } = this.props.match.params;
+    const { dispatch, loading, error, session, history } = this.props;
 
-    const session = type === 'requisition' ?
-      reqs.items.find((req) => req.id == id) :
-      lessons.items.find((lesson) => lesson.id == id);
-
-    if (reqs.loading) {
+    if (loading) {
       return(<div>Twats...</div>);
     }
 
-    if (reqs.error) {
-      dispatch(alertActions.flash(reqs.error))
+    if (error) {
+      dispatch(alertActions.flash(error))
       return <Redirect push to='/week' />
     }
 
@@ -48,14 +43,25 @@ class ReqFullContainer extends React.Component {
 }
 
 
-function mapStateToProps(state) {
-    const { reqs, lessons, filters } = state;
-    const { currentWbStamp } = filters;
+function mapStateToProps(state, ownProps) {
+
+    const { type, id, currentWbStamp } = ownProps.match.params;
+    const { reqs, lessons } = state;
+    const { loading, error } = reqs;
+
+    const session = type === 'lesson' ?
+      lessons.items.find(s => s.id == id) :
+      reqs[currentWbStamp].items.find(s => s.id == id);
+
+    console.log('\n\n\n\n\n\n\n');
+    console.log(session);
+
+
     return {
-      reqs: reqs[currentWbStamp],
-      lessons
+      session,
+      loading
     };
 }
 
-const connectedReqFullContainer = connect(mapStateToProps)(ReqFullContainer);
+const connectedReqFullContainer = withRouter(connect(mapStateToProps)(ReqFullContainer));
 export { connectedReqFullContainer as ReqFullContainer };

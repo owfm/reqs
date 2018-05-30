@@ -47,8 +47,8 @@ class App extends React.Component {
 
                     <PrivateRoute exact path="/" component={HomePage} />
                     <PrivateRoute exact path="/test" component={TestPage} />
-                    <PrivateRoute exact path="/week/" component={DisplayWeekContainer} />
-                    <PrivateRoute exact path="/:type/:id" component={ReqFullContainer} />
+                    <PrivateRoute exact path="/week/:currentWbStamp/" component={DisplayWeekContainer} />
+                    <PrivateRoute exact path="/week/:currentWbStamp/:type/:id" component={ReqFullContainer} />
 
 
                     <Route path="/login" component={LoginPage} />

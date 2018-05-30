@@ -111,9 +111,6 @@ def get_week_number(date, preferences):
 
     monday_of_start_of_term = get_week_beginning_date(start_of_term)
 
-    print('Monday of test: {}, Monday of term start: {}'.format(
-        monday_of_week, monday_of_start_of_term))
-
     if ((monday_of_week - monday_of_start_of_term).days // 7) % 2 == 0:
         return int(preferences['week_number_start'][term_index])
     else:

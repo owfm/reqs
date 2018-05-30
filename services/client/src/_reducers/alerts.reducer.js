@@ -2,6 +2,7 @@ import { alertConstants } from '../_constants';
 
 export function alerts(state = {open: false, message: ''}, action) {
   switch (action.type) {
+
     case alertConstants.FLASH:
       return {
         open: true,

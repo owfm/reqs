@@ -8,7 +8,7 @@ import { MainGrid, SessionGrid } from './components';
 
 export const DisplayWeek = (props) => {
 
-  const { periods, sessions } = props;
+  const { periods, sessions, currentWbStamp } = props;
   const { days } = appConstants;
 
   const sessionGridContents = [];
@@ -21,7 +21,7 @@ export const DisplayWeek = (props) => {
         <SessionGrid key={uuidv4()}>
           {sessions
             .filter(session=>session.period===period && session.day===day)
-            .map(session=><ReqMini session={session} key={uuidv4()}/>)
+            .map(session=><ReqMini currentWbStamp={currentWbStamp} session={session} key={uuidv4()}/>)
           }
         </SessionGrid>
       )

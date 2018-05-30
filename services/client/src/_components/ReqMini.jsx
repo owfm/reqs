@@ -26,19 +26,19 @@ class ReqMini extends React.Component {
 
   render() {
 
-    const { session } = this.props;
+    const { session, currentWbStamp } = this.props;
     const { isDone, hasIssue, type } = session;
     const { id } = session;
+
+    if (this.state.redirect) {
+      return <Redirect push to={`${currentWbStamp}/${type}/${id}`} />
+    }
+
     const equipmentSet = session.equipment !== "";
     const notesSet = session.notes !== "";
 
     const statusClass = type === 'lesson' ? 'lesson' : isDone ? 'done' : hasIssue ? 'issue' : 'pending'
 
-
-
-    if (this.state.redirect) {
-      return <Redirect push to={`${type}/${id}`} />
-    }
 
     return (
       <div onClick={this.handleCardClick} className={`req-small`}>
