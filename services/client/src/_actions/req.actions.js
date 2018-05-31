@@ -8,7 +8,8 @@ import moment from 'moment';
 export const reqActions = {
   getReqs,
   getReq,
-  reqToggleEdit,
+  postNewReq,
+  postReqUpdate,
   getVisibleSessions,
   getWbStamp,
   stale
@@ -35,6 +36,7 @@ function getReqs(wb, lastupdated=null, all=false) {
 
       },
       error => {
+        dispatch(failure(error));
         dispatch(alertActions.flash(error.message))}
     );
 
@@ -75,6 +77,59 @@ function getReq(id) {
   function failure(error) { return { type: reqConstants.REQ_FAILURE, error } }
 }
 
+function postNewReq(reqData) {
+
+
+    return dispatch => {
+
+        dispatch(request());
+
+        reqService.postNewReq(reqData)
+            .then(
+                response => {
+
+                    dispatch(success(reqData.currentWbStamp, response.data.data));
+                    dispatch(alertActions.flash(response.data.message))
+                    history.goBack();
+                },
+                error => {
+                    dispatch(failure(error.message));
+                    dispatch(alertActions.flash(error.data.message || 'Something went wrong.'));
+                }
+            );
+    };
+
+    function request() { return { type: reqConstants.POST_REQUEST } }
+    function success(currentWbStamp, newReq) { return { type: reqConstants.POST_SUCCESS, currentWbStamp, newReq } }
+    function failure(error) {return { type: reqConstants.POST_FAILURE, error } }
+
+}
+
+function postReqUpdate(updatedReqInfo) {
+  return function(dispatch){
+    dispatch(request());
+
+    reqService.postReqUpdate(updatedReqInfo)
+      .then(
+        response => {
+          dispatch(success(updatedReqInfo.currentWbStamp, response.data.data));
+          dispatch(alertActions.flash(response.data.message))
+          history.goBack();
+        },
+        error => {
+          console.log(error);
+          dispatch(failure());
+          dispatch(alertActions.flash(error.response.data.message || 'Something went wrong.'));
+        }
+      );
+  }
+  function request() { return { type: reqConstants.UPDATE_REQUEST } }
+  function success(currentWbStamp, updatedReq) { return { type: reqConstants.UPDATE_SUCCESS, currentWbStamp, updatedReq } }
+  function failure() {return { type: reqConstants.UPDATE_FAILURE } }
+
+}
+
+
 function stale(lastupdated){
   return lastupdated ? moment().diff(moment(lastupdated)) > appConstants.staleMilliseconds : true;
 }
@@ -86,10 +141,18 @@ function getWbStamp(currentWbStamp){
 
 
 function getVisibleSessions(state, currentWbStamp) {
-  
+
   const { filters, reqs, lessons } = state;
 
   const reqsSessions = reqs[currentWbStamp] ? [...reqs[currentWbStamp].items] : []
   const lessonSessions = lessons.items.filter(l => l.week === filters.weekNumber);
-  return [...reqsSessions, ...lessonSessions];
+
+  const reqLessonIds = reqsSessions.map(req => req.lesson_id);
+  console.log(reqLessonIds);
+
+  const lessonsReqsAssignedRemoved = lessonSessions.filter(s => !reqLessonIds.includes(s.id));
+
+
+
+  return [...reqsSessions, ...lessonsReqsAssignedRemoved];
 }

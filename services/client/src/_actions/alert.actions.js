@@ -1,14 +1,30 @@
 import { alertConstants } from '../_constants';
 
 export const alertActions = {
-    flash,
-    clear
+  flash
 };
 
-function flash(message) {
-    return { type: alertConstants.FLASH, message };
+function showNotification(message) {
+  return { type: alertConstants.FLASH, message }
 }
 
-function clear() {
-    return { type: alertConstants.CLEAR };
+function hideNotification() {
+  return { type: alertConstants.CLEAR }
 }
+
+function flash(message){
+
+  return dispatch => {
+
+    if (typeof message !== 'string') {
+      return null;
+      console.log('GOT WEIRD OBJCT AS MESSAGE')
+    }
+
+    dispatch(showNotification(message));
+
+    setTimeout( () => {
+      dispatch(hideNotification())
+    }, 5000)
+  }
+};

@@ -1,8 +1,6 @@
 import { filterActions } from '../_actions';
 import { reqConstants, appConstants } from '../_constants';
-import { getWbStamp } from '../_helpers';
 import moment from 'moment';
-
 const wbStamp = filterActions.getWbStampFromDate(moment());
 
 const initialState = {
@@ -15,15 +13,16 @@ initialState[wbStamp] = {
   items: [],
   'lastupdated': null
 }
-// create key for current week of reqs, populate with empty array of items
-// const wbStamp = getWbStamp(moment());
-// initialState[wbStamp]['items'] = [];
-// initialState[wbStamp]['lastupdated'] = null;
 
 
 export function reqs(state = initialState, action) {
+
   switch (action.type) {
     case reqConstants.REQS_REQUEST:
+    case reqConstants.REQ_REQUEST:
+    case reqConstants.EDIT_REQUEST:
+    case reqConstants.POST_REQUEST:
+
       return {
         ...state,
         loading: true,
@@ -44,42 +43,48 @@ export function reqs(state = initialState, action) {
 
       return newState;
 
-    case reqConstants.REQS_FAILURE:
-      return {
-        ...state,
-        loading: false,
-        error: action.error,
-        items: [...state.items]
-      }
-
-      case reqConstants.REQ_REQUEST:
-        return {
-          ...state,
-          loading: true
-        };
-
-      case reqConstants.REQ_SUCCESS:
+    case reqConstants.REQ_SUCCESS:
         return {
           ...state,
           loading: false,
           items: [...state.items, action.req]}
 
 
-      case reqConstants.REQ_FAILURE:
+    case reqConstants.REQ_FAILURE:
+    case reqConstants.REQS_FAILURE:
+    case reqConstants.POST_FAILURE:
+    case reqConstants.UPDATE_FAILURE:
+
         return {
           ...state,
-          loading: false,
-          error: action.error
+          loading: false
         }
 
-      case reqConstants.REQ_EDIT_TOGGLE:
-        return {
-          ...state,
-          isEditing: !state.isEditing
-        }
+    case reqConstants.POST_SUCCESS:
 
-      default:
-        return state;
+        let stateWithNewReq = { ...state };
+        stateWithNewReq.loading = false;
+
+        const { newReq, currentWbStamp } = action;
+
+        stateWithNewReq[currentWbStamp].items = [...state[currentWbStamp].items, newReq]
+
+        return stateWithNewReq;
+
+    case reqConstants.UPDATE_SUCCESS:
+
+      const newItems = [...state[action.currentWbStamp].items.filter(s => s.id !== action.updatedReq.id), action.updatedReq]
+
+      return {
+        ...state,
+        loading: false,
+        [action.currentWbStamp]: {'items': [...newItems]}
+      }
+
+
+
+    default:
+      return state;
 
 
   }

@@ -254,7 +254,8 @@ def update_single_requisition(resp, req_id):
     if not change:
         response_object = {
             'status': 'success',
-            'message': 'Req {} unchanged.'.format(req.id)
+            'message': 'Req {} unchanged.'.format(req.id),
+            'data': req_to_JSON(req)
             }
         return jsonify(response_object), 200
 

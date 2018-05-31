@@ -25,9 +25,9 @@ const ReqInputLabel = styled.h4`
 
 const ReqFullForm = (props) => {
 
-  const { roleCode, isEditing } = props;
-  const { type } = props.req;
-  const { UserCode } = appConstants;
+  // const { roleCode, isEditing } = props;
+  // const { type } = props.req;
+  // const { UserCode } = appConstants;
 
   return (
 
@@ -36,7 +36,7 @@ const ReqFullForm = (props) => {
         <ReqInputLabel>Lesson Title</ReqInputLabel>
 
         <ReqInput
-          disabled={type === 'requisition' ? !isEditing : false}
+          // disabled={type === 'requisition' ? !isEditing : false}
           name='title'
           type="text"
           onChange={props.handleInputChange}
@@ -45,7 +45,7 @@ const ReqFullForm = (props) => {
           <ReqInputLabel>Equipment</ReqInputLabel>
 
           <ReqInput
-            disabled={type === 'requisition' ? !isEditing : false}
+            // disabled={type === 'requisition' ? !isEditing : false}
             name='equipment'
             type="textarea"
             onChange={props.handleInputChange}
@@ -54,14 +54,15 @@ const ReqFullForm = (props) => {
           <ReqInputLabel>Notes</ReqInputLabel>
 
           <ReqInput
-            disabled={type === 'requisition' ? !isEditing : false}
+            // disabled={type === 'requisition' ? !isEditing : false}
             name='notes'
             type="textarea"
             onChange={props.handleInputChange}
-            value={props.req.notes} />
+            value={props.req.notes}
+          />
           </div>
 
-        {UserCode[roleCode] === 'Teacher' &&
+        {/* {UserCode[roleCode] === 'Teacher' &&
         <TeacherReqOptionButtons
           req={props.req}
           handleEditReq={props.handleEditReq}
@@ -71,14 +72,14 @@ const ReqFullForm = (props) => {
           valid={props.valid}
           handleModalClose={props.handleModalClose}
         />
-        }
+        } */}
 
-        {UserCode[roleCode] === 'Technician' &&
+        {/* {UserCode[roleCode] === 'Technician' &&
         <TechnicianReqOptionButtons
           req={props.req}
           handleModalClose={props.handleModalClose}
-        />
-        }
+        /> } */}
+
 
       </form>
   )

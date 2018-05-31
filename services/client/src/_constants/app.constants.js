@@ -7,5 +7,6 @@ export const appConstants = {
   days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
   dateFormat: 'YYYYMMDD',
   timeStampFormat:'YYYYMMDDTHHmmss',
-  staleMilliseconds: 300000
+  staleMilliseconds: 300000,
+  maxReqPostLength: 999
 };

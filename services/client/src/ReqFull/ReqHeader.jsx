@@ -21,10 +21,10 @@ const styles = {
 }
 
 const ReqHeader = (props) => {
-  const title = `${props.req.week || ''}${props.req.day}${props.req.period} ${props.req.room.name}${props.req.classgroup.name}`
+  const title = `${props.session.week || ''}${props.session.day}${props.session.period} ${props.session.room.name}${props.session.classgroup.name}`
 
-  const isDone = props.req.isDone;
-  const hasIssue = props.req.hasIssue;
+  const isDone = props.session.isDone;
+  const hasIssue = props.session.hasIssue;
 
   return (
 <div>

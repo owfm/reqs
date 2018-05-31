@@ -3,12 +3,15 @@ import Drawer from 'material-ui/Drawer';
 import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
 import AppBar from 'material-ui/AppBar';
+import Button from '@material-ui/core/Button';
 
-import { Redirect } from 'react-router-dom';
+
+import { Redirect, Link } from 'react-router-dom';
 
 import { connect } from 'react-redux';
 
 import { appConstants } from '../_constants';
+import { history } from  '../_helpers';
 
 class Navigation extends React.Component {
 
@@ -33,7 +36,19 @@ class Navigation extends React.Component {
           title={authentication.loggedIn ? user.name : 'Welcome'}
           iconClassNameRight="muidocs-icon-navigation-expand-more"
           onLeftIconButtonClick={this.handleToggle}
-        />
+          >
+
+            <button onClick={()=>history.goBack()}>BACK</button>
+
+            <Button
+              variant="raised"
+              color="primary"
+              >
+            <Link to='/logout'>
+              Logout
+          </Link>
+        </Button>
+        </AppBar>
 
         <Drawer
           style={{zIndex: '0'}}
@@ -41,20 +56,20 @@ class Navigation extends React.Component {
           width={200}
           open={this.state.open}
           onRequestChange={(open) => this.setState({open})}
-        >
-        </Drawer>
+          >
+          </Drawer>
 
-      </div>
-    );
+        </div>
+      );
+    }
   }
-}
 
-function mapStateToProps(state) {
+  function mapStateToProps(state) {
     const { authentication } = state;
     return {
-        authentication
+      authentication
     };
-}
+  }
 
-const connectedNavigation = connect(mapStateToProps)(Navigation);
-export { connectedNavigation as Navigation };
+  const connectedNavigation = connect(mapStateToProps)(Navigation);
+  export { connectedNavigation as Navigation };

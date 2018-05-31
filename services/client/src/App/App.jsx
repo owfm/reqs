@@ -1,9 +1,9 @@
 import React from 'react';
-import { Router, Route, Redirect } from 'react-router-dom';
+import { Router, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import { history } from '../_helpers';
-import { alertActions, reqActions } from '../_actions';
+import { alertActions } from '../_actions';
 import { PrivateRoute, TestPage, Navigation, Logout } from '../_components';
 
 import { HomePage } from '../HomePage';
@@ -18,9 +18,9 @@ class App extends React.Component {
     constructor(props) {
         super(props);
 
-        const { dispatch } = this.props;
         history.listen((location, action) => {
             // clear alert on location change
+            const { dispatch } = this.props;
             // dispatch(alertActions.clear());
         });
     }
@@ -30,7 +30,7 @@ class App extends React.Component {
     }
 
     render() {
-        const { alerts, authentication } = this.props;
+        const { alerts } = this.props;
 
         return (
           <div>

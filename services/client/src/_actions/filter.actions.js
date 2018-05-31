@@ -2,11 +2,8 @@ import { filterConstants, appConstants } from '../_constants';
 import moment from 'moment';
 
 export const filterActions = {
-  forwardWeek,
-  backwardWeek,
   getWbStampFromDate,
   setSiteFilter,
-  setCurrentWeek,
   setStatusFilter,
   clearSiteFilter,
   clearStatusFilter,
@@ -14,24 +11,6 @@ export const filterActions = {
   setWeek
 }
 
-function fetchWeekNumber(date) {
-
-}
-
-function setCurrentWeek(date) {
-
-  if ( !moment(date).isValid() ) {
-    throw new Error('Expected date in setCurrentWeek')
-  }
-
-  const currentWbStamp = getWbStampFromDate(moment(date));
-
-  return {
-    type: filterConstants.SET_WB_STAMP,
-    currentWbStamp
-  }
-
-}
 
 function setWeek(weekNumber) {
   return {
@@ -39,19 +18,6 @@ function setWeek(weekNumber) {
     weekNumber
   }
 
-}
-
-function forwardWeek() {
-
-  return {
-    type: filterConstants.FORWARD_WEEK
-  }
-}
-
-function backwardWeek() {
-  return {
-    type: filterConstants.BACKWARD_WEEK
-  }
 }
 
 function setSiteFilter(site) {

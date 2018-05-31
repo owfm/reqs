@@ -1,129 +1,59 @@
 import React from 'react';
-import { postReqEdit, postNewReq } from '../utils/Helpers';
-import { ReqFullForm, ReqHeader, ReqIssueInfo } from '/';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+
 
 import './ReqFull.css';
 
-class ReqFull extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      req: {...this.props.session},
-      valid: false,
-      isEditing: false,
-    }
-    this.handleInputChange = this.handleInputChange.bind(this);
-    this.handlePostNewReq = this.handlePostNewReq.bind(this);
-    this.handleEditClick = this.handleEditClick.bind(this);
-    this.handleEditReq = this.handleEditReq.bind(this);
-    this.handlePostNewReq = this.handlePostNewReq.bind(this);
-    this.goBack = this.goBack.bind(this);
-  }
+const ReqFull = (props) => (
 
-  goBack(){
-    this.props.history.goBack();
-  }
+  <div>
 
-  handlePostNewReq (e) {
-    e.preventDefault();
-    const data = {
-      'lesson_id': this.props.session.id,
-      'title': this.state.req.title,
-      'equipment': this.state.req.equipment,
-      'notes': this.state.req.notes,
-      'currentWbStamp': this.props.currentWbStamp
-    }
+  <TextField
+    label="Lesson Title (required)"
+    value={props.session.title}
+    name='title'
+    onChange={props.handleInputChange}
+    multiline
+    autoFocus
+    fullWidth
+  />
 
-    postNewReq(data)
-    .then((res) => {
-      this.props.emitSnackbar(res.data.message);
-      this.props.updateStateWithNewOrEditedReq(res.data.data);
-    })
-    .catch((err) => this.props.emitSnackbar(err))
-  }
+  <br />
 
-  handleEditClick (e) {
-    e.preventDefault();
+  <TextField
+    label="Equipment"
+    value={props.session.equipment}
+    onChange={props.handleInputChange}
+    name='equipment'
+    multiline
+    fullWidth
+  />
+  <br />
 
-    const isEditing = this.state.isEditing;
+  <TextField
+    label="Notes"
+    value={props.session.notes}
+    name='notes'
+    onChange={props.handleInputChange}
+    multiline
+    fullWidth
+  />
 
-    if (isEditing){
-      // discard changes, revert back to props.
-      this.setState ({
-        req: {title: this.props.session.title,
-              equipment: this.props.session.equipment,
-              notes: this.props.session.notes}
-            })
-        isEditing: false
-    }
-  }
-
-  handleEditReq(e) {
-    e.preventDefault();
-    postReqEdit(this.props.session, this.state.req)
-    .then((res) => {
-      this.setState({
-        isEditing: false,
-      });
-      this.props.handleModalClose();
-      this.props.emitSnackbar(res.data.message)
-      this.props.updateStateWithNewOrEditedReq(res.data.data);
-    })
-    .catch((err) => console.error(err))
-  }
-
-  handleInputChange(e) {
-    const target = e.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
-    const name = target.name;
-    var req = {...this.state.req}
-    req[name] = value;
-
-    this.setState({
-      req
-    })
-
+  {!props.session.isDone &&
+    <Button
+      disabled={!props.session.title}
+      variant="raised"
+      color="primary"
+      onClick={props.handleSubmit}
+      >
+          {props.session.type === 'lesson' ? 'Post!' : 'Update!'}
+    </Button>
   }
 
 
-  render() {
-
-    if (this.props.session) {
-
-      const hasIssue = this.props.session.hasIssue;
-      const valid = this.state.valid;
-
-      return(
-
-        <div>
-
-        <button onClick={this.goBack}>Back</button>
-
-        <ReqHeader req={this.props.session}/>
-
-        <ReqFullForm
-          handlePostNewReq={this.handlePostNewReq}
-          handleModalClose={this.props.handleModalClose}
-          handlePostNewReq={this.handlePostNewReq}
-          handleEditReq={this.handleEditReq}
-          valid={valid}
-          handleInputChange={this.handleInputChange}
-          req={this.state.req}
-          handleEditClick={this.handleEditClick}
-          roleCode={this.props.roleCode}
-        />
-
-        {hasIssue && <ReqIssueInfo req={this.props.session}/>}
-
-      </div>
-    )} else {
-      return (
-        <div>Loading...</div>
-      )
-    }
-  }
-}
-
+</div>
+)
 
 
 export { ReqFull };

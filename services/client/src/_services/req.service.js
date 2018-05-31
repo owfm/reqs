@@ -6,7 +6,9 @@ import handleResponse from './handle-response.js';
 export const reqService = {
   getReq,
   getReqs,
-  reqsAreStale
+  reqsAreStale,
+  postNewReq,
+  postReqUpdate
 }
 
 function getReq(id) {
@@ -37,6 +39,39 @@ function getReqs(wb, lastupdated, all) {
     .then(handleResponse);
 };
 
+function postNewReq(reqData) {
+
+  const url = `${process.env.REACT_APP_USERS_SERVICE_URL}/reqs`;
+
+  return axios.post(
+    url, reqData,
+    {
+      headers: authHeader()
+    },
+  )
+    .then(handleResponse);
+};
+
+function postReqUpdate(updatedReq) {
+
+    const url = `${process.env.REACT_APP_USERS_SERVICE_URL}/reqs/${updatedReq.id}`
+
+    let patch = [];
+
+    for (var key in updatedReq) {
+      if (key === 'title' || key === 'equipment' || key === 'notes')
+      patch.push({"op": "replace", "path": `/${key}`, "value": `${updatedReq[key] || ''}`})
+    }
+
+    return axios.patch(
+      url,
+      patch,
+      {
+        headers: authHeader()
+      },
+    )
+    .then(handleResponse);
+};
 
 function reqsAreStale(reqs) {
 

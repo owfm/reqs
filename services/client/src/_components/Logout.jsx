@@ -8,19 +8,19 @@ class Logout extends React.Component {
 
   constructor(props) {
     super(props);
+    this.state = {redirect: false};
   }
 
   componentDidMount(){
     const { dispatch } = this.props;
-    dispatch(userActions.logout());
     userService.logout();
+    dispatch(userActions.logout());
+    this.setState({redirect: true})
   }
 
   render(){
 
-    const { loggedIn } = this.props.authentication;
-
-    if ( !loggedIn ) {
+    if ( this.state.redirect ) {
       return <Redirect push to='/login' />
     }
 

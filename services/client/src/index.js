@@ -8,7 +8,6 @@ import { store } from './_helpers';
 import { Provider } from 'react-redux';
 
 import { App } from './App/App';
-import AdminPreferences from './components/AdminPreferences';
 
 render((
   <Provider store={store}>

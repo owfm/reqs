@@ -2,6 +2,7 @@ import React from 'react';
 import { Redirect } from 'react-router';
 
 import './ReqMini.css';
+
 import Truncate from 'react-truncate';
 import ActionBuild from 'material-ui/svg-icons/action/build';
 import ActionDescription from 'material-ui/svg-icons/action/description';

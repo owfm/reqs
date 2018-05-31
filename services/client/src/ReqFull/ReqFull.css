@@ -1,5 +1,6 @@
-.reqFullContainer {
-  border: 5px solid black;
+.req-full {
+  display: flex;
+  align-content: space-between;
 }
 
 .pending {
