@@ -23,10 +23,18 @@ class ReqFullContainer extends React.Component {
 
   handleInputChange(e) {
 
-    // if ( this.props.session.isDone ) {
-    //   this.props.dispatch(alertActions.flash(`Sorry! Already marked 'done' by ${this.props.session.done_by.name}.`))
-    //   return null;
-    // }
+    const { role } = this.props;
+
+    if ( role === 'Technician' ) {
+      return null;
+    }
+
+    if ( this.props.session.isDone ) {
+      this.props.dispatch(alertActions.flash(`Sorry! Already marked 'done' by ${this.props.session.done_by.name}.`))
+      return null;
+    }
+
+
 
     const { target } = e;
     const { name } = target;
@@ -34,8 +42,8 @@ class ReqFullContainer extends React.Component {
     var session = {...this.state.session}
     session[name] = value;
 
-    if (value.length > appConstants.maxReqPostLength ) {
-      return null
+    if (value.length > appConstants.maxReqPostLength) {
+      return null;
     }
 
     this.setState({
@@ -55,7 +63,7 @@ class ReqFullContainer extends React.Component {
 
   render() {
 
-    const { dispatch, loading, error } = this.props;
+    const { dispatch, loading, error, role } = this.props;
     const { session } = this.state;
 
 
@@ -80,6 +88,7 @@ class ReqFullContainer extends React.Component {
         />
         <ReqFull
           session={session}
+          role={role}
           handleInputChange={this.handleInputChange}
           handleSubmit={this.handleSubmit}
         />
@@ -93,7 +102,8 @@ class ReqFullContainer extends React.Component {
 function mapStateToProps(state, ownProps) {
 
     const { type, id, currentWbStamp } = ownProps.match.params;
-    const { reqs, lessons } = state;
+    const { reqs, lessons, authentication } = state;
+    const { user } = authentication;
     const { loading, error } = reqs;
 
     const session = type === 'lesson' ?
@@ -103,7 +113,8 @@ function mapStateToProps(state, ownProps) {
     return {
       session,
       loading,
-      error
+      error,
+      role: appConstants.UserCode[user.role_code]
     };
 }
 

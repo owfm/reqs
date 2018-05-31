@@ -5,55 +5,62 @@ import Button from '@material-ui/core/Button';
 
 import './ReqFull.css';
 
-const ReqFull = (props) => (
+const ReqFull = (props) => {
 
-  <div>
+  const { session, handleInputChange, handleSubmit, role } = props;
 
-  <TextField
-    label="Lesson Title (required)"
-    value={props.session.title}
-    name='title'
-    onChange={props.handleInputChange}
-    multiline
-    autoFocus
-    fullWidth
-  />
-
-  <br />
-
-  <TextField
-    label="Equipment"
-    value={props.session.equipment}
-    onChange={props.handleInputChange}
-    name='equipment'
-    multiline
-    fullWidth
-  />
-  <br />
-
-  <TextField
-    label="Notes"
-    value={props.session.notes}
-    name='notes'
-    onChange={props.handleInputChange}
-    multiline
-    fullWidth
-  />
-
-  {!props.session.isDone &&
-    <Button
-      disabled={!props.session.title}
-      variant="raised"
-      color="primary"
-      onClick={props.handleSubmit}
-      >
-          {props.session.type === 'lesson' ? 'Post!' : 'Update!'}
-    </Button>
-  }
+  return(
 
 
-</div>
-)
+    <div>
+
+      <TextField
+        label="Lesson Title (required)"
+        value={session.title}
+        name='title'
+        onChange={handleInputChange}
+        multiline
+        autoFocus
+        fullWidth
+      />
+
+      <br />
+
+      <TextField
+        label="Equipment"
+        value={session.equipment}
+        onChange={handleInputChange}
+        name='equipment'
+        multiline
+        fullWidth
+      />
+      <br />
+
+      <TextField
+        label="Notes"
+        value={session.notes}
+        name='notes'
+        onChange={handleInputChange}
+        multiline
+        fullWidth
+      />
+
+      {!session.isDone && role !== 'Technician' &&
+      <Button
+        disabled={!session.title}
+        variant="raised"
+        color="primary"
+        onClick={handleSubmit}
+        >
+          {session.type === 'lesson' ? 'Post!' : 'Update!'}
+        </Button>
+      }
+
+
+    </div>
+  )
+}
+
 
 
 export { ReqFull };
