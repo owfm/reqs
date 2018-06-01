@@ -42,6 +42,11 @@ export function school(state = initialState, action) {
         weekNumber: action.weekNumber
       }
 
+    case schoolConstants.SITES_SUCCESS:
+      return {
+        ...state,
+        sites: [...action.sites]
+      }
 
     default:
       return state;

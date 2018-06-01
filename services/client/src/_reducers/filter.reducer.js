@@ -4,7 +4,7 @@ import moment from 'moment';
 
 const initialState = {
   currentWbStamp: filterActions.getWbStampFromDate(moment()),
-  site: null,
+  sites: [],
   status: null,
   currentWeek: 1,
   holiday: false
@@ -45,22 +45,48 @@ export function filters(state = initialState, action) {
       };
 
     case filterConstants.SET_SITE:
-      return {
-        ...state,
-        site: action.site
+      // console.log(state);
+      // return state;
+      if (state.sites.includes(action.site)) {
+        return { ...state }
       }
 
-      case filterConstants.SET_STATUS:
-        return {
-          ...state,
-          status: action.status
-        }
+      return {
+        ...state,
+        sites: [...state.sites, action.site]
+      }
 
-      case filterConstants.CLEAR_SITE:
-        return {
-          ...state,
-          site: null
-        }
+    case filterConstants.SET_STATUS:
+      return {
+        ...state,
+        status: action.status
+      }
+
+    case filterConstants.CLEAR_SITE:
+      return {
+        ...state,
+        sites: state.sites.filter(s => s !== action.site)
+      }
+
+    case filterConstants.CLEAR_ALL_SITES:
+      return {
+        ...state,
+        sites: []
+      }
+
+    case filterConstants.CLEAR_STATUS:
+      return {
+        ...state,
+        status: null
+      }
+
+    case filterConstants.CLEAR_ALL:
+      return {
+        ...state,
+        status: null,
+        sites: []
+      }
+
 
     default:
       return state

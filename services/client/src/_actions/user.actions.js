@@ -12,7 +12,7 @@ export const userActions = {
 };
 
 function login(email, password) {
-  
+
     return dispatch => {
 
         dispatch(request({ email }));
@@ -24,6 +24,10 @@ function login(email, password) {
                     dispatch(success_user(response.user));
                     dispatch(success_school(response.school));
 
+                    if ( response.sites ) {
+                      dispatch(success_sites(response.sites));
+                    }
+
                     // lessons only returned if user is teacher
                     if (response.lessons) {
                       dispatch(success_lessons(response.lessons));
@@ -33,7 +37,7 @@ function login(email, password) {
                 },
                 error => {
                     dispatch(failure());
-                    dispatch(alertActions.error(error.message || 'Something went wrong.'));
+                    dispatch(alertActions.flash(error.response.data.message || 'Something went wrong.'));
                 }
             );
     };
@@ -41,6 +45,7 @@ function login(email, password) {
     function request(user) { return { type: userConstants.LOGIN_REQUEST, user } }
     function success_user(user) { return { type: userConstants.LOGIN_SUCCESS, user } }
     function success_school(school) {return { type: schoolConstants.SCHOOL_SUCCESS, school } }
+    function success_sites(sites) {return { type: schoolConstants.SITES_SUCCESS, sites } }
     function success_lessons(items) { return { type: lessonConstants.LESSONS_SUCCESS, items } }
 
     function failure() { return { type: userConstants.LOGIN_FAILURE } }
@@ -64,7 +69,7 @@ function register(user) {
                 },
                 error => {
                     dispatch(failure(error));
-                    dispatch(alertActions.error(error.message || 'Something went wrong'));
+                    dispatch(alertActions.flash(error.response.data.message || 'Something went wrong'));
                 }
             );
     };

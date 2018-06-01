@@ -4,6 +4,7 @@ import { Redirect } from 'react-router';
 
 import { connect } from 'react-redux';
 
+import { FilterSelect } from '../_components';
 import { alertActions, reqActions, filterActions } from '../_actions';
 import { appConstants } from '../_constants';
 
@@ -116,6 +117,9 @@ class DisplayWeekContainer extends React.Component {
 
 
           {reqsLoading ? <div>Loading...</div> : <DisplayWeek currentWbStamp={currentWbStamp} sessions={sessions} periods={periods} />}
+
+          <FilterSelect/>
+
         </div>
       )
   }

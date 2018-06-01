@@ -4,7 +4,7 @@
 from flask import Blueprint, jsonify, request
 from sqlalchemy import exc
 
-from project.api.models import User, School, Lesson
+from project.api.models import User, School, Lesson, Site
 from project import db, bcrypt
 from project.api.constants import TEACHER, TECHNICIAN
 
@@ -142,13 +142,16 @@ def login_user():
                     pass
                 if school:
                     response_object['school'] = school.asdict()
+                    sites = Site.query.filter_by(school_id=school.id).all()
+                    response_object['sites'] = [
+                        site.asdict() for site in sites]
                 return jsonify(response_object), 200
         else:
             response_object['message'] = 'User does not exist.'
             return jsonify(response_object), 404
     except Exception as e:
         print(str(e))
-        response_object['message'] = 'Try again.'
+        response_object['message'] = str(e)
         return jsonify(response_object), 500
 
 

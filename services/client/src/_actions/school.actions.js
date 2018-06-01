@@ -24,7 +24,7 @@ function getWeekNumber(date) {
         dispatch(success(response.data.data));
         dispatch(alertActions.flash('Reqs loaded successfully.'));
       },
-      error => {dispatch(alertActions.flash(error.message))}
+      error => {dispatch(alertActions.flash(error.response.data.message))}
     );
 
   }

@@ -10,14 +10,11 @@ export const reqActions = {
   getReq,
   postNewReq,
   postReqUpdate,
-  getVisibleSessions,
+  stale,
   getWbStamp,
-  stale
+  getVisibleSessions,
 };
 
-const reqToggleEdit = () => {
-  type: reqConstants.REQS_EDIT_TOGGLE
-}
 
 function getReqs(wb, lastupdated=null, all=false) {
 
@@ -37,7 +34,7 @@ function getReqs(wb, lastupdated=null, all=false) {
       },
       error => {
         dispatch(failure(error));
-        dispatch(alertActions.flash(error.message))}
+        dispatch(alertActions.flash(error.response.data.message))}
     );
 
   }
@@ -67,7 +64,7 @@ function getReq(id) {
           dispatch(success(req));
         },
         error => {
-          dispatch(failure(error.message));
+          dispatch(failure(error.response.data.message));
         }
       );
   };
@@ -129,30 +126,42 @@ function postReqUpdate(updatedReqInfo) {
 
 }
 
-
 function stale(lastupdated){
   return lastupdated ? moment().diff(moment(lastupdated)) > appConstants.staleMilliseconds : true;
 }
-
 
 function getWbStamp(currentWbStamp){
   return moment(currentWbStamp).format(appConstants.dateFormat);
 }
 
-
 function getVisibleSessions(state, currentWbStamp) {
 
   const { filters, reqs, lessons } = state;
+  const { sites, status } = filters;
 
   const reqsSessions = reqs[currentWbStamp] ? [...reqs[currentWbStamp].items] : []
   const lessonSessions = lessons.items.filter(l => l.week === filters.weekNumber);
 
+  // remove lessons that have reqs assigned
   const reqLessonIds = reqsSessions.map(req => req.lesson_id);
-  console.log(reqLessonIds);
-
   const lessonsReqsAssignedRemoved = lessonSessions.filter(s => !reqLessonIds.includes(s.id));
 
+  let toReturn = [...reqsSessions];
+
+  // apply filters if necessary
+  if ( status ) {
+    // active reqs are those that are not done and not marked as having problems
+    if ( status === 'active' ) {
+      toReturn = toReturn.filter(s => (s.isDone === false && s.hasIssue === false))
+    } else {
+      toReturn = toReturn.filter(s => s[status] === true)
+    }
+  }
+
+  if ( sites.length > 0 ) {
+    toReturn = toReturn.filter(s => sites.includes(s.room.site.name))
+  }
 
 
-  return [...reqsSessions, ...lessonsReqsAssignedRemoved];
+  return [...toReturn, ...lessonsReqsAssignedRemoved];
 }

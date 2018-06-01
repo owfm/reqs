@@ -8,6 +8,7 @@ export const filterActions = {
   clearSiteFilter,
   clearStatusFilter,
   clearAllFilters,
+  clearAllSiteFilters,
   setWeek
 }
 
@@ -34,21 +35,28 @@ function setStatusFilter(status) {
   }
 }
 
-function clearSiteFilter() {
+function clearSiteFilter(site) {
   return {
     type: filterConstants.CLEAR_SITE,
+    site
   }
 }
 
 function clearStatusFilter() {
   return {
-    type: filterConstants.CLEAR_STATUS,
+    type: filterConstants.CLEAR_STATUS
+  }
+}
+
+function clearAllSiteFilters() {
+  return {
+    type: filterConstants.CLEAR_ALL_SITES
   }
 }
 
 function clearAllFilters() {
   return {
-    type: filterConstants.CLEAR_ALL,
+    type: filterConstants.CLEAR_ALL
   }
 }
 
