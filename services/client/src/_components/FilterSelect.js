@@ -1,74 +1,142 @@
 import React from 'react';
-
 import { connect } from 'react-redux';
+
 import { filterActions } from '../_actions';
 
-const FilterSelect = (props) => {
+import Button from '@material-ui/core/Button';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import Divider from '@material-ui/core/Divider';
 
-  const siteList = props.sites.map(
-    site => <li><a onClick={()=>props.dispatch(filterActions.setSiteFilter(site))}>{site}</a></li>
-  )
+import Icon from '@material-ui/core/Icon';
+import AddIcon from '@material-ui/icons/Add';
+import Fade from '@material-ui/core/Fade'
+import FilterListIcon from '@material-ui/icons/FilterList'
 
-  const filteredSitesList = props.sitesFilter.map(
-    site => <li> <a onClick={()=>props.dispatch(filterActions.clearSiteFilter(site))}>{site}</a></li>
-  )
-
-  const filteredStatus = <li><a onClick={()=>props.dispatch(filterActions.clearStatusFilter())}>{props.statusFilter}</a></li>
-
-
-  return (
-    <div>
-      Site Filters:
-    <ul>
-      {siteList}
-    </ul>
-    <br />
-    Status Filters:
-    <ul>
-      <li><a onClick={()=> props.dispatch(filterActions.setStatusFilter('isDone'))}>Completed</a></li>
-      <li><a onClick={()=> props.dispatch(filterActions.setStatusFilter('hasIssue'))}>Has Problem</a></li>
-      <li><a onClick={()=> props.dispatch(filterActions.setStatusFilter('active'))}>Active</a></li>
-
-    </ul>
-
-    <br />
-
-    Active Filters (click to remove):
-    <ul>
-      {filteredSitesList}
-      {filteredStatus}
-    </ul>
+import { withStyles } from '@material-ui/core/styles';
 
 
-    <br/>
+class FilterSelect extends React.Component {
 
+  constructor(props){
+    super(props);
+    this.state = {
+      anchorEl: null
+    }
+  }
 
-
-
-    <ul>
-      <li><a onClick={()=>props.dispatch(filterActions.clearAllSiteFilters())}>Clear All Sites</a></li>
-      <li><a onClick={()=>props.dispatch(filterActions.clearAllFilters())}>Clear Filters</a></li>
-
-    </ul>
-
-
-  </div>
-  )
-
-}
-
-
-function mapStateToProps(state) {
-
-  const { school, filters } = state;
-  const { sites, status } = filters;
-
-  return {
-    sites: school.sites.map(s => s.name),
-    sitesFilter: sites,
-    statusFilter: status
+  handleClick = event => {
+    this.setState({ anchorEl: event.currentTarget });
   };
-}
 
-const connectedFilterSelect = connect(mapStateToProps)(FilterSelect);
-export { connectedFilterSelect as FilterSelect };
+  handleClose = () => {
+    this.setState({ anchorEl: null });
+  }
+
+  handleSiteFilterToggle = (site) => {
+
+    const { sitesFilter, dispatch } = this.props;
+
+    sitesFilter.includes(site) ?
+      dispatch(filterActions.clearSiteFilter(site)) :
+      dispatch(filterActions.setSiteFilter(site))
+  }
+
+
+
+  render(){
+
+    const { anchorEl } = this.state;
+
+    const siteList = this.props.sites.map(site =>
+      <MenuItem
+        onClick={() => this.handleSiteFilterToggle(site)}
+        selected={this.props.sitesFilter.includes(site)}
+
+      >
+          {site}
+      </MenuItem>
+    )
+
+    return (
+      <div>
+
+        <Button
+          style={{position: 'fixed', bottom: '15px', right: '15px'}}
+          aria-owns={anchorEl ? 'filter-menu' : null}
+          aria-haspopup="true"
+          variant="fab"
+          color="primary"
+          aria-label="add"
+          onClick={this.handleClick}
+          >
+            <FilterListIcon />
+          </Button>
+
+          <Menu
+            id="fade-menu"
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={this.handleClose}
+            >
+              {siteList}
+            <Divider />
+            <MenuItem
+              onClick={ () => this.props.dispatch(filterActions.setStatusFilter('isDone'))}
+              selected={this.props.statusFilter === 'isDone'}
+              >
+
+              Completed</MenuItem>
+            <MenuItem
+              onClick={ () => this.props.dispatch(filterActions.setStatusFilter('hasIssue'))}
+              selected={this.props.statusFilter === 'hasIssue'}
+
+              >Problems</MenuItem>
+            <MenuItem
+              onClick={ () => this.props.dispatch(filterActions.setStatusFilter('active'))}
+              selected={this.props.statusFilter === 'active'}
+              >Active
+            </MenuItem>
+
+            <Divider />
+            <MenuItem
+              onClick={ () => this.props.dispatch(filterActions.clearAllSiteFilters())}
+              >Clear Site Filters
+            </MenuItem>
+
+            <MenuItem
+              onClick={ () => this.props.dispatch(filterActions.clearStatusFilter())}
+              >Clear Status Filters
+            </MenuItem>
+
+            <MenuItem
+              onClick={ () => this.props.dispatch(filterActions.clearAllFilters())}
+              >Clear All Filters
+            </MenuItem>
+
+            </Menu>
+
+
+
+          </div>
+        )
+      }
+
+    }
+
+
+    function mapStateToProps(state) {
+
+      const { school, filters } = state;
+      const { sites, status } = filters;
+
+      return {
+        sites: school.sites.map(s => s.name),
+        sitesFilter: sites,
+        statusFilter: status
+      };
+    }
+
+    // const StyledFilterSelect = withStyles(styles)(FilterSelect);
+    const connectedFilterSelect = connect(mapStateToProps)(FilterSelect);
+    export { connectedFilterSelect as FilterSelect };

@@ -6,3 +6,4 @@ export * from './Profile';
 export * from './TestPage';
 export * from './Chips';
 export * from './FilterSelect';
+export * from './TestButton';

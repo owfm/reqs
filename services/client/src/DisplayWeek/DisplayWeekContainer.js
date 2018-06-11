@@ -4,7 +4,7 @@ import { Redirect } from 'react-router';
 
 import { connect } from 'react-redux';
 
-import { FilterSelect } from '../_components';
+import { FilterSelect, TestButton } from '../_components';
 import { alertActions, reqActions, filterActions } from '../_actions';
 import { appConstants } from '../_constants';
 
@@ -15,6 +15,7 @@ import moment from 'moment';
 class DisplayWeekContainer extends React.Component {
 
   constructor(props) {
+
     super(props);
 
     this.state = {
@@ -32,8 +33,6 @@ class DisplayWeekContainer extends React.Component {
     this.forwardWeek = this.forwardWeek.bind(this);
     this.backWeek = this.backWeek.bind(this);
     this.goToCurrentWeek = this.goToCurrentWeek.bind(this);
-
-
   }
 
   componentDidMount() {
@@ -45,7 +44,6 @@ class DisplayWeekContainer extends React.Component {
     if ( reqActions.stale(lastupdated) ) {
       this.props.dispatch(reqActions.getReqs(wb, false));
     }
-
   }
 
   componentDidUpdate(prevProps) {
@@ -88,11 +86,9 @@ class DisplayWeekContainer extends React.Component {
     });
   }
 
-
   render() {
 
       const { redirect, redirectTo } = this.state;
-
       if ( redirect ) {
         return <Redirect push to={redirectTo} />
       }
@@ -119,7 +115,7 @@ class DisplayWeekContainer extends React.Component {
           {reqsLoading ? <div>Loading...</div> : <DisplayWeek currentWbStamp={currentWbStamp} sessions={sessions} periods={periods} />}
 
           <FilterSelect/>
-
+          {/* <TestButton /> */}
         </div>
       )
   }

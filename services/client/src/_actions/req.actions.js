@@ -144,24 +144,28 @@ function getVisibleSessions(state, currentWbStamp) {
 
   // remove lessons that have reqs assigned
   const reqLessonIds = reqsSessions.map(req => req.lesson_id);
-  const lessonsReqsAssignedRemoved = lessonSessions.filter(s => !reqLessonIds.includes(s.id));
+  const lessonsToReturn = lessonSessions.filter(s => !reqLessonIds.includes(s.id));
 
-  let toReturn = [...reqsSessions];
+  let reqsToReturn = [...reqsSessions];
 
   // apply filters if necessary
   if ( status ) {
     // active reqs are those that are not done and not marked as having problems
     if ( status === 'active' ) {
-      toReturn = toReturn.filter(s => (s.isDone === false && s.hasIssue === false))
+      reqsToReturn = reqsToReturn.filter(s => (s.isDone === false && s.hasIssue === false))
     } else {
-      toReturn = toReturn.filter(s => s[status] === true)
+      reqsToReturn = reqsToReturn.filter(s => s[status] === true)
     }
   }
 
+  const sessions = [...reqsToReturn, ...lessonsToReturn]
+
   if ( sites.length > 0 ) {
-    toReturn = toReturn.filter(s => sites.includes(s.room.site.name))
+    return sessions.filter(s => sites.includes(s.room.site.name))
   }
 
+  return sessions;
 
-  return [...toReturn, ...lessonsReqsAssignedRemoved];
+
+  // return [...toReturn, ...lessonsReqsAssignedRemoved];
 }

@@ -1,9 +1,11 @@
 {
   "name": "test-driven",
   "devDependencies": {
+    "babel-eslint": "^8.2.3",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-react": "^7.9.1",
     "randomstring": "^1.1.5",
     "testcafe": "0.18.2"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
