@@ -84,6 +84,7 @@ def remove_reqs_MAO():
         db.session.delete(req)
     db.session.commit()
 
+
 @manager.command
 def seed_db():
 

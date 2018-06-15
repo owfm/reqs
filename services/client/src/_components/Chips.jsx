@@ -8,65 +8,67 @@ const styles = {
   chip: {
     margin: '10px',
     flexBasis: 'content',
-    fontWeight: 'bold'},
+    fontWeight: 'bold',
+  },
   chipDone: {
-      margin: '10px',
-      flexBasis: 'content',
-      fontWeight: 'bold'
-      },
+    margin: '10px',
+    flexBasis: 'content',
+    fontWeight: 'bold',
+  },
 
   chipContainer: {
     display: 'flex',
-    flexWrap: 'nowrap'
-  }
-  }
+    flexWrap: 'nowrap',
+  },
+};
 
 export const DoneChip = () =>
 
-(  <Chip
+  (<Chip
     backgroundColor={green500}
     style={styles.chipDone}
-
-    >
+  >
     <Avatar
       backgroundColor={green900}
-      color='rgba(229,234,212, 1.0)'
-      icon={<FontIcon className="material-icons">check</FontIcon>} />
+      color="rgba(229,234,212, 1.0)"
+      icon={<FontIcon className="material-icons">check</FontIcon>}
+    />
     Done
-  </Chip>
-)
-
+   </Chip>
+  );
 
 
 export const IssueChip = () => (
   <Chip
     backgroundColor={red500}
     style={styles.chipDone}
-    >
-      <Avatar
-        backgroundColor={red900}
-        color='rgba(229,234,212, 1.0)'
-        icon={<FontIcon className="material-icons">error</FontIcon>} />
+  >
+    <Avatar
+      backgroundColor={red900}
+      color="rgba(229,234,212, 1.0)"
+      icon={<FontIcon className="material-icons">error</FontIcon>}
+    />
         Issue
-      </Chip>
+  </Chip>
 );
 
 
-export const UserChip = (props) => (
+export const UserChip = props => (
 
   <Chip
     style={styles.chip}
     onClick={() => props.user.email}
-    >
+  >
     <Avatar
-      icon={<FontIcon className="material-icons">email</FontIcon>} />
+      icon={<FontIcon className="material-icons">email</FontIcon>}
+    />
     {props.user.staff_code}
   </Chip>
-)
+);
 
-export const GeneralChip = (props) => (
+export const GeneralChip = props => (
   <Chip style={styles.chip}>
-      {props.children}
+    {props.children}
   </Chip>
 
-)
+);

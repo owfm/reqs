@@ -7,6 +7,19 @@ import Truncate from 'react-truncate';
 import ActionBuild from 'material-ui/svg-icons/action/build';
 import ActionDescription from 'material-ui/svg-icons/action/description';
 import moment from 'moment';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import AddIcon from '@material-ui/icons/Add';
+import { withStyles } from '@material-ui/core/styles';
+
+
+const styles = theme => ({
+  button: {
+    margin: theme.spacing.unit,
+  },
+});
+
 
 class ReqMini extends React.Component {
 
@@ -18,7 +31,6 @@ class ReqMini extends React.Component {
     }
   }
 
-
   handleCardClick = () => {
     this.setState({
       redirect: true
@@ -27,7 +39,7 @@ class ReqMini extends React.Component {
 
   render() {
 
-    const { session, currentWbStamp } = this.props;
+    const { session, currentWbStamp, classes } = this.props;
     const { isDone, hasIssue, type } = session;
     const { id } = session;
 
@@ -42,27 +54,45 @@ class ReqMini extends React.Component {
 
 
     return (
-      <div onClick={this.handleCardClick} className={`req-small`}>
+      <Paper
+        onClick={this.handleCardClick}>
+      {/* <div onClick={this.handleCardClick} className={`req-small`}> */}
         <div className={`status-bar ${statusClass}`}></div>
-        <h1>{this.props.session.classgroup.name}</h1>
-        <h3>({this.props.session.room.name})</h3>
-        {this.props.session.type === 'lesson' && <div className={'add-req-label'}>+ add req</div>}
+        <Typography variant={"title"}>
+          {session.classgroup.name}
+        </Typography>
+        <Typography variant={"subheading"}>
+          {session.room.name}
+        </Typography>
+
+        {session.type === 'lesson' &&
+          <div className={'add-req-label'}>
+            <Button
+              variant="fab"
+              mini color="secondary"
+              aria-label="add"
+              className={classes.button}>
+              <AddIcon />
+          </Button>
+
+          </div>
+        }
         <div className='req-mini-info-box'>
-          <div>{this.props.session.type === 'requisition' && moment(this.props.session.time).fromNow()}</div>
-          <div><strong>{this.props.session.title}</strong></div>
+          <div>{session.type === 'requisition' && moment(session.time).fromNow()}</div>
+          <div><strong>{session.title}</strong></div>
           <div>{this.props.time}</div>
           <br/>
           {equipmentSet &&
             <Truncate lines={2} ellipsis={<span>... </span>}>
-            {this.props.session.equipment}
+            {session.equipment}
           </Truncate>
         }
         {notesSet && <Truncate lines={2} ellipsis={<span>... </span>}>
-        {this.props.session.notes}
+        {session.notes}
       </Truncate>}
     </div>
-
-  </div>
+  {/* </div> */}
+  </Paper>
 )
 
   }
@@ -73,4 +103,4 @@ class ReqMini extends React.Component {
 
 };
 
-export { ReqMini };
+export default withStyles(styles)(ReqMini);

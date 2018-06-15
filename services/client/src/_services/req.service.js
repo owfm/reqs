@@ -8,77 +8,73 @@ export const reqService = {
   getReqs,
   reqsAreStale,
   postNewReq,
-  postReqUpdate
-}
+  postReqUpdate,
+};
 
 function getReq(id) {
-
   const url = `${process.env.REACT_APP_USERS_SERVICE_URL}/reqs/${id}`;
   return axios.get(
     url,
-    {headers: authHeader()},
+    { headers: authHeader() },
 
   ).then(handleResponse);
-
 }
 
 function getReqs(wb, lastupdated, all) {
-
   const url = `${process.env.REACT_APP_USERS_SERVICE_URL}/reqs`;
-  const params = { wb, all }
+  const params = { wb, all };
   if (lastupdated) {
-    params['lastupdated'] = lastupdated;
+    params.lastupdated = lastupdated;
   }
   return axios.get(
     url,
     {
       headers: authHeader(),
-      params
+      params,
     },
   )
     .then(handleResponse);
-};
+}
 
 function postNewReq(reqData) {
-
   const url = `${process.env.REACT_APP_USERS_SERVICE_URL}/reqs`;
 
   return axios.post(
     url, reqData,
     {
-      headers: authHeader()
+      headers: authHeader(),
     },
   )
     .then(handleResponse);
-};
+}
 
 function postReqUpdate(updatedReq) {
+  const url = `${process.env.REACT_APP_USERS_SERVICE_URL}/reqs/${updatedReq.id}`;
 
-    const url = `${process.env.REACT_APP_USERS_SERVICE_URL}/reqs/${updatedReq.id}`
+  const dontPatch = ['id', 'currentWbStamp'];
 
-    let patch = [];
+  const patch = Object.keys(updatedReq)
+    .filter(key => !dontPatch.includes(key))
+    .map(
+    key => {
+        return { op: 'replace', path: `/${key}`, value: `${updatedReq[key] || ''}` }
+    });
 
-    for (var key in updatedReq) {
-      if (key === 'title' || key === 'equipment' || key === 'notes')
-      patch.push({"op": "replace", "path": `/${key}`, "value": `${updatedReq[key] || ''}`})
-    }
-
-    return axios.patch(
-      url,
-      patch,
-      {
-        headers: authHeader()
-      },
-    )
+  return axios.patch(
+    url,
+    patch,
+    {
+      headers: authHeader(),
+    },
+  )
     .then(handleResponse);
-};
+}
 
 function reqsAreStale(reqs) {
-
   // if no items in reqs state, set stale to trigger fetch from server.
   if (reqs.items.length === 0) {
     return true;
   }
 
   return moment().diff(reqs.updatedOn, 'seconds') > 1000;
-};
+}

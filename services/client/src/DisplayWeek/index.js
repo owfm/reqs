@@ -1,1 +1,3 @@
-export * from './DisplayWeekContainer';
+import DisplayWeekContainer from './DisplayWeekContainer';
+
+export default DisplayWeekContainer;
