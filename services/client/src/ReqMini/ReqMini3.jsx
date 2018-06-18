@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router';
 import moment from 'moment';
 import { appConstants } from '../_constants';
 import PropTypes from 'prop-types';
@@ -21,16 +22,20 @@ import blue from '@material-ui/core/colors/blue';
 import green from '@material-ui/core/colors/green';
 import CheckCircle from '@material-ui/icons/CheckCircle';
 import Warning from '@material-ui/icons/Warning';
-
 import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 
 import { reqActions } from '../_actions';
 
 const styles = theme => ({
   card: {
     // maxWidth: 400,
+  },
+  deletingCard: {
+    color: (25, 25,25),
   },
   media: {
     height: 0,
@@ -62,7 +67,18 @@ const styles = theme => ({
 });
 
 class ReqMini extends React.Component {
-  state = { expanded: false };
+  state = {
+    expanded: false,
+    anchorEl: null,
+  };
+
+  handleMenuClick = event => {
+    this.setState({ anchorEl: event.currentTarget });
+  };
+
+  handleMenuClose = () => {
+    this.setState({ anchorEl: null });
+  };
 
   handleExpandClick = () => {
     this.setState({ expanded: !this.state.expanded });
@@ -77,12 +93,26 @@ class ReqMini extends React.Component {
     }))
   }
 
+  handleDelete = () => {
+    const { session, dispatch, currentWbStamp } = this.props;
+    const { id } = session;
+    dispatch(reqActions.deleteReq(currentWbStamp, id));
+  }
+
   render() {
-    const { classes, session, userRole, currentWbStamp } = this.props;
+    const { classes, session, userRole, currentWbStamp, deleting } = this.props;
+    const { anchorEl } = this.state;
+
+    if ( session.id === deleting ) {
+      return (<div>Deleting...</div>)
+    }
+
+
+
 
     return (
       <div>
-        <Card className={classes.card}>
+        <Card className={session.id === deleting ? classes.deletingCard : classes.card}>
           <CardHeader
             avatar={
               <Avatar
@@ -98,93 +128,124 @@ class ReqMini extends React.Component {
               </Avatar>
             }
             action={
-              <IconButton>
-                <MoreVertIcon />
-              </IconButton>
-            }
-            title={`${session.classgroup.name} ${session.room.name}`}
-            subheader={session.type === 'requisition' && moment(session.time).fromNow()}
-          />
+              session.type === 'requisition' &&
+              <div>
 
-          <CardContent>
-            {session.type === 'requisition' ?
-            <Typography variant="title">
-              {session.title}
-            </Typography> :
-            <Button
-              component={Link}
-              to={`/week/${currentWbStamp}/lesson/${session.id}`}
-              variant="contained"
-              size="medium"
-              color="primary"
-              className={classes.button}>
-                      Post
-                    </Button>                    }
-            <Typography component="p">
+                <IconButton
+                  aria-label="More"
+                  aria-owns={anchorEl ? 'long-menu' : null}
+                  aria-haspopup="true"
+                  onClick={this.handleMenuClick}
+                  >
+                  <MoreVertIcon />
+                </IconButton>
+                  <Menu
+                    id="long-menu"
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={this.handleMenuClose}
+                    PaperProps={{
+                      style: {
+                        width: 200,
+                      },
+                    }}
+                    >
+                      <MenuItem
+                        onClick={this.handleDelete}>
+                        Delete
+                      </MenuItem>
+                      <MenuItem
+                        component={Link}
+                        to={`/week/${currentWbStamp}/requisition/${session.id}`}
+                        >
+                        Edit
+                      </MenuItem>
+                    ))
+                  </Menu>
+                </div>
+              }
+              title={`${session.classgroup.name} ${session.room.name}`}
+              subheader={session.type === 'requisition' && moment(session.time).fromNow()}
+            />
 
-
-
-
-            </Typography>
-
-          </CardContent>
-          {session.type === 'requisition' &&
-          <div>
-
-          <CardActions className={classes.actions} disableActionSpacing>
-
-            {userRole === 'Technician' &&
-            <div>
-
-            <IconButton
-              aria-label="Mark as Done">
-              <CheckCircle
-                color={session.isDone ? 'primary' : 'disabled'}
-                onClick={this.handleDoneToggle}
-              />
-            </IconButton>
-
-
-            <IconButton aria-label="Problem?">
-              <Warning />
-            </IconButton>
-          </div>
-
-          }
-
-            <IconButton
-              className={classnames(classes.expand, {
-                [classes.expandOpen]: this.state.expanded,
-              })}
-              onClick={this.handleExpandClick}
-              aria-expanded={this.state.expanded}
-              aria-label="Show more"
-            >
-              <ExpandMoreIcon />
-            </IconButton>
-          </CardActions>
-
-          <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
             <CardContent>
-              <Typography paragraph variant="body2">
-                Equipment:
-              </Typography>
-              <Typography paragraph>
-                {session.equipment || 'No equipment specified.'}
-              </Typography>
-              <Typography paragraph variant="body2">
-                Notes:
-              </Typography>
+              {session.type === 'requisition' ?
+              <Typography variant="title">
+                {session.title}
+              </Typography> :
+              <Button
+                component={Link}
+                to={`/week/${currentWbStamp}/lesson/${session.id}`}
+                variant="contained"
+                size="medium"
+                color="primary"
+                className={classes.button}>
+                Post
+              </Button>                    }
+              <Typography component="p">
 
-              <Typography paragraph>
-                {session.notes || 'No notes specified.'}
+
+
+
               </Typography>
 
             </CardContent>
-          </Collapse>
-        </div>
+            {session.type === 'requisition' &&
+            <div>
 
-        }
+              <CardActions className={classes.actions} disableActionSpacing>
+
+                {userRole === 'Technician' &&
+                <div>
+
+                  <IconButton
+                    aria-label="Mark as Done">
+                    <CheckCircle
+                      color={session.isDone ? 'primary' : 'disabled'}
+                      onClick={this.handleDoneToggle}
+                    />
+                  </IconButton>
+
+                  <IconButton aria-label="Problem?">
+                    <Warning />
+                  </IconButton>
+                </div>
+
+              }
+
+              <IconButton
+                className={classnames(classes.expand, {
+                  [classes.expandOpen]: this.state.expanded,
+                })}
+                onClick={this.handleExpandClick}
+                aria-expanded={this.state.expanded}
+                aria-label="Show more"
+                >
+                  <ExpandMoreIcon />
+                </IconButton>
+              </CardActions>
+
+              <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
+                <CardContent>
+                  <Typography paragraph variant="body2">
+                    Equipment:
+                  </Typography>
+                  <Typography paragraph>
+                    {session.equipment || 'No equipment specified.'}
+                  </Typography>
+                  <Typography paragraph variant="body2">
+                    Notes:
+                  </Typography>
+
+                  <Typography paragraph>
+                    {session.notes || 'No notes specified.'}
+                  </Typography>
+
+                </CardContent>
+              </Collapse>
+            </div>
+
+          }
         </Card>
       </div>
     );
@@ -196,7 +257,8 @@ ReqMini.propTypes = {
 };
 
 function mapStateToProps(state, ownProps) {
-  const { authentication } = state;
+  const { authentication, reqs } = state;
+  const { deleting } = reqs;
   const { user } = authentication;
   const { role_code } = user;
   const { currentWbStamp } = ownProps.match.params;
@@ -204,8 +266,9 @@ function mapStateToProps(state, ownProps) {
 
   return {
     userRole: appConstants.UserCode[role_code],
-    currentWbStamp
+    currentWbStamp,
+    deleting,
   };
 }
 const reqMiniWithStyles = withStyles(styles)(ReqMini)
-export default connect(mapStateToProps)(reqMiniWithStyles);
+export default withRouter(connect(mapStateToProps)(reqMiniWithStyles));

@@ -5,14 +5,15 @@ const wbStamp = filterActions.getWbStampFromDate(moment());
 
 const initialState = {
   loading: false,
+  deleting: false,
   isEditing: false,
-  error: null
+  error: null,
 };
 
 initialState[wbStamp] = {
   items: [],
-  'lastupdated': null
-}
+  lastupdated: null,
+};
 
 
 export function reqs(state = initialState, action) {
@@ -27,6 +28,11 @@ export function reqs(state = initialState, action) {
         ...state,
         loading: true,
       };
+    case reqConstants.DELETE_REQUEST:
+      return {
+        ...state,
+        deleting: action.id,
+      }
 
     case reqConstants.REQS_SUCCESS:
 
@@ -60,6 +66,11 @@ export function reqs(state = initialState, action) {
           loading: false
         }
 
+    case reqConstants.DELETE_FAILURE:
+        return {
+          ...state,
+          deleting: false,
+        }
     case reqConstants.POST_SUCCESS:
 
         let stateWithNewReq = { ...state };
@@ -80,6 +91,17 @@ export function reqs(state = initialState, action) {
         loading: false,
         [action.currentWbStamp]: {'items': [...newItems]}
       }
+
+    case reqConstants.DELETE_SUCCESS:
+
+      return {
+        ...state,
+        deleting: false,        
+        [action.currentWbStamp]: {
+          items: [...state[action.currentWbStamp].items.filter(s => s.id !== action.id)],
+        }
+      }
+
 
 
 

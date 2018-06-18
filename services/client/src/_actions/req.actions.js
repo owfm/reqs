@@ -5,16 +5,6 @@ import { alertActions } from './';
 import { history } from '../_helpers';
 import moment from 'moment';
 
-export const reqActions = {
-  getReqs,
-  getReq,
-  postNewReq,
-  postReqUpdate,
-  stale,
-  getWbStamp,
-  getVisibleSessions,
-};
-
 
 function getReqs(wb, lastupdated = null, all = false) {
   return (dispatch) => {
@@ -93,9 +83,7 @@ function postNewReq(reqData) {
 }
 
 function postReqUpdate(updatedReqInfo) {
-
-  return function(dispatch) {
-
+  return function (dispatch) {
     dispatch(request());
 
     reqService.postReqUpdate(updatedReqInfo)
@@ -116,6 +104,28 @@ function postReqUpdate(updatedReqInfo) {
   function success(currentWbStamp, updatedReq) { return { type: reqConstants.UPDATE_SUCCESS, currentWbStamp, updatedReq }; }
   function failure() { return { type: reqConstants.UPDATE_FAILURE }; }
 }
+
+function deleteReq(currentWbStamp, id) {
+  return function (dispatch) {
+    dispatch(request(id));
+
+    reqService.deleteReq(id)
+      .then(
+        (response) => {
+          dispatch(success(currentWbStamp, id));
+          dispatch(alertActions.flash(response.data.message));
+        },
+        (error) => {
+          dispatch(failure());
+          dispatch(alertActions.flash(error.response.data.message || 'Something went wrong.'));
+        },
+      );
+  };
+  function request() { return { type: reqConstants.DELETE_REQUEST, id }; }
+  function success(currentWbStamp, id) { return { type: reqConstants.DELETE_SUCCESS, currentWbStamp, id }; }
+  function failure() { return { type: reqConstants.DELETE_FAILURE }; }
+}
+
 
 function stale(lastupdated) {
   return lastupdated ? moment().diff(moment(lastupdated)) > appConstants.staleMilliseconds : true;
@@ -159,3 +169,15 @@ function getVisibleSessions(state, currentWbStamp) {
 
   // return [...toReturn, ...lessonsReqsAssignedRemoved];
 }
+
+
+export const reqActions = {
+  getReqs,
+  getReq,
+  postNewReq,
+  postReqUpdate,
+  deleteReq,
+  stale,
+  getWbStamp,
+  getVisibleSessions,
+};

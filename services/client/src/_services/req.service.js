@@ -9,6 +9,7 @@ export const reqService = {
   reqsAreStale,
   postNewReq,
   postReqUpdate,
+  deleteReq,
 };
 
 function getReq(id) {
@@ -63,6 +64,17 @@ function postReqUpdate(updatedReq) {
   return axios.patch(
     url,
     patch,
+    {
+      headers: authHeader(),
+    },
+  )
+    .then(handleResponse);
+}
+
+function deleteReq(id) {
+  const url = `${process.env.REACT_APP_USERS_SERVICE_URL}/reqs/${id}`;
+  return axios.delete(
+    url,
     {
       headers: authHeader(),
     },
