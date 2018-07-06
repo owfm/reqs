@@ -10,9 +10,10 @@ import { history } from '../_helpers';
 import { PrivateRoute, TestPage, Navigation, Logout } from '../_components';
 
 import { HomePage } from '../HomePage';
-import { LoginPage } from '../LoginPage';
+import LoginPage from '../LoginPage';
 import { RegisterPage } from '../RegisterPage';
 
+import './App.css';
 
 class App extends React.Component {
   constructor(props) {
