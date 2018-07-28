@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 
 
-import { userActions, filterActions } from '../_actions';
+import { filterActions } from '../_actions';
 
 class HomePage extends React.Component {
     componentDidMount() {
@@ -13,7 +13,7 @@ class HomePage extends React.Component {
     }
 
     render() {
-        const { user, users, wbStamp } = this.props;
+        const { user, wbStamp } = this.props;
         return (
             <div className="col-md-6 col-md-offset-3">
                 <h1>Hi {user.name}!</h1>

@@ -37,9 +37,8 @@ const ReqFull = (props) => {
     = props;
 
   const {
-    week, day, period, room, classgroup, isDone, hasIssue,
+    room, classgroup
   } = session;
-  const title = `${week || ''}${day}${period} ${room.name}${classgroup.name}`;
 
   return (
 

@@ -1,5 +1,5 @@
 import { filterActions } from '../_actions';
-import { reqConstants, appConstants } from '../_constants';
+import { reqConstants } from '../_constants';
 import moment from 'moment';
 const wbStamp = filterActions.getWbStampFromDate(moment());
 
@@ -40,7 +40,7 @@ export function reqs(state = initialState, action) {
       const newState = { ...state };
       newState.loading = false;
 
-      const { wbStamp, items, timestamp } = action;
+      const { wbStamp } = action;
       const extantItems = state[wbStamp] ? state[wbStamp].items : [];
 
       newState[wbStamp] = {};
@@ -96,7 +96,7 @@ export function reqs(state = initialState, action) {
 
       return {
         ...state,
-        deleting: false,        
+        deleting: false,
         [action.currentWbStamp]: {
           items: [...state[action.currentWbStamp].items.filter(s => s.id !== action.id)],
         }

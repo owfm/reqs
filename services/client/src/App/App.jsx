@@ -7,7 +7,14 @@ import DisplayWeekContainer from '../DisplayWeek';
 import ReqFullContainer from '../ReqFull';
 
 import { history } from '../_helpers';
-import { PrivateRoute, TestPage, Navigation, Logout } from '../_components';
+import {
+  PrivateRoute,
+  TestPage,
+  Navigation,
+  Logout,
+} from '../_components';
+
+import { alertActions } from '../_actions';
 
 import { HomePage } from '../HomePage';
 import { LoginPage } from '../LoginPage';
@@ -21,7 +28,7 @@ class App extends React.Component {
     history.listen((location, action) => {
       // clear alert on location change
       const { dispatch } = this.props;
-      // dispatch(alertActions.clear());
+      dispatch(alertActions.hideNotification());
     });
   }
 

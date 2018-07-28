@@ -1,5 +1,4 @@
 import { schoolConstants } from '../_constants';
-import moment from 'moment';
 
 const initialState = {
   school: null,
@@ -28,12 +27,6 @@ export function school(state = initialState, action) {
         ...state,
         loading: false,
         error: action.error
-      }
-
-    case schoolConstants.WEEK_SUCCESS:
-      return {
-        ...state,
-        weekNumber: action.weekNumber
       }
 
     case schoolConstants.WEEK_SUCCESS:

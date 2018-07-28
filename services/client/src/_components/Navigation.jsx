@@ -1,16 +1,13 @@
 import React from 'react';
 import Drawer from 'material-ui/Drawer';
-import Menu from 'material-ui/Menu';
-import MenuItem from 'material-ui/MenuItem';
 import AppBar from 'material-ui/AppBar';
 import Button from '@material-ui/core/Button';
 
 
-import { Redirect, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { connect } from 'react-redux';
 
-import { appConstants } from '../_constants';
 import { history } from  '../_helpers';
 
 class Navigation extends React.Component {

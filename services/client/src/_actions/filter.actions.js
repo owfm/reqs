@@ -1,5 +1,4 @@
 import { filterConstants, appConstants } from '../_constants';
-import moment from 'moment';
 
 export const filterActions = {
   getWbStampFromDate,

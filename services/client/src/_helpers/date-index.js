@@ -4,9 +4,11 @@ import moment from 'moment';
 
 export function getWbStamp(date=null) {
 
+	let dateCpy = date;
+
   if (!date || !date.isValid()) {
-    const date = moment()
+    dateCpy = moment()
   }
 
-  return filterActions.getWbStampFromDate(moment(date)).format(appConstants.dateFormat);
+  return filterActions.getWbStampFromDate(moment(dateCpy)).format(appConstants.dateFormat);
 }

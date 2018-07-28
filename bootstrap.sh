@@ -12,7 +12,7 @@ docker-compose -f docker-compose-dev.yml build
 
 wait
 echo 'Install local packages...'
-cd services/client && yarn install
+cd services/client && npm install
 
 wait
 cd ../..
